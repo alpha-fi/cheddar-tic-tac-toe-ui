@@ -3,12 +3,13 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import Main from "./components/Main/Main";
 import { WalletSelectorContextProvider } from "./contexts/WalletSelectorContext";
+import { theme } from "./components/lib/theme";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
-    <ChakraProvider resetCSS>
+    <ChakraProvider theme={theme} resetCSS>
       <WalletSelectorContextProvider>
         <QueryClientProvider client={queryClient}>
           <Main />

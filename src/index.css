@@ -1,0 +1,17 @@
+#root {
+  background: url("./assets/cheddar-farm-background.svg") top/contain
+    no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  position: relative;
+  min-height: 100%; 
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0 auto;
+}
