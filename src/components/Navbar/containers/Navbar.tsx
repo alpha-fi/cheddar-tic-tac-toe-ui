@@ -1,16 +1,10 @@
-import { HamburgerIcon } from "@chakra-ui/icons";
 import {
   Box,
   Container,
   Flex,
   Heading,
-  IconButton,
   Img,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Stack,
 } from "@chakra-ui/react";
 import { WhiteButton } from "../../../shared/components/WhiteButton";
@@ -22,6 +16,7 @@ import discordIcon from "../../../assets/discord.svg";
 import twitterIcon from "../../../assets/twitter.svg";
 import gitbookIcon from "../../../assets/gitbook.svg";
 import GamesMenu from "../components/GamesMenu";
+import { DrawerMenu } from "../components/DrawerMenu";
 
 export default function Navbar() {
   return (
@@ -43,7 +38,7 @@ export default function Navbar() {
         px="30px"
         height="100%"
       >
-        <Flex minW="320px" columnGap={2} alignContent="center">
+        <Flex columnGap={2} alignContent="center">
           <Flex flexDirection="column" rowGap={1} mr="20px">
             <Heading
               as="h1"
@@ -54,7 +49,10 @@ export default function Navbar() {
             >
               Cheddar TicTacToe
             </Heading>
-            <Flex justifyContent="center">
+            <Flex
+              justifyContent="center"
+              display={{ base: "none", lg: "flex" }}
+            >
               <Link
                 href="https://t.me/cheddarfarm"
                 target="_blank"
@@ -96,7 +94,7 @@ export default function Navbar() {
 
           <Stack
             direction={{ base: "column", md: "row" }}
-            display={{ base: "none", xl: "flex" }}
+            display={{ base: "none", lg: "flex" }}
             width={{ base: "full", md: "auto" }}
             alignItems="center"
             justifyContent="center"
@@ -144,27 +142,10 @@ export default function Navbar() {
           </Stack>
         </Flex>
 
-        <Flex minW="320px" flexDir="row" justifyContent="end">
+        <Flex flexDir="row" justifyContent="end">
           <ButtonConnectWallet />
-
-          <Box ml={2} display={{ base: "inline-block", xl: "none" }}>
-            <Menu isLazy id="navbar-menu">
-              <MenuButton
-                as={IconButton}
-                icon={<HamburgerIcon />}
-                variant="outline"
-                aria-label="Options"
-              />
-              <MenuList>
-                <Link
-                  href="https://app.cheddar.farm/"
-                  target="_blank"
-                  _hover={{ textDecoration: "none" }}
-                >
-                  <MenuItem>Cheddar</MenuItem>
-                </Link>
-              </MenuList>
-            </Menu>
+          <Box ml={2} display={{ base: "inline-block", lg: "none" }}>
+            <DrawerMenu />
           </Box>
         </Flex>
       </Container>
