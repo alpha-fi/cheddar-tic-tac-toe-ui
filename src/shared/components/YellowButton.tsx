@@ -3,7 +3,6 @@ import { Button as ButtonChakra } from "@chakra-ui/react";
 type Props = React.ComponentProps<typeof ButtonChakra>;
 
 export function YellowButton(props: Props) {
-  console.log(props);
   return (
     <ButtonChakra
       border="1px solid #FFF8"

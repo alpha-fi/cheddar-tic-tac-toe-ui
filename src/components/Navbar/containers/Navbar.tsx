@@ -32,7 +32,7 @@ export default function Navbar() {
       <Container
         display="flex"
         alignContent="center"
-        maxW="container.xxl"
+        maxW="container.xl"
         justifyContent="space-between"
         alignItems="center"
         px="30px"

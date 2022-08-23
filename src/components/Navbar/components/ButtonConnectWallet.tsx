@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Button, Menu, MenuButton, MenuList } from "@chakra-ui/react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { YellowButton } from "../../../shared/components/YellowButton";
 
@@ -33,22 +33,17 @@ export function ButtonConnectWallet() {
             borderRadius="full"
             bg="yellowCheddar"
           >
-            <MenuItem
-              as={Button}
+            <Button
               onClick={handleOnClick}
-              _hover={{ textDecoration: "none", background: "transparent" }}
-              _active={{
-                textDecoration: "none",
-                background: "transparent",
-              }}
+              colorScheme="yellow"
+              borderRadius="full"
+              bg="yellowCheddar"
               _focus={{
-                textDecoration: "none",
                 boxShadow: "0 0 0 0 #0000",
-                background: "transparent",
               }}
             >
               Disconnect
-            </MenuItem>
+            </Button>
           </MenuList>
         </Menu>
       ) : (

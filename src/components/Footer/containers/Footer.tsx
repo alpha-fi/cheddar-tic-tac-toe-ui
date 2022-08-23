@@ -3,7 +3,7 @@ import { Box, Spacer, Text } from "@chakra-ui/react";
 export function Footer() {
   return (
     <>
-      <Spacer mt="56px" />
+      <Spacer h="60px" />
       <Box
         display="flex"
         flexDirection="column"
@@ -14,7 +14,7 @@ export function Footer() {
         fontSize="sm"
         position="absolute"
         w="100%"
-        h="56px"
+        h="60px"
         bottom={0}
         left="auto"
       >
