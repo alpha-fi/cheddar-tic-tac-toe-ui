@@ -1,6 +1,7 @@
-import { Box, Grid } from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 import useScreenSize from "../../../hooks/useScreenSize";
 import Board from "../components/Board";
+import Info from "../components/Info";
 
 export function TicTacToe() {
   const { height, width } = useScreenSize();
@@ -12,8 +13,9 @@ export function TicTacToe() {
         sm: isLandscape ? "1fr 1fr" : "1fr",
         md: "1fr 1fr",
       }}
+      gap={4}
     >
-      <Box></Box>
+      <Info />
       <Board isLandscape={isLandscape} />
     </Grid>
   );
