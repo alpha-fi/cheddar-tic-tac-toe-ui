@@ -1,5 +1,7 @@
-import { Box } from "@chakra-ui/react";
-import React from "react";
+import { Box, Img } from "@chakra-ui/react";
+import React, { useState } from "react";
+import mouseIcon from "../../../assets/mouse-icon.svg";
+import cheddarIcon from "../../../assets/cheddar-icon.svg";
 
 type Props = {
   column: number;
@@ -14,11 +16,13 @@ type Props = {
 };
 
 export function BoardSquare({ column, row, squareSize }: Props) {
+  const [showIcon, setShowIcon] = useState(false);
   const border = "5px solid";
   const borderColor = "purpleCheddar";
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     console.log(e.currentTarget.id);
+    setShowIcon((prevState) => !prevState);
   };
   return (
     <Box
@@ -36,7 +40,16 @@ export function BoardSquare({ column, row, squareSize }: Props) {
         w="100%"
         h="100%"
         onClick={handleClick}
-      ></Box>
+      >
+        {showIcon && (
+          <Img
+            src={(column + row) % 2 === 0 ? mouseIcon : cheddarIcon}
+            alt=""
+            width="100%"
+            height="100%"
+          />
+        )}
+      </Box>
     </Box>
   );
 }
