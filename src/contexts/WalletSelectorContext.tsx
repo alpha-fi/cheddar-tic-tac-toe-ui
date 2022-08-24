@@ -13,6 +13,10 @@ import { setupSender } from "@near-wallet-selector/sender";
 import { contractName, nearConfig } from "../near";
 import { setupNearWalletCustom } from "../near/wallet/selector-utils";
 import "./WalletSelectorContext.css";
+import { NEP141 } from "../near/contracts/NEP141";
+import { TicTacToeContract } from "../near/contracts/TicTacToe";
+import { SelectorWallet } from "../near/wallet/wallet-selector";
+import { getEnv } from "../near/config";
 
 declare global {
   interface Window {
@@ -27,6 +31,8 @@ interface WalletSelectorContextValue {
   accounts: Array<AccountState>;
   accountId: string | null;
   wallet: Wallet | null;
+  nep141: NEP141 | null;
+  tictactoeContract: TicTacToeContract | null;
 }
 
 const WalletSelectorContext =
@@ -41,6 +47,9 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
   const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
   const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [nep141, setNep141] = useState<NEP141 | null>(null);
+  const [tictactoeContract, setTictactoeContract] =
+    useState<TicTacToeContract | null>(null);
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
@@ -55,7 +64,6 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
 
     window.selector = _selector;
     window.modal = _modal;
-
     setSelector(_selector);
     setModal(_modal);
   }, []);
@@ -74,6 +82,11 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
     if (selector.isSignedIn()) {
       selector.wallet().then((wallet) => setWallet(wallet));
     }
+
+    const selectorWallet = new SelectorWallet(selector);
+    setTictactoeContract(new TicTacToeContract(selectorWallet));
+    const cheddarContract = getEnv("testnet").cheddarContractId;
+    setNep141(new NEP141(selectorWallet, cheddarContract));
 
     const subscription = selector.store.observable
       .pipe(
@@ -104,6 +117,8 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
         accounts,
         accountId,
         wallet,
+        nep141,
+        tictactoeContract,
       }}
     >
       {children}
