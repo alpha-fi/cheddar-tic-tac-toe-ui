@@ -1,4 +1,6 @@
-import { Grid } from "@chakra-ui/react";
+import { Button, Grid } from "@chakra-ui/react";
+import { useContext } from "react";
+import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import useScreenSize from "../../../hooks/useScreenSize";
 import Board from "../components/Board";
 import Info from "../components/Info";

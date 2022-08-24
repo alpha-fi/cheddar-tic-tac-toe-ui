@@ -1,6 +1,7 @@
+import { Action } from "@near-wallet-selector/core";
 import { utils } from "near-api-js";
 import { ENV, getEnv } from "../config";
-import { SelectorWallet } from "../wallet/wallet-selector";
+import { DEFAULT_GAS, SelectorWallet } from "../wallet/wallet-selector";
 
 export interface AvailablePlayerConfig {
     token_id: string
@@ -35,6 +36,18 @@ export class TicTacToeContract {
 
     make_available(deposit: string): Promise<any> {
         return this.wallet.call(this.contractId, "make_available", {config: {}}, undefined, deposit)
+    }
+
+    getMakeAvailableAction(deposit: number|string): Action {
+        return {
+            type: "FunctionCall",
+            params: {
+                methodName: "make_available",
+                args: {config: {}},
+                gas: DEFAULT_GAS,
+                deposit: typeof deposit === 'string' ? deposit : utils.format.parseNearAmount(deposit.toString())!,
+            }
+        }
     }
 
     /**

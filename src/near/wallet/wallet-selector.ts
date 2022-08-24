@@ -11,6 +11,8 @@ import { nearConfig } from "../../near";
 //import { U128String } from "../util";
 import { WalletInterface } from "./wallet-interface";
 
+export const DEFAULT_GAS = "40000000000000" // 40 Tgas
+
 export class SelectorWallet implements WalletInterface {
   walletSelector: WalletSelector;
   walletState: WalletSelectorState;

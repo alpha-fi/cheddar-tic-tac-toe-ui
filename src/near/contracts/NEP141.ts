@@ -1,4 +1,13 @@
+import { Action } from "@near-wallet-selector/core";
+import { utils } from "near-api-js";
 import { SelectorWallet } from "../wallet/wallet-selector";
+
+export interface StorageBalance {
+    total: string
+    available: string
+}
+
+const DEFAULT_GAS = "40000000000000" // 40 Tgas
 
 export class NEP141 {
 
@@ -12,12 +21,36 @@ export class NEP141 {
         return this.wallet.call(this.contractId, "ft_transfer_call", {receiver_id, amount, msg: msg || ""})
     }
 
-    storage_balance_of(): Promise<string> {
+    storage_balance_of(): Promise<StorageBalance|null> {
         return this.wallet.view(this.contractId, "storage_balance_of", {account_id: this.wallet.getAccountId()})
     }
 
     storage_deposit(deposit: string): Promise<string> {
         return this.wallet.call(this.contractId, "storage_deposit", {}, undefined, deposit)
+    }
+
+    getStorageDepositAction(deposit: number): Action {
+        return {
+            type: "FunctionCall",
+            params: {
+                methodName: "storage_deposit",
+                args: {},
+                gas: DEFAULT_GAS,
+                deposit: utils.format.parseNearAmount(deposit.toString())!,
+            }
+        }
+    }
+
+    getFtTransferCallAction(receiver_id: string, amount: number, msg?: string): Action {
+        return {
+            type: "FunctionCall",
+            params: {
+                methodName: "storage_deposit",
+                args: {receiver_id, amount: utils.format.parseNearAmount(amount.toString()), msg},
+                gas: DEFAULT_GAS,
+                deposit: "1",
+            }
+        }
     }
 
 

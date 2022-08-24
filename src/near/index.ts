@@ -1,6 +1,7 @@
 import * as naj from "near-api-js";
 
 import { Buffer } from "buffer";
+import { ENV, getEnv } from "./config";
 if (typeof window !== "undefined") window.Buffer = Buffer;
 if (typeof global !== "undefined") global.Buffer = Buffer;
 
