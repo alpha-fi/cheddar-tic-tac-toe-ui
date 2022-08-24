@@ -87,14 +87,16 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
     }
 
     const selectorWallet = new SelectorWallet(selector);
-    setTictactoeContract(new TicTacToeContract(selectorWallet));
+    const tttContract = new TicTacToeContract(selectorWallet)
+    setTictactoeContract(tttContract);
     const cheddarContractId = getEnv(ENV).cheddarContractId;
-    setCheddarContract(new NEP141(selectorWallet, cheddarContractId));
+    const cContract = new NEP141(selectorWallet, cheddarContractId)
+    setCheddarContract(cContract);
 
-    console.log(tictactoeContract, cheddarContract)
-    setTicTacToeLogic(new TicTacToeLogic(tictactoeContract!, cheddarContract!))
+    const a = new TicTacToeLogic(tttContract, cContract)
+    setTicTacToeLogic(new TicTacToeLogic(tttContract, cContract))
 
-    ticTacToeLogic?.bet(1)
+    // a.bet(1, true)
 
     const subscription = selector.store.observable
       .pipe(

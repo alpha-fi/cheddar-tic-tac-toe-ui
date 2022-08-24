@@ -38,14 +38,42 @@ export class TicTacToeContract {
         return this.wallet.call(this.contractId, "make_available", {config: {}}, undefined, deposit)
     }
 
+    make_unavailable(): Promise<any> {
+        return this.wallet.call(this.contractId, "make_unavailable", {config: {}})
+    }
+
     getMakeAvailableAction(deposit: number|string): Action {
         return {
             type: "FunctionCall",
             params: {
                 methodName: "make_available",
-                args: {config: {}},
+                args: {game_config: {}},
                 gas: DEFAULT_GAS,
                 deposit: typeof deposit === 'string' ? deposit : utils.format.parseNearAmount(deposit.toString())!,
+            }
+        }
+    }
+
+    getMakeUnavailableAction(): Action {
+        return {
+            type: "FunctionCall",
+            params: {
+                methodName: "make_unavailable",
+                args: {},
+                gas: DEFAULT_GAS,
+                deposit: "1",
+            }
+        }
+    }
+
+    getStartGameAction(opponent_id: string): Action {
+        return {
+            type: "FunctionCall",
+            params: {
+                methodName: "start_game",
+                args: {player_2_id: opponent_id},
+                gas: DEFAULT_GAS,
+                deposit: "0",
             }
         }
     }
@@ -65,7 +93,7 @@ export class TicTacToeContract {
     }
 
     make_move(game_id: number, row: number, col: number): Promise<any> {
-        return this.wallet.call(this.contractId, "make_move", {game_id, row, col})
+        return this.wallet.call(this.contractId, "make_move", {game_id, row, col}, undefined, "0")
     }
 
     get_stats(): Promise<Stats> {
