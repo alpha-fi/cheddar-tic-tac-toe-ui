@@ -21,6 +21,8 @@ export default function Info() {
   const walletSelector = useWalletSelector();
 
   const handleOnClick = async () => {
+    // walletSelector.ticTacToeLogic?.play(4, 1, 1)
+    // walletSelector.ticTacToeLogic?.play(["oreos.testnet", {token_id: "near", deposit: '1000000000000000000000000', opponent_id: null, referrer_id: null}])
     if (walletSelector.selector.isSignedIn() && walletSelector.wallet) {
       walletSelector.wallet.signOut();
     } else {

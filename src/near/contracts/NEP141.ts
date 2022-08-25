@@ -41,12 +41,12 @@ export class NEP141 {
         }
     }
 
-    getFtTransferCallAction(receiver_id: string, amount: number, msg?: string): Action {
+    getFtTransferCallAction(receiver_id: string, amount: number|string, msg?: string): Action {
         return {
             type: "FunctionCall",
             params: {
-                methodName: "storage_deposit",
-                args: {receiver_id, amount: utils.format.parseNearAmount(amount.toString()), msg},
+                methodName: "ft_transfer_call",
+                args: {receiver_id, amount: typeof amount === 'string' ? amount : utils.format.parseNearAmount(amount.toString()), msg},
                 gas: DEFAULT_GAS,
                 deposit: "1",
             }
