@@ -111,10 +111,10 @@ export default function Navbar() {
               _hover={{ textDecoration: "none" }}
             >
               <WhiteButton>
-                <Box minW="30px">
+                NFT
+                <Box minW="30px" ml="6px">
                   <Img src={thunderIcon} alt="" width="24px" height="24px" />
                 </Box>
-                NFT
               </WhiteButton>
             </Link>
             <Link
@@ -124,7 +124,8 @@ export default function Navbar() {
               _hover={{ textDecoration: "none" }}
             >
               <WhiteButton>
-                <Box minW="30px">
+                Swap
+                <Box minW="30px" ml="10px">
                   <Img
                     bg="#6495ed70"
                     border="#6495ed70 2px solid"
@@ -136,7 +137,6 @@ export default function Navbar() {
                     height="24px"
                   />
                 </Box>
-                Swap
               </WhiteButton>
             </Link>
           </Stack>

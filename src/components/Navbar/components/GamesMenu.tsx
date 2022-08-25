@@ -8,9 +8,9 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Text,
 } from "@chakra-ui/react";
-import paletteIcon from "../../../assets/palette-icon.svg";
-import checkersIcon from "../../../assets/checkers-icon.svg";
+import checkersIcon from "../../../assets/checkers-icon.png";
 import gamepadIcon from "../../../assets/gamepad-icon.svg";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
 
@@ -24,7 +24,7 @@ export default function GamesMenu() {
         borderRadius="full"
         rightIcon={<ChevronDownIcon />}
       >
-        Games
+        Play
       </MenuButton>
       <MenuList minWidth="auto">
         <MenuItem
@@ -35,10 +35,10 @@ export default function GamesMenu() {
           _active={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
           _focus={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
         >
-          <Box minW="30px">
-            <Img src={paletteIcon} alt="" width="24px" height="24px" />
-          </Box>
           Draw
+          <Text fontSize="1.2em" ml="8px">
+            🎨
+          </Text>
         </MenuItem>
         <MenuItem
           as={Link}
@@ -48,10 +48,10 @@ export default function GamesMenu() {
           _active={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
           _focus={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
         >
-          <Box minW="30px">
-            <Img src={cheddarIcon} alt="" width="24px" height="24px" />
-          </Box>
           CoinFlip
+          <Box minW="30px" ml="8px">
+            <Img src={cheddarIcon} alt="" width="30px" height="30px" />
+          </Box>
         </MenuItem>
         <MenuItem
           as={Link}
@@ -61,10 +61,10 @@ export default function GamesMenu() {
           _active={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
           _focus={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
         >
-          <Box minW="30px">
+          Checkers
+          <Box minW="30px" ml="10px">
             <Img src={checkersIcon} alt="" width="24px" height="24px" />
           </Box>
-          Checkers
         </MenuItem>
         <MenuItem
           as={Link}
@@ -74,10 +74,10 @@ export default function GamesMenu() {
           _active={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
           _focus={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
         >
-          <Box minW="30px">
+          VrFarm
+          <Box minW="30px" ml="10px">
             <Img src={gamepadIcon} alt="" width="24px" height="24px" />
           </Box>
-          VrFarm
         </MenuItem>
       </MenuList>
     </Menu>

@@ -4,18 +4,12 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Badge,
   Box,
   Flex,
-  FormControl,
-  FormLabel,
-  Input,
   Text,
 } from "@chakra-ui/react";
-import React from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { useContractParams } from "../../../hooks/useContractParams";
-import { PurpleButton } from "../../../shared/components/PurpleButton";
 import { YellowButton } from "../../../shared/components/YellowButton";
 import WaitingList from "./WaitingList";
 import WaitingListForm from "./WaitingListForm";

@@ -11,10 +11,10 @@ import {
   IconButton,
   Img,
   Link,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import paletteIcon from "../../../assets/palette-icon.svg";
-import checkersIcon from "../../../assets/checkers-icon.svg";
+import checkersIcon from "../../../assets/checkers-icon.png";
 import gamepadIcon from "../../../assets/gamepad-icon.svg";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import thunderIcon from "../../../assets/thunder-icon.svg";
@@ -57,10 +57,10 @@ export function DrawerMenu() {
                 _active={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
                 _focus={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
               >
-                <Box minW="30px">
+                NFT
+                <Box minW="30px" ml="5px">
                   <Img src={thunderIcon} alt="" width="24px" height="24px" />
                 </Box>
-                NFT
               </Link>
               <Link
                 p="16px 24px"
@@ -71,10 +71,19 @@ export function DrawerMenu() {
                 _active={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
                 _focus={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
               >
-                <Box minW="30px">
-                  <Img src={swapIcon} alt="" width="24px" height="24px" />
-                </Box>
                 Swap
+                <Box minW="30px" ml="10px">
+                  <Img
+                    bg="#6495ed70"
+                    border="#6495ed70 2px solid"
+                    padding="1px"
+                    borderRadius="full"
+                    src={swapIcon}
+                    alt=""
+                    width="24px"
+                    height="24px"
+                  />
+                </Box>
               </Link>
               <Link
                 p="16px 24px"
@@ -85,10 +94,10 @@ export function DrawerMenu() {
                 _active={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
                 _focus={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
               >
-                <Box minW="30px">
-                  <Img src={paletteIcon} alt="" width="24px" height="24px" />
-                </Box>
                 Draw
+                <Text fontSize="1.2em" ml="8px">
+                  🎨
+                </Text>
               </Link>
               <Link
                 p="16px 24px"
@@ -99,10 +108,10 @@ export function DrawerMenu() {
                 _active={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
                 _focus={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
               >
-                <Box minW="30px">
+                CoinFlip
+                <Box minW="30px" ml="8px">
                   <Img src={cheddarIcon} alt="" width="24px" height="24px" />
                 </Box>
-                CoinFlip
               </Link>
               <Link
                 p="16px 24px"
@@ -113,10 +122,10 @@ export function DrawerMenu() {
                 _active={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
                 _focus={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
               >
-                <Box minW="30px">
+                Checkers
+                <Box minW="30px" ml="10px">
                   <Img src={checkersIcon} alt="" width="24px" height="24px" />
                 </Box>
-                Checkers
               </Link>
               <Link
                 p="16px 24px"
@@ -127,10 +136,10 @@ export function DrawerMenu() {
                 _active={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
                 _focus={{ textDecoration: "none", boxShadow: "0 0 0 0 #0000" }}
               >
-                <Box minW="30px">
+                VrFarm
+                <Box minW="30px" ml="10px">
                   <Img src={gamepadIcon} alt="" width="24px" height="24px" />
                 </Box>
-                VrFarm
               </Link>
             </Box>
           </DrawerBody>
