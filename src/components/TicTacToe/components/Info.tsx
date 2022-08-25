@@ -22,6 +22,8 @@ import WaitingListForm from "./WaitingListForm";
 
 export default function Info() {
   const walletSelector = useWalletSelector();
+  const query = useContractParams();
+  console.log(query);
   // walletSelector.ticTacToeLogic
   //   ?.getAvailableGames()
   //   .then((data) => console.log(data));
