@@ -14,14 +14,24 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
+import { useContractParams } from "../../../hooks/useContractParams";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
 import { YellowButton } from "../../../shared/components/YellowButton";
+import WaitingList from "./WaitingList";
+import WaitingListForm from "./WaitingListForm";
 
 export default function Info() {
   const walletSelector = useWalletSelector();
-
+  // walletSelector.ticTacToeLogic
+  //   ?.getAvailableGames()
+  //   .then((data) => console.log(data));
+  // walletSelector.tictactoeContract
+  //   ?.get_contract_params()
+  //   .then((data) => console.log(data));
+  //.then((data) => walletSelector.ticTacToeLogic?.acceptChallenge(data[0]));
   const handleOnClick = async () => {
-    // walletSelector.ticTacToeLogic?.play(4, 1, 1)
+    // walletSelector.ticTacToeLogic?.bet(1);
+    // walletSelector.ticTacToeLogic?.play(4, 1, 1);
     // walletSelector.ticTacToeLogic?.play(["oreos.testnet", {token_id: "near", deposit: '1000000000000000000000000', opponent_id: null, referrer_id: null}])
     if (walletSelector.selector.isSignedIn() && walletSelector.wallet) {
       walletSelector.wallet.signOut();
@@ -36,7 +46,7 @@ export default function Info() {
           <Text as="h2" textAlign="center" fontSize="1.2em" fontWeight="700">
             Cheddar TicTacToe
           </Text>
-          {walletSelector.selector.isSignedIn() ? (
+          {!walletSelector.selector.isSignedIn() && (
             <Flex
               flexDirection="column"
               rowGap={2}
@@ -46,117 +56,14 @@ export default function Info() {
               alignItems="center"
               p="12px 16px"
             >
-              <Text>
-                Connected as{" "}
-                <Badge borderRadius="full" p="2px 5px" colorScheme="purple">
-                  {walletSelector.accountId?.slice(0, 14) + "..."}
-                </Badge>
-              </Text>
-              <YellowButton
-                onClick={handleOnClick}
-                colorScheme="yellow"
-                borderRadius="full"
-                bg="yellowCheddar"
-                _focus={{
-                  boxShadow: "0 0 0 0 #0000",
-                }}
-              >
-                Disconnect
-              </YellowButton>
-            </Flex>
-          ) : (
-            <Flex
-              bg="#eee"
-              borderRadius="8px"
-              justifyContent="space-between"
-              alignItems="center"
-              p="12px 16px"
-            >
               <Text>Connect with NEAR account</Text>
               <YellowButton onClick={handleOnClick}>Connect</YellowButton>
             </Flex>
           )}
         </Flex>
       </Box>
-      {walletSelector.selector.isSignedIn() && (
-        <>
-          <AccordionItem bg="#fffc">
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="center">
-                  <Text
-                    as="h2"
-                    textAlign="center"
-                    fontSize="1.1em"
-                    fontWeight="700"
-                  >
-                    Availble Players
-                  </Text>
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <Flex
-                bg="#eee"
-                borderRadius="8px"
-                justifyContent="center"
-                alignItems="center"
-                p="12px 16px"
-              >
-                <Text>No Players Availble. Be The First!</Text>
-              </Flex>
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem bg="#fffc">
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="center">
-                  <Text
-                    as="h2"
-                    textAlign="center"
-                    fontSize="1.1em"
-                    fontWeight="700"
-                  >
-                    Join Waiting List
-                  </Text>
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel
-              pb={4}
-              bg="#eee"
-              borderRadius="8px"
-              justifyContent="space-between"
-              alignItems="center"
-              m="12px 16px"
-            >
-              <FormControl mb="10px">
-                <Flex justifyContent="center" alignItems="center">
-                  <FormLabel textAlign="right" w="100px">
-                    My&nbsp;Bid:
-                  </FormLabel>
-                  <Input type="text" w="100px" mr="10px" bg="white" />
-                  <Text w="100px">NEAR</Text>
-                </Flex>
-              </FormControl>
-              <FormControl mb="10px">
-                <Flex justifyContent="center" alignItems="center">
-                  <FormLabel textAlign="right" w="100px">
-                    Cheddar&nbsp;Bid:
-                  </FormLabel>
-                  <Input type="text" w="100px" mr="10px" bg="white" />
-                  <Text w="100px">CHEDDAR</Text>
-                </Flex>
-              </FormControl>
-              <Flex justifyContent="center">
-                <PurpleButton>Join Waiting List</PurpleButton>
-              </Flex>
-            </AccordionPanel>
-          </AccordionItem>
-        </>
-      )}
+      <WaitingList />
+      {walletSelector.selector.isSignedIn() && <WaitingListForm />}
 
       <AccordionItem bg="#fffc" borderRadius="0 0 8px 8px">
         <h2>
