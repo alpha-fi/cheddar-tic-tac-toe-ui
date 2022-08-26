@@ -17,7 +17,6 @@ import { PurpleButton } from "../../../shared/components/PurpleButton";
 
 export default function WaitingListForm() {
   const [nearInput, setNearInput] = useState("0");
-  const [cheddarInput, setCheddarInput] = useState("0");
   const [withCheddar, setWithCheddar] = useState(false);
   const walletSelector = useWalletSelector();
 
@@ -68,7 +67,7 @@ export default function WaitingListForm() {
             />
             <Select maxW="130px" bg="#fffb" onChange={handleSelectChange}>
               <option>NEAR</option>
-              <option>CHEDDAR</option>
+              <option disabled>CHEDDAR</option>
             </Select>
           </Flex>
         </FormControl>

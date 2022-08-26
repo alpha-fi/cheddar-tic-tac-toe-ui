@@ -1,5 +1,5 @@
 import { Box, Img } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import mouseIcon from "../../../assets/mouse-icon.svg";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import { useQuery } from "react-query";
@@ -18,16 +18,17 @@ type Props = {
   };
 };
 
-const initialTiles = [
+const initialTiles: ("O" | "X" | null)[][] = [
   [null, null, null],
   [null, null, null],
   [null, null, null],
 ];
 
 export function BoardSquare({ column, row, squareSize }: Props) {
+  const [tiles, settiles] = useState(initialTiles);
   const walletSelector = useWalletSelector();
   const { data } = useQuery<GameParams>("contractParams");
-  const tiles = data?.active_game?.[1].tiles || initialTiles;
+  const dataTiles = data?.active_game?.[1].tiles || initialTiles;
   const currentPlayer = data?.active_game?.[1].current_player.account_id;
   const border = "5px solid";
   const borderColor = "purpleCheddar";
@@ -35,8 +36,8 @@ export function BoardSquare({ column, row, squareSize }: Props) {
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     console.log(e.currentTarget.id);
     if (
-      tiles &&
-      tiles[row][column] === null &&
+      dataTiles &&
+      dataTiles[row][column] === null &&
       currentPlayer === walletSelector.accountId
     ) {
       const gameId = parseInt(data?.active_game?.[0]!);
@@ -44,6 +45,12 @@ export function BoardSquare({ column, row, squareSize }: Props) {
       walletSelector.ticTacToeLogic?.play(gameId, row, column);
     }
   };
+
+  useEffect(() => {
+    if (data?.active_game) {
+      settiles(dataTiles);
+    }
+  }, [dataTiles, data?.active_game]);
 
   return (
     <Box
@@ -56,7 +63,7 @@ export function BoardSquare({ column, row, squareSize }: Props) {
       borderColor={borderColor}
     >
       <Box
-        cursor="pointer"
+        cursor={currentPlayer === walletSelector.accountId ? "pointer" : "auto"}
         id={`r${row}c${column}`}
         w="100%"
         h="100%"
