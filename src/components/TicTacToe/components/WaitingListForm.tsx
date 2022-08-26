@@ -20,12 +20,21 @@ export default function WaitingListForm() {
   const [withCheddar, setWithCheddar] = useState(false);
   const walletSelector = useWalletSelector();
 
+  const params = new URLSearchParams(window.location.search);
+
+  const referral = params.get("r") ?? undefined;
+  console.log(referral);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNearInput(e.target.value);
   };
 
   const handleOnClick = () => {
-    walletSelector.ticTacToeLogic?.bet(parseInt(nearInput), withCheddar);
+    walletSelector.ticTacToeLogic?.bet(
+      parseInt(nearInput),
+      withCheddar,
+      referral
+    );
   };
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === "NEAR") {
