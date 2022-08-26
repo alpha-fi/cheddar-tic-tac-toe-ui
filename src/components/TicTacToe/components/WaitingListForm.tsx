@@ -8,6 +8,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Select,
   Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -17,17 +18,22 @@ import { PurpleButton } from "../../../shared/components/PurpleButton";
 export default function WaitingListForm() {
   const [nearInput, setNearInput] = useState("0");
   const [cheddarInput, setCheddarInput] = useState("0");
+  const [withCheddar, setWithCheddar] = useState(false);
   const walletSelector = useWalletSelector();
-  const handleNearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNearInput(e.target.value);
   };
 
-  const handleCheddarInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCheddarInput(e.target.value);
-  };
-
   const handleOnClick = () => {
-    walletSelector.ticTacToeLogic?.bet(parseInt(nearInput));
+    walletSelector.ticTacToeLogic?.bet(parseInt(nearInput), withCheddar);
+  };
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value === "NEAR") {
+      setWithCheddar(false);
+    } else if (e.target.value === "CHEDDAR") {
+      setWithCheddar(true);
+    }
   };
   return (
     <AccordionItem bg="#fffc">
@@ -51,35 +57,19 @@ export default function WaitingListForm() {
       >
         <FormControl mb="10px">
           <Flex justifyContent="center" alignItems="center">
-            <FormLabel textAlign="right" w="100px">
-              My&nbsp;Bid:
-            </FormLabel>
+            <FormLabel textAlign="right">My&nbsp;Bid:</FormLabel>
             <Input
-              onChange={handleNearInput}
+              onChange={handleInputChange}
               value={nearInput}
               type="text"
               w="100px"
               mr="10px"
               bg="white"
             />
-            <Text w="100px">NEAR</Text>
-          </Flex>
-        </FormControl>
-        <FormControl mb="10px">
-          <Flex justifyContent="center" alignItems="center">
-            <FormLabel textAlign="right" w="100px">
-              Cheddar&nbsp;Bid:
-            </FormLabel>
-            <Input
-              disabled
-              onChange={handleCheddarInput}
-              value={cheddarInput}
-              type="text"
-              w="100px"
-              mr="10px"
-              bg="white"
-            />
-            <Text w="100px">CHEDDAR</Text>
+            <Select maxW="130px" bg="#fffb" onChange={handleSelectChange}>
+              <option>NEAR</option>
+              <option>CHEDDAR</option>
+            </Select>
           </Flex>
         </FormControl>
         <Flex justifyContent="center">
