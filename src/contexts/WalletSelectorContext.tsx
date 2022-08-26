@@ -26,7 +26,7 @@ declare global {
   }
 }
 
-interface WalletSelectorContextValue {
+export interface WalletSelectorContextValue {
   selector: WalletSelector;
   modal: WalletSelectorModal;
   accounts: Array<AccountState>;
@@ -52,7 +52,9 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
   const [cheddarContract, setCheddarContract] = useState<NEP141 | null>(null);
   const [tictactoeContract, setTictactoeContract] =
     useState<TicTacToeContract | null>(null);
-  const [ticTacToeLogic, setTicTacToeLogic] = useState<TicTacToeLogic | null>(null);
+  const [ticTacToeLogic, setTicTacToeLogic] = useState<TicTacToeLogic | null>(
+    null
+  );
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
@@ -87,14 +89,14 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
     }
 
     const selectorWallet = new SelectorWallet(selector);
-    const tttContract = new TicTacToeContract(selectorWallet)
+    const tttContract = new TicTacToeContract(selectorWallet);
     setTictactoeContract(tttContract);
     const cheddarContractId = getEnv(ENV).cheddarContractId;
-    const cContract = new NEP141(selectorWallet, cheddarContractId)
+    const cContract = new NEP141(selectorWallet, cheddarContractId);
     setCheddarContract(cContract);
 
-    const a = new TicTacToeLogic(tttContract, cContract)
-    setTicTacToeLogic(new TicTacToeLogic(tttContract, cContract))
+    const a = new TicTacToeLogic(tttContract, cContract);
+    setTicTacToeLogic(new TicTacToeLogic(tttContract, cContract));
 
     // a.bet(1, true)
 
@@ -129,7 +131,7 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
         wallet,
         cheddarContract,
         tictactoeContract,
-        ticTacToeLogic
+        ticTacToeLogic,
       }}
     >
       {children}

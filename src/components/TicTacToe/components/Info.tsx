@@ -6,6 +6,7 @@ import {
   AccordionPanel,
   Box,
   Flex,
+  Img,
   Text,
 } from "@chakra-ui/react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
@@ -13,26 +14,26 @@ import { useContractParams } from "../../../hooks/useContractParams";
 import { YellowButton } from "../../../shared/components/YellowButton";
 import WaitingList from "./WaitingList";
 import WaitingListForm from "./WaitingListForm";
+import mouseIcon from "../../../assets/mouse-icon.svg";
+import cheddarIcon from "../../../assets/cheddar-icon.svg";
+import { utils } from "near-api-js";
+import { PurpleButton } from "../../../shared/components/PurpleButton";
 
 export default function Info() {
   const walletSelector = useWalletSelector();
-  const query = useContractParams();
-  console.log(query);
-  // walletSelector.ticTacToeLogic
-  //   ?.getAvailableGames()
-  //   .then((data) => console.log(data));
-  // walletSelector.tictactoeContract
-  //   ?.get_contract_params()
-  //   .then((data) => console.log(data));
-  //.then((data) => walletSelector.ticTacToeLogic?.acceptChallenge(data[0]));
+  const { data } = useContractParams();
+  console.log(data);
+
   const handleOnClick = async () => {
-    // walletSelector.ticTacToeLogic?.bet(1);
-    // walletSelector.ticTacToeLogic?.play(4, 1, 1);
-    // walletSelector.ticTacToeLogic?.play(["oreos.testnet", {token_id: "near", deposit: '1000000000000000000000000', opponent_id: null, referrer_id: null}])
     if (walletSelector.selector.isSignedIn() && walletSelector.wallet) {
       walletSelector.wallet.signOut();
     } else {
       walletSelector.modal.show();
+    }
+  };
+  const handleGiveUp = () => {
+    if (data?.active_game?.[0]) {
+      walletSelector.ticTacToeLogic?.giveUp(parseInt(data.active_game[0]));
     }
   };
   return (
@@ -58,8 +59,74 @@ export default function Info() {
           )}
         </Flex>
       </Box>
-      <WaitingList />
-      {walletSelector.selector.isSignedIn() && <WaitingListForm />}
+      {!data?.active_game && <WaitingList />}
+      {walletSelector.selector.isSignedIn() && !data?.active_game && (
+        <WaitingListForm />
+      )}
+      {data?.active_game && (
+        <AccordionItem bg="#fffc" borderRadius="0 0 8px 8px">
+          <h2>
+            <AccordionButton>
+              <Box flex="1" textAlign="center">
+                <Text
+                  as="h2"
+                  textAlign="center"
+                  fontSize="1.1em"
+                  fontWeight="700"
+                >
+                  Actual Game
+                </Text>
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel
+            pb={4}
+            bg="#eee"
+            borderRadius="8px"
+            justifyContent="space-between"
+            alignItems="center"
+            m="12px 16px"
+          >
+            <Flex>
+              <Text>Current: </Text>
+              <Box minW="30px" ml="10px">
+                <Img
+                  src={
+                    data.active_game[1].current_player.piece === "O"
+                      ? cheddarIcon
+                      : mouseIcon
+                  }
+                  alt=""
+                  width="24px"
+                  height="24px"
+                />
+              </Box>
+              <Text>
+                {data.active_game[1].current_player.account_id ===
+                walletSelector.accountId
+                  ? "You"
+                  : data.active_game[1].current_player.account_id}
+              </Text>
+            </Flex>
+            <Text>
+              reward:{" "}
+              {utils.format.formatNearAmount(
+                data.active_game[1].reward.balance
+              )}{" "}
+              {data.active_game[1].reward.token_id}
+            </Text>
+            <Text>initiated at: {data.active_game[1].initiated_at_sec}</Text>
+            <Text>
+              last turn: {data.active_game[1].last_turn_timestamp_sec}
+            </Text>
+            <Text>
+              current duration: {data.active_game[1].current_duration_sec}
+            </Text>
+            <PurpleButton onClick={handleGiveUp}>Give Up</PurpleButton>
+          </AccordionPanel>
+        </AccordionItem>
+      )}
 
       <AccordionItem bg="#fffc" borderRadius="0 0 8px 8px">
         <h2>

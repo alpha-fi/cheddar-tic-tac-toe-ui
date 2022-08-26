@@ -10,9 +10,25 @@ import {
   Input,
   Text,
 } from "@chakra-ui/react";
+import { useState } from "react";
+import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
 
 export default function WaitingListForm() {
+  const [nearInput, setNearInput] = useState("0");
+  const [cheddarInput, setCheddarInput] = useState("0");
+  const walletSelector = useWalletSelector();
+  const handleNearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNearInput(e.target.value);
+  };
+
+  const handleCheddarInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCheddarInput(e.target.value);
+  };
+
+  const handleOnClick = () => {
+    walletSelector.ticTacToeLogic?.bet(parseInt(nearInput));
+  };
   return (
     <AccordionItem bg="#fffc">
       <h2>
@@ -38,7 +54,14 @@ export default function WaitingListForm() {
             <FormLabel textAlign="right" w="100px">
               My&nbsp;Bid:
             </FormLabel>
-            <Input type="text" w="100px" mr="10px" bg="white" />
+            <Input
+              onChange={handleNearInput}
+              value={nearInput}
+              type="text"
+              w="100px"
+              mr="10px"
+              bg="white"
+            />
             <Text w="100px">NEAR</Text>
           </Flex>
         </FormControl>
@@ -47,12 +70,20 @@ export default function WaitingListForm() {
             <FormLabel textAlign="right" w="100px">
               Cheddar&nbsp;Bid:
             </FormLabel>
-            <Input type="text" w="100px" mr="10px" bg="white" />
+            <Input
+              disabled
+              onChange={handleCheddarInput}
+              value={cheddarInput}
+              type="text"
+              w="100px"
+              mr="10px"
+              bg="white"
+            />
             <Text w="100px">CHEDDAR</Text>
           </Flex>
         </FormControl>
         <Flex justifyContent="center">
-          <PurpleButton>Join Waiting List</PurpleButton>
+          <PurpleButton onClick={handleOnClick}>Join Waiting List</PurpleButton>
         </Flex>
       </AccordionPanel>
     </AccordionItem>

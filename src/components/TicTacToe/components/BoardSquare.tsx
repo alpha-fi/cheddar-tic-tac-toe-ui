@@ -1,7 +1,10 @@
 import { Box, Img } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React from "react";
 import mouseIcon from "../../../assets/mouse-icon.svg";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
+import { useQuery } from "react-query";
+import { GameParams } from "../../../hooks/useContractParams";
+import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 
 type Props = {
   column: number;
@@ -15,15 +18,33 @@ type Props = {
   };
 };
 
+const initialTiles = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
+
 export function BoardSquare({ column, row, squareSize }: Props) {
-  const [showIcon, setShowIcon] = useState(false);
+  const walletSelector = useWalletSelector();
+  const { data } = useQuery<GameParams>("contractParams");
+  const tiles = data?.active_game?.[1].tiles || initialTiles;
+  const currentPlayer = data?.active_game?.[1].current_player.account_id;
   const border = "5px solid";
   const borderColor = "purpleCheddar";
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     console.log(e.currentTarget.id);
-    setShowIcon((prevState) => !prevState);
+    if (
+      tiles &&
+      tiles[row][column] === null &&
+      currentPlayer === walletSelector.accountId
+    ) {
+      const gameId = parseInt(data?.active_game?.[0]!);
+      console.log("play(", gameId, row, column, ")");
+      walletSelector.ticTacToeLogic?.play(gameId, row, column);
+    }
   };
+
   return (
     <Box
       height={squareSize}
@@ -41,9 +62,9 @@ export function BoardSquare({ column, row, squareSize }: Props) {
         h="100%"
         onClick={handleClick}
       >
-        {showIcon && (
+        {tiles[row][column] && (
           <Img
-            src={(column + row) % 2 === 0 ? mouseIcon : cheddarIcon}
+            src={tiles[row][column] === "O" ? cheddarIcon : mouseIcon}
             alt=""
             width="100%"
             height="100%"
