@@ -40,7 +40,7 @@ export default function WaitingList() {
         <AccordionButton>
           <Box flex="1" textAlign="center">
             <Text as="h2" textAlign="center" fontSize="1.1em" fontWeight="700">
-              Availble Players
+              Available Players
             </Text>
           </Box>
           <AccordionIcon />

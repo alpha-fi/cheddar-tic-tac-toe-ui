@@ -52,7 +52,7 @@ export const useContractParams = () => {
     ["contractParams"],
     () => getParams(walletSelector),
     {
-      refetchInterval: 10000,
+      refetchInterval: 4000,
       cacheTime: 0,
       notifyOnChangePropsExclusions: ["isStale", "isRefetching", "isFetching"],
     }

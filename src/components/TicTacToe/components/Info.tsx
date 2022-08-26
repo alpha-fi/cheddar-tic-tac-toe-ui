@@ -152,21 +152,10 @@ export default function Info() {
           alignItems="center"
           m="12px 16px"
         >
-          How to play: Click a checkbox "double jump" on the top of the board
-          before every double jump. Shift key makes the same trick. Set a bid
-          and join waiting list or select an available player to start the game.
-          The winner takes the pot. Invite a friend to get a 10% referral bonus
-          from his rewards. Hold shift button (or check a checkbox) to perform a
-          double jump. Release a shift button before a final move. If you spent
-          more than an hour, your opponent may stop the game and get the reward.
-          Service fee is 10%, referral reward is half of the service fee.
-          Various game stats are storing onchain. General Game Rules (source)
-          Capturing is mandatory. Double capturing is not mandatory. Uncrowned
-          pieces (men) move one step diagonally forwards, and capture an
-          opponent's piece. Men can jump only forwards. Multiple enemy pieces
-          can be captured in a single turn provided this is done by successive
-          jumps made by a single piece. Kings acquires additional powers
-          including the ability to move backwards and capture backwards.
+          How to play: There is a 3 by 3 grid. One player will be (add Cheddar mouse) and the other (add cheddar logo).
+          You will take turns to put your marks. The first player to get 3 of their marks in a row 
+          (vertical, horizontal or diagonally) is the winner. When all 9 squares are full, the game is over. If no player
+          has 3 markes in a row, the game ends in a tie
         </AccordionPanel>
       </AccordionItem>
     </Accordion>

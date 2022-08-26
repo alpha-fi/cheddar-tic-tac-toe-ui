@@ -158,6 +158,10 @@ export class TicTacToeLogic {
     wallet.signAndSendTransactions({ transactions });
   }
 
+  stopGame(gameId: number) {
+    this.ticTacToeContract.stop_game(gameId)
+  }
+
   private generateTransaction(
     contractId: string,
     actions: Action[]

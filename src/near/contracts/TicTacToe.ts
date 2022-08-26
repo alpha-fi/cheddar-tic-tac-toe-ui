@@ -131,4 +131,8 @@ export class TicTacToeContract {
       "1"
     );
   }
+
+  stop_game(game_id: number): void {
+    this.wallet.call(this.contractId, "stop_game", {game_id})
+  }
 }
