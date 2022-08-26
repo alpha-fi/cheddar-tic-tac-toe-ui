@@ -159,7 +159,7 @@ export class TicTacToeLogic {
   }
 
   stopGame(gameId: number) {
-    this.ticTacToeContract.stop_game(gameId)
+    this.ticTacToeContract.stop_game(gameId);
   }
 
   private generateTransaction(

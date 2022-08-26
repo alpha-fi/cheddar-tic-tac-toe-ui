@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Button,
   Flex,
   Img,
   Text,
@@ -34,6 +35,12 @@ export default function Info() {
   const handleGiveUp = () => {
     if (data?.active_game?.[0]) {
       walletSelector.ticTacToeLogic?.giveUp(parseInt(data.active_game[0]));
+    }
+  };
+
+  const handleStopGame = () => {
+    if (data?.active_game?.[0]) {
+      walletSelector.ticTacToeLogic?.stopGame(parseInt(data.active_game[0]));
     }
   };
   return (
@@ -116,14 +123,37 @@ export default function Info() {
               )}{" "}
               {data.active_game[1].reward.token_id}
             </Text>
-            <Text>initiated at: {data.active_game[1].initiated_at_sec}</Text>
             <Text>
-              last turn: {data.active_game[1].last_turn_timestamp_sec}
+              initiated at:{" "}
+              {
+                new Date(data.active_game[1].initiated_at_sec * 1000)
+                  .toString()
+                  .split(" ")[4]
+              }
+            </Text>
+            <Text>
+              last turn:{" "}
+              {data.active_game[1].last_turn_timestamp_sec === 0
+                ? new Date(data.active_game[1].initiated_at_sec * 1000)
+                    .toString()
+                    .split(" ")[4]
+                : new Date(data.active_game[1].last_turn_timestamp_sec * 1000)
+                    .toString()
+                    .split(" ")[4]}
             </Text>
             <Text>
               current duration: {data.active_game[1].current_duration_sec}
             </Text>
-            <PurpleButton onClick={handleGiveUp}>Give Up</PurpleButton>
+            <Flex gap={3}>
+              <PurpleButton onClick={handleGiveUp}>Give Up</PurpleButton>
+              <Button
+                colorScheme="red"
+                borderRadius="full"
+                onClick={handleStopGame}
+              >
+                Stop Game
+              </Button>
+            </Flex>
           </AccordionPanel>
         </AccordionItem>
       )}
@@ -152,10 +182,12 @@ export default function Info() {
           alignItems="center"
           m="12px 16px"
         >
-          How to play: There is a 3 by 3 grid. One player will be (add Cheddar mouse) and the other (add cheddar logo).
-          You will take turns to put your marks. The first player to get 3 of their marks in a row 
-          (vertical, horizontal or diagonally) is the winner. When all 9 squares are full, the game is over. If no player
-          has 3 markes in a row, the game ends in a tie
+          How to play: There is a 3 by 3 grid. One player will be (add Cheddar
+          mouse) and the other (add cheddar logo). You will take turns to put
+          your marks. The first player to get 3 of their marks in a row
+          (vertical, horizontal or diagonally) is the winner. When all 9 squares
+          are full, the game is over. If no player has 3 markes in a row, the
+          game ends in a tie
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
