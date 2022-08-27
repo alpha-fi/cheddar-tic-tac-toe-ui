@@ -87,6 +87,10 @@ export class TicTacToeLogic {
     wallet.signAndSendTransactions({ transactions });
   }
 
+  async removeBet(): Promise<any> {
+    return this.ticTacToeContract.make_unavailable();
+  }
+
   /**
    * This method won't validate if it's a valid move. It should be done first on the frontend
    * @param gameId Current game

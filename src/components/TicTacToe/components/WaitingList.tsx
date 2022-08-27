@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Button,
   Flex,
   Grid,
   Text,
@@ -34,6 +35,10 @@ export default function WaitingList() {
     ]);
   };
 
+  const handleRemoveButton = () => {
+    walletSelector.ticTacToeLogic?.removeBet();
+  };
+
   return (
     <AccordionItem bg="#fffc">
       <h2>
@@ -60,18 +65,29 @@ export default function WaitingList() {
                 {utils.format.formatNearAmount(player[1].deposit)}{" "}
                 {player[1].token_id}
               </Text>
-              <PurpleButton
-                size="sm"
-                onClick={() =>
-                  handleAcceptButton(
-                    player[0],
-                    player[1].token_id,
-                    player[1].deposit
-                  )
-                }
-              >
-                Play!
-              </PurpleButton>
+              {player[0] !== walletSelector.accountId ? (
+                <PurpleButton
+                  size="sm"
+                  onClick={() =>
+                    handleAcceptButton(
+                      player[0],
+                      player[1].token_id,
+                      player[1].deposit
+                    )
+                  }
+                >
+                  Play!
+                </PurpleButton>
+              ) : (
+                <Button
+                  colorScheme="red"
+                  size="sm"
+                  borderRadius="full"
+                  onClick={handleRemoveButton}
+                >
+                  Remove
+                </Button>
+              )}
             </Grid>
           ))}
       </AccordionPanel>
