@@ -7,6 +7,16 @@ export interface StorageBalance {
     available: string
 }
 
+export interface FtMetadata {
+    spec: string
+    name: string
+    symbol: string
+    icon: string
+    reference: string | null
+    reference_hash: string | null
+    decimals: number
+}
+
 const DEFAULT_GAS = "40000000000000" // 40 Tgas
 
 export class NEP141 {
@@ -15,6 +25,10 @@ export class NEP141 {
 
     ft_balance_of(): Promise<string> {
         return this.wallet.view(this.contractId, "ft_balance_of", {account_id: this.wallet.getAccountId()})
+    }
+
+    ft_metadata(): Promise<FtMetadata> {
+        return this.wallet.view(this.contractId, "ft_metadata", {})
     }
 
     ft_transfer_call(receiver_id: string, amount: string, msg?: string): Promise<string> {

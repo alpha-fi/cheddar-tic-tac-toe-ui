@@ -5,6 +5,7 @@ import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import { useQuery } from "react-query";
 import { GameParams } from "../../../hooks/useContractParams";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
+import { getTransactionLastResult } from "near-api-js/lib/providers";
 
 type Props = {
   column: number;
@@ -42,7 +43,7 @@ export function BoardSquare({ column, row, squareSize }: Props) {
     ) {
       const gameId = parseInt(data?.active_game?.[0]!);
       console.log("play(", gameId, row, column, ")");
-      walletSelector.ticTacToeLogic?.play(gameId, row, column);
+      walletSelector.ticTacToeLogic?.play(gameId, row, column).then(r => console.log("Playing", getTransactionLastResult(r)));
     }
   };
 

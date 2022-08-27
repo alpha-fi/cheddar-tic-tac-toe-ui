@@ -1,4 +1,4 @@
-import { Action } from "@near-wallet-selector/core";
+import { Action, FinalExecutionOutcome } from "@near-wallet-selector/core";
 import { utils } from "near-api-js";
 import { ENV, getEnv } from "../config";
 import { DEFAULT_GAS, SelectorWallet } from "../wallet/wallet-selector";
@@ -119,7 +119,7 @@ export class TicTacToeContract {
     return this.wallet.view(this.contractId, "get_contract_params", {});
   }
 
-  make_move(game_id: number, row: number, col: number): Promise<any> {
+  make_move(game_id: number, row: number, col: number): Promise<FinalExecutionOutcome> {
     return this.wallet.call(
       this.contractId,
       "make_move",

@@ -1,4 +1,4 @@
-import { Action, Transaction, Wallet } from "@near-wallet-selector/core";
+import { Action, FinalExecutionOutcome, Transaction, Wallet } from "@near-wallet-selector/core";
 import { NEP141, StorageBalance } from "../contracts/NEP141";
 import {
   AvailablePlayerConfig,
@@ -50,8 +50,8 @@ export class TicTacToeLogic {
         cheddarActions.push(storageDepositAction);
       }
       cheddarActions.push(ftTransferCallAction);
-      console.log(cheddarActions);
-      ticTacToeActions.push(this.ticTacToeContract.getMakeAvailableAction("1"));
+      // console.log(cheddarActions);
+      // ticTacToeActions.push(this.ticTacToeContract.getMakeAvailableAction("1"));
     } else {
       ticTacToeActions.push(
         this.ticTacToeContract.getMakeAvailableAction(
@@ -85,12 +85,14 @@ export class TicTacToeLogic {
           cheddarActions
         )
       );
-    transactions.push(
-      this.generateTransaction(
-        this.ticTacToeContract.contractId,
-        ticTacToeActions
-      )
-    );
+    if (ticTacToeActions.length > 0) {
+      transactions.push(
+        this.generateTransaction(
+          this.ticTacToeContract.contractId,
+          ticTacToeActions
+        )
+      );
+    }
     wallet.signAndSendTransactions({ transactions });
   }
 
@@ -104,8 +106,8 @@ export class TicTacToeLogic {
    * @param row
    * @param column
    */
-  play(gameId: number, row: number, column: number): void {
-    this.ticTacToeContract.make_move(gameId, row, column);
+  play(gameId: number, row: number, column: number): Promise<FinalExecutionOutcome> {
+    return this.ticTacToeContract.make_move(gameId, row, column);
   }
 
   giveUp(gameId: number): Promise<any> {
@@ -142,7 +144,9 @@ export class TicTacToeLogic {
     );
     if (cheddarBetActions.length > 0)
       cheddarActions = cheddarActions.concat(cheddarBetActions);
-    ticTacToeActions = ticTacToeActions.concat(ticTacToeBetActions);
+
+    if (ticTacToeBetActions.length > 0)
+      ticTacToeActions = ticTacToeActions.concat(ticTacToeBetActions);
     console.log("Bet", cheddarBetActions, ticTacToeBetActions);
 
     // Accept challenge
