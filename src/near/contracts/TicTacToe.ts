@@ -49,12 +49,25 @@ export class TicTacToeContract {
     });
   }
 
-  getMakeAvailableAction(deposit: number | string): Action {
+  getMakeAvailableAction(
+    deposit: number | string,
+    referrer_id?: string,
+    opponent_id?: string
+  ): Action {
     return {
       type: "FunctionCall",
       params: {
         methodName: "make_available",
-        args: { game_config: {} },
+        args: {
+          game_config:
+            referrer_id && opponent_id
+              ? { referrer_id, opponent_id }
+              : referrer_id
+              ? { referrer_id }
+              : opponent_id
+              ? { opponent_id }
+              : {},
+        },
         gas: DEFAULT_GAS,
         deposit:
           typeof deposit === "string"

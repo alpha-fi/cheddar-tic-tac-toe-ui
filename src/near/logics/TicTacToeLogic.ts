@@ -31,7 +31,8 @@ export class TicTacToeLogic {
   private async getBetActions(
     amount: number | string,
     withCheddar?: boolean,
-    referrerId?: string
+    referrerId?: string,
+    opponentId?: string
   ): Promise<{ cheddarActions: Action[]; ticTacToeActions: Action[] }> {
     const cheddarActions: Action[] = [];
     const ticTacToeActions: Action[] = [];
@@ -53,7 +54,11 @@ export class TicTacToeLogic {
       ticTacToeActions.push(this.ticTacToeContract.getMakeAvailableAction("1"));
     } else {
       ticTacToeActions.push(
-        this.ticTacToeContract.getMakeAvailableAction(amount)
+        this.ticTacToeContract.getMakeAvailableAction(
+          amount,
+          referrerId,
+          opponentId
+        )
       );
     }
     return { cheddarActions, ticTacToeActions };
@@ -62,13 +67,15 @@ export class TicTacToeLogic {
   async bet(
     amount: number,
     withCheddar?: boolean,
-    referrerId?: string
+    referrerId?: string,
+    opponentId?: string
   ): Promise<any> {
     const wallet: Wallet = await this.actualWallet;
     const { cheddarActions, ticTacToeActions } = await this.getBetActions(
       amount,
       withCheddar,
-      referrerId
+      referrerId,
+      opponentId
     );
     const transactions: Transaction[] = [];
     if (cheddarActions.length > 0)
