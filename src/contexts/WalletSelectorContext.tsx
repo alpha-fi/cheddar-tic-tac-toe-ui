@@ -18,6 +18,8 @@ import { TicTacToeContract } from "../near/contracts/TicTacToe";
 import { SelectorWallet } from "../near/wallet/wallet-selector";
 import { ENV, getEnv } from "../near/config";
 import { TicTacToeLogic } from "../near/logics/TicTacToeLogic";
+import nearIcon from "../assets/near_icon.png";
+import senderIcon from "../assets/sender-icon.png";
 
 declare global {
   interface Window {
@@ -60,7 +62,11 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
     const _selector = await setupWalletSelector({
       network: nearConfig.networkId as NetworkId,
       debug: true,
-      modules: [setupNearWallet(), setupSender(), setupNearWalletCustom()],
+      modules: [
+        setupNearWallet({ iconUrl: nearIcon }),
+        setupSender({ iconUrl: senderIcon }),
+        setupNearWalletCustom(),
+      ],
     });
     const _modal = setupModal(_selector, { contractId: contractName });
     const state = _selector.store.getState();
