@@ -17,7 +17,7 @@ export default function WaitingList() {
   const walletSelector = useWalletSelector();
 
   return (
-    <AccordionItem bg="#fffc">
+    <AccordionItem bg="#fffc" borderRadius="8px 8px 0 0">
       <h2>
         <AccordionButton>
           <Box flex="1" textAlign="center">

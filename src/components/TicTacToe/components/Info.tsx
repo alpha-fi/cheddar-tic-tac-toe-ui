@@ -12,7 +12,6 @@ import {
 } from "@chakra-ui/react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { useContractParams } from "../../../hooks/useContractParams";
-import { YellowButton } from "../../../shared/components/YellowButton";
 import WaitingList from "./WaitingList";
 import WaitingListForm from "./WaitingListForm";
 import mouseIcon from "../../../assets/mouse-icon.svg";
@@ -25,15 +24,7 @@ export default function Info() {
   const [timeLeft, settimeLeft] = useState<number | undefined>();
   const walletSelector = useWalletSelector();
   const { data } = useContractParams();
-  console.log(data);
 
-  const handleOnClick = async () => {
-    if (walletSelector.selector.isSignedIn() && walletSelector.wallet) {
-      walletSelector.wallet.signOut();
-    } else {
-      walletSelector.modal.show();
-    }
-  };
   const handleGiveUp = () => {
     if (data?.active_game?.[0]) {
       walletSelector.ticTacToeLogic?.giveUp(parseInt(data.active_game[0]));
@@ -71,28 +62,7 @@ export default function Info() {
   });
 
   return (
-    <Accordion defaultIndex={walletSelector.selector.isSignedIn() ? [0] : []}>
-      <Box flex="1" p="8px 16px" bg="#fffc" borderRadius="8px 8px 0 0">
-        <Flex flexDirection="column">
-          <Text as="h2" textAlign="center" fontSize="1.2em" fontWeight="700">
-            Cheddar TicTacToe
-          </Text>
-          {!walletSelector.selector.isSignedIn() && (
-            <Flex
-              flexDirection="column"
-              rowGap={2}
-              bg="#eee"
-              borderRadius="8px"
-              justifyContent="center"
-              alignItems="center"
-              p="12px 16px"
-            >
-              <Text>Connect with NEAR account</Text>
-              <YellowButton onClick={handleOnClick}>Connect</YellowButton>
-            </Flex>
-          )}
-        </Flex>
-      </Box>
+    <Accordion defaultIndex={[0]}>
       {!data?.active_game && <WaitingList />}
       {walletSelector.selector.isSignedIn() &&
         !data?.active_game &&
@@ -101,7 +71,7 @@ export default function Info() {
           (player) => player[0] === walletSelector.accountId
         ).length === 0 && <WaitingListForm />}
       {data?.active_game && (
-        <AccordionItem bg="#fffc">
+        <AccordionItem bg="#fffc" borderRadius="8px 8px 0 0">
           <h2>
             <AccordionButton>
               <Box flex="1" textAlign="center">

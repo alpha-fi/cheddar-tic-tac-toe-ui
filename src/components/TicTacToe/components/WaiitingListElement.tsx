@@ -21,15 +21,19 @@ export function WaiitingListElement({ player }: Props) {
     deposit: string,
     referrer_id?: string
   ) => {
-    walletSelector.ticTacToeLogic?.acceptChallenge([
-      address,
-      {
-        token_id: token_id,
-        deposit: deposit,
-        opponent_id: null,
-        referrer_id: referrer_id ?? null,
-      },
-    ]);
+    if (walletSelector.selector.isSignedIn()) {
+      walletSelector.ticTacToeLogic?.acceptChallenge([
+        address,
+        {
+          token_id: token_id,
+          deposit: deposit,
+          opponent_id: null,
+          referrer_id: referrer_id ?? null,
+        },
+      ]);
+    } else {
+      walletSelector.modal.show();
+    }
   };
 
   const handleRemoveButton = () => {
