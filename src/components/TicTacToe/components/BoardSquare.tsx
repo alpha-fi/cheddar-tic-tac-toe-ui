@@ -1,11 +1,13 @@
-import { Box, Img } from "@chakra-ui/react";
+import { Box, Flex, Spinner } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import mouseIcon from "../../../assets/mouse-icon.svg";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import { useQuery } from "react-query";
 import { GameParams } from "../../../hooks/useContractParams";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { getTransactionLastResult } from "near-api-js/lib/providers";
+import { CircleIcon } from "../../../shared/components/CircleIcon";
+import { CrossIcon } from "../../../shared/components/CrossIcon";
+import { GameParamsState } from "../containers/TicTacToe";
 
 type Props = {
   column: number;
@@ -17,19 +19,21 @@ type Props = {
     lg: string;
     "2xl": string;
   };
+  activeGameParams: GameParamsState;
+  setActiveGameParams: React.Dispatch<React.SetStateAction<GameParamsState>>;
 };
 
-const initialTiles: ("O" | "X" | null)[][] = [
-  [null, null, null],
-  [null, null, null],
-  [null, null, null],
-];
-
-export function BoardSquare({ column, row, squareSize }: Props) {
-  const [tiles, settiles] = useState(initialTiles);
+export function BoardSquare({
+  column,
+  row,
+  squareSize,
+  activeGameParams,
+  setActiveGameParams,
+}: Props) {
+  const [loading, setLoading] = useState(false);
   const walletSelector = useWalletSelector();
   const { data } = useQuery<GameParams>("contractParams");
-  const dataTiles = data?.active_game?.[1].tiles || initialTiles;
+  const dataTiles = data?.active_game?.[1].tiles || activeGameParams.tiles;
   const currentPlayer = data?.active_game?.[1].current_player.account_id;
   const border = "5px solid";
   const borderColor = "purpleCheddar";
@@ -43,15 +47,61 @@ export function BoardSquare({ column, row, squareSize }: Props) {
     ) {
       const gameId = parseInt(data?.active_game?.[0]!);
       console.log("play(", gameId, row, column, ")");
-      walletSelector.ticTacToeLogic?.play(gameId, row, column).then(r => console.log("Playing", getTransactionLastResult(r)));
+      setLoading(true);
+      try {
+        walletSelector.ticTacToeLogic?.play(gameId, row, column).then((r) => {
+          setLoading(false);
+          if (r.receipts_outcome[0].outcome.logs.length > 0) {
+            if (r.receipts_outcome[0].outcome.logs[0].includes("expired")) {
+              setActiveGameParams((prev) => {
+                return {
+                  ...prev,
+                  winnerId: prev.opponentId,
+                  winningAction: "your turn time has expired",
+                  winnerReward: r.receipts_outcome[0].outcome.logs[1]
+                    .split(":")[1]
+                    .trim(),
+                };
+              });
+            } else {
+              setActiveGameParams((prev) => {
+                return {
+                  ...prev,
+                  tiles: getTransactionLastResult(r),
+                  winnerId: walletSelector.accountId,
+                  winningAction: "You did 3 in a row",
+                  winnerReward: r.receipts_outcome[0].outcome.logs[1]
+                    .split(":")[1]
+                    .trim(),
+                };
+              });
+            }
+          } else {
+            setActiveGameParams((prev) => {
+              return {
+                ...prev,
+                tiles: getTransactionLastResult(r),
+              };
+            });
+          }
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
   useEffect(() => {
     if (data?.active_game) {
-      settiles(dataTiles);
+      setActiveGameParams((prev) => {
+        return {
+          ...prev,
+          tiles: dataTiles,
+        };
+      });
+      setLoading(false);
     }
-  }, [dataTiles, data?.active_game]);
+  }, [dataTiles, data?.active_game, setActiveGameParams]);
 
   return (
     <Box
@@ -70,13 +120,24 @@ export function BoardSquare({ column, row, squareSize }: Props) {
         h="100%"
         onClick={handleClick}
       >
-        {tiles[row][column] && (
-          <Img
-            src={tiles[row][column] === "O" ? cheddarIcon : mouseIcon}
-            alt=""
-            width="100%"
-            height="100%"
-          />
+        {activeGameParams.tiles[row][column] && (
+          <Flex justifyContent="center" alignItems="center" h="100%">
+            {activeGameParams.tiles[row][column] === "O" ? (
+              <CircleIcon w="75%" h="75%" color="yellowCheddar" />
+            ) : (
+              <CrossIcon w="65%" h="65%" color="yellowCheddar" />
+            )}
+          </Flex>
+        )}
+        {loading && (
+          <Flex h="100%" justifyContent="center" alignItems="center">
+            <Spinner
+              thickness="0px"
+              speed="0.65s"
+              size="xl"
+              bgImage={cheddarIcon}
+            />
+          </Flex>
         )}
       </Box>
     </Box>

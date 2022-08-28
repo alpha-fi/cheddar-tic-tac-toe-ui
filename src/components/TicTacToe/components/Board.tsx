@@ -1,12 +1,19 @@
 import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
+import { GameParamsState } from "../containers/TicTacToe";
 import { BoardSquare } from "./BoardSquare";
 
 type Props = {
   isLandscape: boolean;
+  activeGameParams: GameParamsState;
+  setActiveGameParams: React.Dispatch<React.SetStateAction<GameParamsState>>;
 };
 
-export default function Board({ isLandscape }: Props) {
+export default function Board({
+  isLandscape,
+  activeGameParams,
+  setActiveGameParams,
+}: Props) {
   const boardSize = {
     base: "260px",
     sm: isLandscape ? "260px" : "350px",
@@ -33,19 +40,73 @@ export default function Board({ isLandscape }: Props) {
         borderColor="purpleCheddar"
       >
         <Flex>
-          <BoardSquare row={0} column={0} squareSize={squareSize} />
-          <BoardSquare row={0} column={1} squareSize={squareSize} />
-          <BoardSquare row={0} column={2} squareSize={squareSize} />
+          <BoardSquare
+            row={0}
+            column={0}
+            squareSize={squareSize}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
+          <BoardSquare
+            row={0}
+            column={1}
+            squareSize={squareSize}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
+          <BoardSquare
+            row={0}
+            column={2}
+            squareSize={squareSize}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
         </Flex>
         <Flex>
-          <BoardSquare row={1} column={0} squareSize={squareSize} />
-          <BoardSquare row={1} column={1} squareSize={squareSize} />
-          <BoardSquare row={1} column={2} squareSize={squareSize} />
+          <BoardSquare
+            row={1}
+            column={0}
+            squareSize={squareSize}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
+          <BoardSquare
+            row={1}
+            column={1}
+            squareSize={squareSize}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
+          <BoardSquare
+            row={1}
+            column={2}
+            squareSize={squareSize}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
         </Flex>
         <Flex>
-          <BoardSquare row={2} column={0} squareSize={squareSize} />
-          <BoardSquare row={2} column={1} squareSize={squareSize} />
-          <BoardSquare row={2} column={2} squareSize={squareSize} />
+          <BoardSquare
+            row={2}
+            column={0}
+            squareSize={squareSize}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
+          <BoardSquare
+            row={2}
+            column={1}
+            squareSize={squareSize}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
+          <BoardSquare
+            row={2}
+            column={2}
+            squareSize={squareSize}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
         </Flex>
       </Box>
     </Flex>
