@@ -22,12 +22,12 @@ export interface Stats {
   games_played: number;
   victories_num: number;
   penalties_num: number;
-  total_reward: string[];
-  total_affiliate_reward: string[];
+  total_reward: [string, number][];
+  total_affiliate_reward: [string, number][];
 }
 
 export interface PenaltiesStats {
-  penalties_sum: number
+  penalties_sum: number;
 }
 
 export class TicTacToeContract {
@@ -123,7 +123,11 @@ export class TicTacToeContract {
     return this.wallet.view(this.contractId, "get_contract_params", {});
   }
 
-  make_move(game_id: number, row: number, col: number): Promise<FinalExecutionOutcome> {
+  make_move(
+    game_id: number,
+    row: number,
+    col: number
+  ): Promise<FinalExecutionOutcome> {
     return this.wallet.call(
       this.contractId,
       "make_move",
@@ -150,18 +154,26 @@ export class TicTacToeContract {
   }
 
   stop_game(game_id: number): Promise<FinalExecutionOutcome> {
-    return this.wallet.call(this.contractId, "stop_game", { game_id }, undefined, "0");
+    return this.wallet.call(
+      this.contractId,
+      "stop_game",
+      { game_id },
+      undefined,
+      "0"
+    );
   }
 
   get_user_penalties(): Promise<PenaltiesStats> {
-    return this.wallet.view(this.contractId, "get_user_penalties", {account_id: this.wallet.getAccountId()})
+    return this.wallet.view(this.contractId, "get_user_penalties", {
+      account_id: this.wallet.getAccountId(),
+    });
   }
 
   get_total_stats_num(): Promise<number> {
-    return this.wallet.view(this.contractId, "get_total_stats_num", {})
+    return this.wallet.view(this.contractId, "get_total_stats_num", {});
   }
 
   get_accounts_played(): Promise<string[]> {
-    return this.wallet.view(this.contractId, "get_accounts_played", {})
+    return this.wallet.view(this.contractId, "get_accounts_played", {});
   }
 }

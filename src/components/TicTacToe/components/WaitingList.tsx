@@ -72,8 +72,7 @@ export default function WaitingList() {
           data.available_players
             .filter(
               (player) =>
-                player[0] !== walletSelector.accountId &&
-                player[1].opponent_id !== walletSelector.accountId
+                player[0] !== walletSelector.accountId && !player[1].opponent_id
             )
             .map((player, index) => (
               <Box key={player[0]}>

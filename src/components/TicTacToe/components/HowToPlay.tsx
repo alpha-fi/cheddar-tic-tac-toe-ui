@@ -30,7 +30,7 @@ export function HowToPlay() {
         alignItems="center"
         m="12px 16px"
       >
-        <Text></Text>- There is a 3 by 3 grid.
+        <Text>- There is a 3 by 3 grid.</Text>
         <Text>
           - One player will be{" "}
           <CircleIcon

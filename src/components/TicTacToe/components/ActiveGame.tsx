@@ -19,6 +19,7 @@ import {
   GameParamsState,
   initialActiveGameParamsState,
 } from "../containers/TicTacToe";
+import TokenName from "./TokenName";
 
 type Props = {
   data: GameParams | undefined;
@@ -112,7 +113,9 @@ export function ActiveGame({
                 <Text>
                   Total Reward:{" "}
                   {utils.format.formatNearAmount(activeGameParams.winnerReward)}{" "}
-                  {activeGameParams.rewardTokenId}
+                  {activeGameParams.rewardTokenId && (
+                    <TokenName tokenId={activeGameParams.rewardTokenId} />
+                  )}
                 </Text>
               )}
             <Button
@@ -170,7 +173,7 @@ export function ActiveGame({
               {utils.format.formatNearAmount(
                 data.active_game[1].reward.balance
               )}{" "}
-              {data.active_game[1].reward.token_id}
+              {<TokenName tokenId={data.active_game[1].reward.token_id} />}
             </Text>
             {data.active_game[1].current_player.account_id ===
               walletSelector.accountId && (

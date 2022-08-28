@@ -1,18 +1,15 @@
 import { Button, Grid, Text } from "@chakra-ui/react";
 import { utils } from "near-api-js";
-import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { NEP141 } from "../../../near/contracts/NEP141";
 import { AvailablePlayerConfig } from "../../../near/contracts/TicTacToe";
-import { SelectorWallet } from "../../../near/wallet/wallet-selector";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
+import TokenName from "./TokenName";
 
 type Props = {
   player: [string, AvailablePlayerConfig];
 };
 
 export function WaiitingListElement({ player }: Props) {
-  const [tokenName, setTokenName] = useState("");
   const walletSelector = useWalletSelector();
 
   const handleAcceptButton = (
@@ -40,17 +37,6 @@ export function WaiitingListElement({ player }: Props) {
     walletSelector.ticTacToeLogic?.removeBet();
   };
 
-  useEffect(() => {
-    if (player[1].token_id === "near") {
-      setTokenName("Near");
-    } else {
-      const selectorWallet = new SelectorWallet(walletSelector.selector);
-      new NEP141(selectorWallet, player[1].token_id)
-        .ft_metadata()
-        .then((resp) => setTokenName(resp.name));
-    }
-  }, [player, walletSelector.selector]);
-
   return (
     <Grid
       mb="5px"
@@ -61,7 +47,8 @@ export function WaiitingListElement({ player }: Props) {
     >
       <Text textAlign="initial">{player[0]}</Text>
       <Text textAlign="initial">
-        {utils.format.formatNearAmount(player[1].deposit)} {tokenName}
+        {utils.format.formatNearAmount(player[1].deposit)}{" "}
+        {<TokenName tokenId={player[1].token_id} />}
       </Text>
       {player[0] !== walletSelector.accountId ? (
         <PurpleButton

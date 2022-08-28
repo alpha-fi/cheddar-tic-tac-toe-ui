@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { ActiveGame } from "./ActiveGame";
 import { HowToPlay } from "./HowToPlay";
 import { GameParamsState } from "../containers/TicTacToe";
+import { UserStats } from "./Stats";
 
 type Props = {
   data: GameParams | undefined;
@@ -48,7 +49,7 @@ export default function Info({
           setActiveGameParams={setActiveGameParams}
         />
       )}
-
+      {walletSelector.selector.isSignedIn() && <UserStats data={data} />}
       <HowToPlay />
     </Accordion>
   );

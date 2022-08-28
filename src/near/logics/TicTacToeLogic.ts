@@ -1,8 +1,14 @@
-import { Action, FinalExecutionOutcome, Transaction, Wallet } from "@near-wallet-selector/core";
+import {
+  Action,
+  FinalExecutionOutcome,
+  Transaction,
+  Wallet,
+} from "@near-wallet-selector/core";
 import { NEP141, StorageBalance } from "../contracts/NEP141";
 import {
   AvailablePlayerConfig,
   ContractParams,
+  Stats,
   TicTacToeContract,
 } from "../contracts/TicTacToe";
 
@@ -28,6 +34,9 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.get_contract_params();
   }
 
+  getPlayerStats(): Promise<Stats> {
+    return this.ticTacToeContract.get_stats();
+  }
   private async getBetActions(
     amount: number | string,
     withCheddar?: boolean,
@@ -106,7 +115,11 @@ export class TicTacToeLogic {
    * @param row
    * @param column
    */
-  play(gameId: number, row: number, column: number): Promise<FinalExecutionOutcome> {
+  play(
+    gameId: number,
+    row: number,
+    column: number
+  ): Promise<FinalExecutionOutcome> {
     return this.ticTacToeContract.make_move(gameId, row, column);
   }
 

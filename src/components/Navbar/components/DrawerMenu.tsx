@@ -34,8 +34,7 @@ export function DrawerMenu() {
         aria-label="Menu"
         border="1px solid #3334"
         colorScheme="yellow"
-        bg="white"
-        _hover={{ bg: "yellowCheddar" }}
+        bg="yellowCheddar"
       />
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
