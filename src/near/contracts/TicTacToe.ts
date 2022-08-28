@@ -26,6 +26,10 @@ export interface Stats {
   total_affiliate_reward: string[];
 }
 
+export interface PenaltiesStats {
+  penalties_sum: number
+}
+
 export class TicTacToeContract {
   contractId: string;
 
@@ -145,7 +149,19 @@ export class TicTacToeContract {
     );
   }
 
-  stop_game(game_id: number): void {
-    this.wallet.call(this.contractId, "stop_game", { game_id }, undefined, "0");
+  stop_game(game_id: number): Promise<FinalExecutionOutcome> {
+    return this.wallet.call(this.contractId, "stop_game", { game_id }, undefined, "0");
+  }
+
+  get_user_penalties(): Promise<PenaltiesStats> {
+    return this.wallet.view(this.contractId, "get_user_penalties", {account_id: this.wallet.getAccountId()})
+  }
+
+  get_total_stats_num(): Promise<number> {
+    return this.wallet.view(this.contractId, "get_total_stats_num", {})
+  }
+
+  get_accounts_played(): Promise<string[]> {
+    return this.wallet.view(this.contractId, "get_accounts_played", {})
   }
 }
