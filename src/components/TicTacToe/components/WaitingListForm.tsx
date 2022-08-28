@@ -16,7 +16,8 @@ import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
 
 export default function WaitingListForm() {
-  const [nearInput, setNearInput] = useState("0");
+  const [bidInput, setBidInput] = useState("0");
+  const [opponentInput, setOpponentInput] = useState("");
   const [withCheddar, setWithCheddar] = useState(false);
   const walletSelector = useWalletSelector();
 
@@ -25,17 +26,25 @@ export default function WaitingListForm() {
   const referral = params.get("r") ?? undefined;
   console.log(referral);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNearInput(e.target.value);
+  const handleBidInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBidInput(e.target.value);
+  };
+
+  const handleOpponentInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setOpponentInput(e.target.value);
   };
 
   const handleOnClick = () => {
     walletSelector.ticTacToeLogic?.bet(
-      parseInt(nearInput),
+      parseInt(bidInput),
       withCheddar,
-      referral
+      referral,
+      opponentInput.trim() === "" ? undefined : opponentInput
     );
   };
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === "NEAR") {
       setWithCheddar(false);
@@ -43,6 +52,7 @@ export default function WaitingListForm() {
       setWithCheddar(true);
     }
   };
+
   return (
     <AccordionItem bg="#fffc">
       <h2>
@@ -67,17 +77,30 @@ export default function WaitingListForm() {
           <Flex justifyContent="center" alignItems="center">
             <FormLabel textAlign="right">My&nbsp;Bid:</FormLabel>
             <Input
-              onChange={handleInputChange}
-              value={nearInput}
-              type="text"
+              onChange={handleBidInputChange}
+              value={bidInput}
+              type="number"
               w="100px"
               mr="10px"
               bg="white"
             />
             <Select maxW="130px" bg="#fffb" onChange={handleSelectChange}>
               <option>NEAR</option>
-              <option disabled>CHEDDAR</option>
+              <option>CHEDDAR</option>
             </Select>
+          </Flex>
+        </FormControl>
+        <FormControl mb="10px">
+          <Flex justifyContent="center" alignItems="center">
+            <FormLabel textAlign="right">Opponent (optional):</FormLabel>
+            <Input
+              onChange={handleOpponentInputChange}
+              value={opponentInput}
+              type="text"
+              w="200px"
+              mr="10px"
+              bg="white"
+            />
           </Flex>
         </FormControl>
         <Flex justifyContent="center">

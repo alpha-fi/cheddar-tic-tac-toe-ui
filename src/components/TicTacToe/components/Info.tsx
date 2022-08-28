@@ -94,9 +94,12 @@ export default function Info() {
         </Flex>
       </Box>
       {!data?.active_game && <WaitingList />}
-      {walletSelector.selector.isSignedIn() && !data?.active_game && (
-        <WaitingListForm />
-      )}
+      {walletSelector.selector.isSignedIn() &&
+        !data?.active_game &&
+        data?.available_players &&
+        data.available_players.filter(
+          (player) => player[0] === walletSelector.accountId
+        ).length === 0 && <WaitingListForm />}
       {data?.active_game && (
         <AccordionItem bg="#fffc">
           <h2>

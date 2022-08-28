@@ -4,40 +4,17 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
-  Button,
   Flex,
-  Grid,
+  Spacer,
   Text,
 } from "@chakra-ui/react";
-import { utils } from "near-api-js";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { useContractParams } from "../../../hooks/useContractParams";
-import { PurpleButton } from "../../../shared/components/PurpleButton";
+import { WaiitingListElement } from "./WaiitingListElement";
 
 export default function WaitingList() {
   const { data } = useContractParams();
   const walletSelector = useWalletSelector();
-
-  const handleAcceptButton = (
-    address: string,
-    token_id: string,
-    deposit: string,
-    referrer_id?: string
-  ) => {
-    walletSelector.ticTacToeLogic?.acceptChallenge([
-      address,
-      {
-        token_id: token_id,
-        deposit: deposit,
-        opponent_id: null,
-        referrer_id: referrer_id ?? null,
-      },
-    ]);
-  };
-
-  const handleRemoveButton = () => {
-    walletSelector.ticTacToeLogic?.removeBet();
-  };
 
   return (
     <AccordionItem bg="#fffc">
@@ -57,39 +34,57 @@ export default function WaitingList() {
             <Text>No Players Availble. Be The First!</Text>
           </Flex>
         )}
+        {walletSelector.selector.isSignedIn() &&
+          data?.available_players &&
+          data.available_players
+            .filter((player) => player[0] === walletSelector.accountId)
+            .map((player, index) => (
+              <Box key={player[0]}>
+                {index === 0 && (
+                  <Text fontWeight={700} mb="10px" textAlign="center">
+                    My Challenge
+                  </Text>
+                )}
+                <WaiitingListElement player={player} />
+                <Spacer mb="30px" />
+              </Box>
+            ))}
+        {walletSelector.selector.isSignedIn() &&
+          data?.available_players &&
+          data.available_players
+            .filter(
+              (player) =>
+                player[0] !== walletSelector.accountId &&
+                player[1].opponent_id === walletSelector.accountId
+            )
+            .map((player, index) => (
+              <Box key={player[0]}>
+                {index === 0 && (
+                  <Text fontWeight={700} mb="10px" textAlign="center">
+                    Private Challenges
+                  </Text>
+                )}
+                <WaiitingListElement player={player} />
+                <Spacer mb="30px" />
+              </Box>
+            ))}
         {data?.available_players &&
-          data.available_players.map((player) => (
-            <Grid key={player[0]} templateColumns="2.5fr 2fr 1fr">
-              <Text textAlign="initial">{player[0]}</Text>
-              <Text textAlign="initial">
-                {utils.format.formatNearAmount(player[1].deposit)}{" "}
-                {player[1].token_id}
-              </Text>
-              {player[0] !== walletSelector.accountId ? (
-                <PurpleButton
-                  size="sm"
-                  onClick={() =>
-                    handleAcceptButton(
-                      player[0],
-                      player[1].token_id,
-                      player[1].deposit
-                    )
-                  }
-                >
-                  Play!
-                </PurpleButton>
-              ) : (
-                <Button
-                  colorScheme="red"
-                  size="sm"
-                  borderRadius="full"
-                  onClick={handleRemoveButton}
-                >
-                  Remove
-                </Button>
-              )}
-            </Grid>
-          ))}
+          data.available_players
+            .filter(
+              (player) =>
+                player[0] !== walletSelector.accountId &&
+                player[1].opponent_id !== walletSelector.accountId
+            )
+            .map((player, index) => (
+              <Box key={player[0]}>
+                {index === 0 && (
+                  <Text fontWeight={700} mb="10px" textAlign="center">
+                    Public Challenges
+                  </Text>
+                )}
+                <WaiitingListElement player={player} />
+              </Box>
+            ))}
       </AccordionPanel>
     </AccordionItem>
   );
