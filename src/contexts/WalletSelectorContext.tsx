@@ -18,7 +18,7 @@ import { TicTacToeContract } from "../near/contracts/TicTacToe";
 import { SelectorWallet } from "../near/wallet/wallet-selector";
 import { ENV, getEnv } from "../near/config";
 import { TicTacToeLogic } from "../near/logics/TicTacToeLogic";
-import nearIcon from "../assets/near_icon.png";
+import nearIcon from "../assets/near-icon.png";
 import senderIcon from "../assets/sender-icon.png";
 
 declare global {
