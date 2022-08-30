@@ -34,9 +34,22 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.get_contract_params();
   }
 
+  getDisplayableAccountId(
+    startLength?: number,
+    endLength?: number,
+    maxLength?: number
+  ): string {
+    return this.ticTacToeContract.getDisplayableAccountId(
+      startLength,
+      endLength,
+      maxLength
+    );
+  }
+
   getPlayerStats(): Promise<Stats> {
     return this.ticTacToeContract.get_stats();
   }
+
   private async getBetActions(
     amount: number | string,
     withCheddar?: boolean,

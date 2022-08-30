@@ -105,6 +105,18 @@ export class TicTacToeContract {
     };
   }
 
+  getDisplayableAccountId(
+    startLength?: number,
+    endLength?: number,
+    maxLength?: number
+  ): string {
+    return this.wallet.getDisplayableAccountId(
+      startLength,
+      endLength,
+      maxLength
+    );
+  }
+
   /**
    *
    * @returns An array with the available players. On each element of the array you can find

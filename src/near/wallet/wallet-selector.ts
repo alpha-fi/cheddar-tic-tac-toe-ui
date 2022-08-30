@@ -11,7 +11,7 @@ import { nearConfig } from "../../near";
 //import { U128String } from "../util";
 import { WalletInterface } from "./wallet-interface";
 
-export const DEFAULT_GAS = "40000000000000" // 40 Tgas
+export const DEFAULT_GAS = "40000000000000"; // 40 Tgas
 
 export class SelectorWallet implements WalletInterface {
   walletSelector: WalletSelector;
@@ -28,10 +28,14 @@ export class SelectorWallet implements WalletInterface {
       ?.accountId!;
   }
 
-  getDisplayableAccountId(): string {
+  getDisplayableAccountId(
+    startLength = 10,
+    endLength = 10,
+    maxLength = 22
+  ): string {
     const accountId = this.getAccountId();
-    return accountId.length > 22
-      ? accountId.slice(0, 10) + ".." + accountId.slice(-10)
+    return accountId.length > maxLength
+      ? accountId.slice(0, startLength) + ".." + accountId.slice(0 - endLength)
       : accountId;
   }
 
