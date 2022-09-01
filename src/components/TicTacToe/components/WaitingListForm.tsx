@@ -24,7 +24,6 @@ export default function WaitingListForm() {
   const params = new URLSearchParams(window.location.search);
 
   const referral = params.get("r") ?? undefined;
-  console.log(referral);
 
   const handleBidInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBidInput(e.target.value);

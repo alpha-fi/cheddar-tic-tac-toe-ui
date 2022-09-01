@@ -1,7 +1,12 @@
 import { Box, Flex } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { GameParamsState } from "../containers/TicTacToe";
 import { BoardSquare } from "./BoardSquare";
+
+export type LoadingSquare = {
+  row: number | null;
+  column: number | null;
+};
 
 type Props = {
   isLandscape: boolean;
@@ -14,6 +19,10 @@ export default function Board({
   activeGameParams,
   setActiveGameParams,
 }: Props) {
+  const [loadingSquare, setLoadingSquare] = useState<LoadingSquare>({
+    row: null,
+    column: null,
+  });
   const boardSize = {
     base: "260px",
     sm: isLandscape ? "260px" : "350px",
@@ -46,6 +55,8 @@ export default function Board({
             squareSize={squareSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
+            loadingSquare={loadingSquare}
+            setLoadingSquare={setLoadingSquare}
           />
           <BoardSquare
             row={0}
@@ -53,6 +64,8 @@ export default function Board({
             squareSize={squareSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
+            loadingSquare={loadingSquare}
+            setLoadingSquare={setLoadingSquare}
           />
           <BoardSquare
             row={0}
@@ -60,6 +73,8 @@ export default function Board({
             squareSize={squareSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
+            loadingSquare={loadingSquare}
+            setLoadingSquare={setLoadingSquare}
           />
         </Flex>
         <Flex>
@@ -69,6 +84,8 @@ export default function Board({
             squareSize={squareSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
+            loadingSquare={loadingSquare}
+            setLoadingSquare={setLoadingSquare}
           />
           <BoardSquare
             row={1}
@@ -76,6 +93,8 @@ export default function Board({
             squareSize={squareSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
+            loadingSquare={loadingSquare}
+            setLoadingSquare={setLoadingSquare}
           />
           <BoardSquare
             row={1}
@@ -83,6 +102,8 @@ export default function Board({
             squareSize={squareSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
+            loadingSquare={loadingSquare}
+            setLoadingSquare={setLoadingSquare}
           />
         </Flex>
         <Flex>
@@ -92,6 +113,8 @@ export default function Board({
             squareSize={squareSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
+            loadingSquare={loadingSquare}
+            setLoadingSquare={setLoadingSquare}
           />
           <BoardSquare
             row={2}
@@ -99,6 +122,8 @@ export default function Board({
             squareSize={squareSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
+            loadingSquare={loadingSquare}
+            setLoadingSquare={setLoadingSquare}
           />
           <BoardSquare
             row={2}
@@ -106,6 +131,8 @@ export default function Board({
             squareSize={squareSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
+            loadingSquare={loadingSquare}
+            setLoadingSquare={setLoadingSquare}
           />
         </Flex>
       </Box>

@@ -33,22 +33,21 @@ export default function Info({
     }
   }, [data?.available_players, walletSelector.accountId]);
 
-  console.log(data);
   return (
     <Accordion defaultIndex={[0]}>
-      {!activeGameParams.gameId && <WaitingList />}
-
-      {walletSelector.selector.isSignedIn() &&
-        !activeGameParams.gameId &&
-        !haveOwnChallenge && <WaitingListForm />}
-
-      {activeGameParams.gameId && (
+      {activeGameParams.game_id && (
         <ActiveGame
           data={data}
           activeGameParams={activeGameParams}
           setActiveGameParams={setActiveGameParams}
         />
       )}
+      {!activeGameParams.game_id && <WaitingList />}
+
+      {walletSelector.selector.isSignedIn() &&
+        !activeGameParams.game_id &&
+        !haveOwnChallenge && <WaitingListForm />}
+
       {walletSelector.selector.isSignedIn() && <UserStats data={data} />}
       <HowToPlay />
     </Accordion>

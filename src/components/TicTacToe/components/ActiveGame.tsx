@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Flex,
+  Spinner,
   Text,
 } from "@chakra-ui/react";
 import { utils } from "near-api-js";
@@ -17,8 +18,9 @@ import { CrossIcon } from "../../../shared/components/CrossIcon";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
 import {
   GameParamsState,
-  initialActiveGameParamsState,
+  initialActiveGameParamsState2,
 } from "../containers/TicTacToe";
+import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import TokenName from "./TokenName";
 
 type Props = {
@@ -33,6 +35,7 @@ export function ActiveGame({
   setActiveGameParams,
 }: Props) {
   const [timeLeft, settimeLeft] = useState<number | undefined>();
+  const [loadingFinalizedGame, setLoadingFinalizedGame] = useState(false);
   const walletSelector = useWalletSelector();
 
   const handleGiveUp = () => {
@@ -48,10 +51,9 @@ export function ActiveGame({
   };
 
   const handleCloseGame = () => {
-    setActiveGameParams(initialActiveGameParamsState);
+    setActiveGameParams(initialActiveGameParamsState2);
   };
 
-  console.log(data?.active_game);
   useEffect(() => {
     let clearTimer: any;
     let secondsToEnd: number;
@@ -76,6 +78,39 @@ export function ActiveGame({
     return () => clearTimeout(clearTimer);
   });
 
+  useEffect(() => {
+    if (data && !data.active_game && activeGameParams.game_id) {
+      setLoadingFinalizedGame(true);
+      walletSelector.ticTacToeLogic
+        ?.getLastGames()
+        .then((resp) => {
+          const game = resp.find(
+            (item) => item[0].toString() === activeGameParams.game_id
+          );
+          if (game) {
+            setActiveGameParams((prev) => {
+              return {
+                ...prev,
+                game_result: {
+                  result: game[1].game_result === "Tie" ? "Tie" : "Win",
+                  winner_id: game[1].game_result.Win ?? "",
+                },
+                reward_or_tie_refund: game[1].reward_or_tie_refund,
+                board: game[1].board,
+              };
+            });
+          }
+        })
+        .catch((err) => console.error(err))
+        .finally(() => setLoadingFinalizedGame(false));
+    }
+  }, [
+    activeGameParams.game_id,
+    data,
+    setActiveGameParams,
+    walletSelector.ticTacToeLogic,
+  ]);
+
   return (
     <AccordionItem bg="#fffc" borderRadius="8px 8px 0 0">
       <h2>
@@ -96,28 +131,58 @@ export function ActiveGame({
         alignItems="center"
         m="12px 16px"
       >
-        {data && !data.active_game && (
-          <Flex flexDirection="column" alignItems="start">
-            {activeGameParams.winnerId && (
-              <Text>
-                {activeGameParams.winnerId !== walletSelector.accountId
-                  ? `${activeGameParams.winnerId} Win!`
-                  : "You Win!"}
-              </Text>
-            )}
-            {!activeGameParams.winnerId && <Text>Game Over!</Text>}
-            <Text>{activeGameParams.winningAction}</Text>
-
-            {activeGameParams.winnerReward &&
-              activeGameParams.winnerId !== walletSelector.accountId && (
-                <Text>
-                  Total Reward:{" "}
-                  {utils.format.formatNearAmount(activeGameParams.winnerReward)}{" "}
-                  {activeGameParams.rewardTokenId && (
-                    <TokenName tokenId={activeGameParams.rewardTokenId} />
-                  )}
-                </Text>
+        {loadingFinalizedGame && (
+          <Flex h="100%" justifyContent="center" alignItems="center">
+            <Spinner
+              thickness="0px"
+              speed="0.65s"
+              size="xl"
+              bgImage={cheddarIcon}
+            />
+          </Flex>
+        )}
+        {data && !data.active_game && activeGameParams.game_result.result && (
+          <Flex flexDirection="column" alignItems="center" rowGap={2}>
+            {activeGameParams.game_result.result === "Win" &&
+              activeGameParams.game_result.winner_id && (
+                <>
+                  <Text>
+                    {activeGameParams.game_result.winner_id ===
+                    walletSelector.accountId
+                      ? "You Are The Winner!"
+                      : `The Winner is ${activeGameParams.game_result.winner_id}`}
+                  </Text>
+                  <Text>
+                    Reward:{" "}
+                    {utils.format.formatNearAmount(
+                      activeGameParams.reward_or_tie_refund.balance!
+                    )}{" "}
+                    {
+                      <TokenName
+                        tokenId={
+                          activeGameParams.reward_or_tie_refund.token_id!
+                        }
+                      />
+                    }
+                  </Text>
+                </>
               )}
+            {activeGameParams.game_result.result === "Tie" && (
+              <>
+                <Text>Tied Game!</Text>
+                <Text>
+                  Refund:{" "}
+                  {utils.format.formatNearAmount(
+                    activeGameParams.reward_or_tie_refund.balance!
+                  )}{" "}
+                  {
+                    <TokenName
+                      tokenId={activeGameParams.reward_or_tie_refund.token_id!}
+                    />
+                  }
+                </Text>
+              </>
+            )}
             <Button
               size="sm"
               colorScheme="red"
@@ -129,7 +194,7 @@ export function ActiveGame({
           </Flex>
         )}
         {data && data.active_game && (
-          <>
+          <Flex flexDirection="column" alignItems="center" rowGap={2}>
             <Flex alignItems="center">
               <Text>Current: </Text>
               {data.active_game[1].current_player.piece === "O" ? (
@@ -169,16 +234,19 @@ export function ActiveGame({
               }
             </Text>
             <Text>
-              Reward:{" "}
+              Total Bet:{" "}
               {utils.format.formatNearAmount(
                 data.active_game[1].reward.balance
               )}{" "}
               {<TokenName tokenId={data.active_game[1].reward.token_id} />}
             </Text>
-            {data.active_game[1].current_player.account_id ===
-              walletSelector.accountId && (
-              <Text>Turn Seconds Left: {timeLeft}</Text>
-            )}
+            <Text>
+              {data.active_game[1].current_player.account_id ===
+              walletSelector.accountId
+                ? "Turn "
+                : "Opponent "}
+              Seconds Left: {timeLeft}
+            </Text>
             <Flex gap={3}>
               {data.active_game[1].current_player.account_id ===
                 walletSelector.accountId && (
@@ -186,12 +254,9 @@ export function ActiveGame({
                   Give Up
                 </PurpleButton>
               )}
-              {data.max_game_duration &&
+              {timeLeft === 0 &&
                 data.active_game[1].current_player.account_id !==
-                  walletSelector.accountId &&
-                Math.round(Date.now() / 1000) -
-                  data.active_game[1].initiated_at_sec >
-                  parseInt(data.max_game_duration) && (
+                  walletSelector.accountId && (
                   <Button
                     size="sm"
                     colorScheme="red"
@@ -202,7 +267,7 @@ export function ActiveGame({
                   </Button>
                 )}
             </Flex>
-          </>
+          </Flex>
         )}
       </AccordionPanel>
     </AccordionItem>

@@ -16,7 +16,16 @@ export interface ContractParams {
   service_fee_percentage: string;
   max_game_duration: string;
 }
-
+export interface FinalizedGame {
+  game_result: string | any;
+  player1: string;
+  player2: string;
+  reward_or_tie_refund: {
+    token_id: string;
+    balance: string;
+  };
+  board: ("O" | "X" | null)[][];
+}
 export interface Stats {
   referrer_id: string | null;
   games_played: number;
@@ -125,6 +134,10 @@ export class TicTacToeContract {
    */
   get_active_games(): Promise<any[]> {
     return this.wallet.view(this.contractId, "get_active_games", {});
+  }
+
+  get_last_games(): Promise<[number, FinalizedGame][]> {
+    return this.wallet.view(this.contractId, "get_last_games", {});
   }
 
   get_available_players(): Promise<[string, AvailablePlayerConfig][]> {

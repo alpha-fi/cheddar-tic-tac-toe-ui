@@ -8,6 +8,7 @@ import { NEP141, StorageBalance } from "../contracts/NEP141";
 import {
   AvailablePlayerConfig,
   ContractParams,
+  FinalizedGame,
   Stats,
   TicTacToeContract,
 } from "../contracts/TicTacToe";
@@ -44,6 +45,10 @@ export class TicTacToeLogic {
       endLength,
       maxLength
     );
+  }
+
+  getLastGames(): Promise<[number, FinalizedGame][]> {
+    return this.ticTacToeContract.get_last_games();
   }
 
   getPlayerStats(): Promise<Stats> {
