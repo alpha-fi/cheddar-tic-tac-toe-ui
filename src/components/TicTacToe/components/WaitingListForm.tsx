@@ -37,7 +37,7 @@ export default function WaitingListForm() {
 
   const handleOnClick = () => {
     walletSelector.ticTacToeLogic?.bet(
-      parseInt(bidInput),
+      parseFloat(bidInput),
       withCheddar,
       referral,
       opponentInput.trim() === "" ? undefined : opponentInput
