@@ -149,8 +149,9 @@ export class TicTacToeLogic {
     challenge: [string, AvailablePlayerConfig],
     referrerId?: string
   ): Promise<void> {
+    let ticTacToeActions1: Action[] = [];
     let cheddarActions: Action[] = [];
-    let ticTacToeActions: Action[] = [];
+    let ticTacToeActions2: Action[] = [];
     const wallet: Wallet = await this.actualWallet;
     const transactions: Transaction[] = [];
 
@@ -161,7 +162,7 @@ export class TicTacToeLogic {
         game[0] === this.cheddarContract.wallet.getAccountId()
     );
     if (isUserWaiting) {
-      ticTacToeActions.push(this.ticTacToeContract.getMakeUnavailableAction());
+      ticTacToeActions1.push(this.ticTacToeContract.getMakeUnavailableAction());
     }
 
     // Here user shouldn't have any bet, so it creates a bet that matches the desired game.
@@ -177,26 +178,35 @@ export class TicTacToeLogic {
       cheddarActions = cheddarActions.concat(cheddarBetActions);
 
     if (ticTacToeBetActions.length > 0)
-      ticTacToeActions = ticTacToeActions.concat(ticTacToeBetActions);
+      ticTacToeActions2 = ticTacToeActions2.concat(ticTacToeBetActions);
     console.log("Bet", cheddarBetActions, ticTacToeBetActions);
 
     // Accept challenge
-    ticTacToeActions.push(
+    ticTacToeActions2.push(
       this.ticTacToeContract.getStartGameAction(challenge[0])
     );
 
     // Create transactions
-    if (cheddarBetActions.length > 0)
+    if (ticTacToeActions1.length > 0) {
+      transactions.push(
+        this.generateTransaction(
+          this.ticTacToeContract.contractId,
+          ticTacToeActions1
+        )
+      );
+    }
+    if (cheddarBetActions.length > 0) {
       transactions.push(
         this.generateTransaction(
           this.cheddarContract.contractId,
           cheddarActions
         )
       );
+    }
     transactions.push(
       this.generateTransaction(
         this.ticTacToeContract.contractId,
-        ticTacToeActions
+        ticTacToeActions2
       )
     );
 
