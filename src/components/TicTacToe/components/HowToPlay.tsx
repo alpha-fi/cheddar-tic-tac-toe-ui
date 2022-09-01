@@ -9,9 +9,16 @@ import {
 import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
 
-export function HowToPlay() {
+type Props = {
+  showingReferral: boolean;
+};
+
+export function HowToPlay({ showingReferral }: Props) {
   return (
-    <AccordionItem bg="#fffc" borderRadius="0 0 8px 8px">
+    <AccordionItem
+      bg="#fffc"
+      borderRadius={showingReferral ? "0" : "0 0 8px 8px"}
+    >
       <h2>
         <AccordionButton _focus={{ boxShadow: "0 0 0 0 #0000" }}>
           <Box flex="1" textAlign="center">

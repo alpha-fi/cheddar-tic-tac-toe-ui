@@ -8,6 +8,7 @@ import { ActiveGame } from "./ActiveGame";
 import { HowToPlay } from "./HowToPlay";
 import { GameParamsState } from "../containers/TicTacToe";
 import { UserStats } from "./Stats";
+import { Referral } from "./Referral";
 
 type Props = {
   data: GameParams | undefined;
@@ -51,7 +52,10 @@ export default function Info({
         !haveOwnChallenge && <WaitingListForm />}
 
       {walletSelector.selector.isSignedIn() && <UserStats data={data} />}
-      <HowToPlay />
+      <HowToPlay showingReferral={walletSelector.accountId !== null} />
+      {walletSelector.accountId && (
+        <Referral accountId={walletSelector.accountId} />
+      )}
     </Accordion>
   );
 }
