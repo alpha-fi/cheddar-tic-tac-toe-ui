@@ -13,7 +13,7 @@ export function HowToPlay() {
   return (
     <AccordionItem bg="#fffc" borderRadius="0 0 8px 8px">
       <h2>
-        <AccordionButton>
+        <AccordionButton _focus={{ boxShadow: "0 0 0 0 #0000" }}>
           <Box flex="1" textAlign="center">
             <Text as="h2" textAlign="center" fontSize="1.1em" fontWeight="700">
               How to Play / Rules

@@ -34,7 +34,7 @@ export default function Info({
   }, [data?.available_players, walletSelector.accountId]);
 
   return (
-    <Accordion defaultIndex={[0]}>
+    <Accordion defaultIndex={[0]} allowToggle>
       {activeGameParams.game_id && (
         <ActiveGame
           data={data}
@@ -42,10 +42,12 @@ export default function Info({
           setActiveGameParams={setActiveGameParams}
         />
       )}
-      {!activeGameParams.game_id && <WaitingList />}
+      {!data?.active_game && (
+        <WaitingList showingActiveGame={activeGameParams.game_id !== null} />
+      )}
 
       {walletSelector.selector.isSignedIn() &&
-        !activeGameParams.game_id &&
+        !data?.active_game &&
         !haveOwnChallenge && <WaitingListForm />}
 
       {walletSelector.selector.isSignedIn() && <UserStats data={data} />}

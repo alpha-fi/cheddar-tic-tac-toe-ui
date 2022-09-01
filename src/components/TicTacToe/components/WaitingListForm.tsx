@@ -55,7 +55,7 @@ export default function WaitingListForm() {
   return (
     <AccordionItem bg="#fffc">
       <h2>
-        <AccordionButton>
+        <AccordionButton _focus={{ boxShadow: "0 0 0 0 #0000" }}>
           <Box flex="1" textAlign="center">
             <Text as="h2" textAlign="center" fontSize="1.1em" fontWeight="700">
               Join Waiting List

@@ -12,14 +12,21 @@ import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { useContractParams } from "../../../hooks/useContractParams";
 import { WaiitingListElement } from "./WaiitingListElement";
 
-export default function WaitingList() {
+type Props = {
+  showingActiveGame: boolean;
+};
+
+export default function WaitingList({ showingActiveGame }: Props) {
   const { data } = useContractParams();
   const walletSelector = useWalletSelector();
 
   return (
-    <AccordionItem bg="#fffc" borderRadius="8px 8px 0 0">
+    <AccordionItem
+      bg="#fffc"
+      borderRadius={showingActiveGame ? "0" : "8px 8px 0 0"}
+    >
       <h2>
-        <AccordionButton>
+        <AccordionButton _focus={{ boxShadow: "0 0 0 0 #0000" }}>
           <Box flex="1" textAlign="center">
             <Text as="h2" textAlign="center" fontSize="1.1em" fontWeight="700">
               Available Players
