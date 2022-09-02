@@ -9,7 +9,7 @@ export type EventHandler = (this: Document, ev: any) => any;
 //-----------------------
 export interface WalletInterface {
   getAccountId(): string;
-  getDisplayableAccountId(): string;
+  getDisplayableAccountId(screenWidth: number): string;
 
   //getAccountBalance(accountId?:string):Promise<U128String>;
 

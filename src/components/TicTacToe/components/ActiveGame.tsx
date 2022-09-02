@@ -22,6 +22,8 @@ import {
 } from "../containers/TicTacToe";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import TokenName from "./TokenName";
+import useScreenSize from "../../../hooks/useScreenSize";
+import { formatAccountId } from "../../../shared/helpers/formatAccountId";
 
 type Props = {
   data: GameParams | undefined;
@@ -37,6 +39,7 @@ export function ActiveGame({
   const [timeLeft, settimeLeft] = useState<number | undefined>();
   const [loadingFinalizedGame, setLoadingFinalizedGame] = useState(false);
   const walletSelector = useWalletSelector();
+  const { width } = useScreenSize();
 
   const handleGiveUp = () => {
     if (data?.active_game?.[0]) {
@@ -150,7 +153,11 @@ export function ActiveGame({
                     {activeGameParams.game_result.winner_id ===
                     walletSelector.accountId
                       ? "You Are The Winner!"
-                      : `The Winner is ${activeGameParams.game_result.winner_id}`}
+                      : `The Winner is 
+                      ${formatAccountId(
+                        activeGameParams.game_result.winner_id,
+                        width
+                      )}`}
                   </Text>
                   <Text>
                     Reward:{" "}
@@ -222,7 +229,10 @@ export function ActiveGame({
                 {data.active_game[1].current_player.account_id ===
                 walletSelector.accountId
                   ? "You"
-                  : data.active_game[1].current_player.account_id}
+                  : formatAccountId(
+                      data.active_game[1].current_player.account_id,
+                      width
+                    )}
               </Text>
             </Flex>
             <Text>

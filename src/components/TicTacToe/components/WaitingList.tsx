@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { useContractParams } from "../../../hooks/useContractParams";
+import useScreenSize from "../../../hooks/useScreenSize";
 import { WaiitingListElement } from "./WaiitingListElement";
 
 type Props = {
@@ -19,6 +20,7 @@ type Props = {
 export default function WaitingList({ showingActiveGame }: Props) {
   const { data } = useContractParams();
   const walletSelector = useWalletSelector();
+  const { width } = useScreenSize();
 
   return (
     <AccordionItem
@@ -52,7 +54,7 @@ export default function WaitingList({ showingActiveGame }: Props) {
                     My Challenge
                   </Text>
                 )}
-                <WaiitingListElement player={player} />
+                <WaiitingListElement player={player} width={width} />
                 <Spacer mb="30px" />
               </Box>
             ))}
@@ -71,7 +73,7 @@ export default function WaitingList({ showingActiveGame }: Props) {
                     Private Challenges
                   </Text>
                 )}
-                <WaiitingListElement player={player} />
+                <WaiitingListElement player={player} width={width} />
                 <Spacer mb="30px" />
               </Box>
             ))}
@@ -88,7 +90,7 @@ export default function WaitingList({ showingActiveGame }: Props) {
                     Public Challenges
                   </Text>
                 )}
-                <WaiitingListElement player={player} />
+                <WaiitingListElement player={player} width={width} />
               </Box>
             ))}
       </AccordionPanel>
