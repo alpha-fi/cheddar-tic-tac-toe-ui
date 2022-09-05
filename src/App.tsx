@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import Main from "./components/Main/Main";
 import { WalletSelectorContextProvider } from "./contexts/WalletSelectorContext";
 import { theme } from "./components/lib/theme";
+import "@fontsource/titillium-web";
 
 const queryClient = new QueryClient();
 
