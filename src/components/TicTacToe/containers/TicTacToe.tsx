@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { useContractParams } from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
+import { useWhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
 import Board from "../components/Board";
 import Info from "../components/Info";
 
@@ -41,13 +42,13 @@ export function TicTacToe() {
     initialActiveGameParamsState2
   );
   const walletSelector = useWalletSelector();
+
   const { data } = useContractParams();
+  const { data: tokensData } = useWhiteListedTokens();
 
   const { height, width } = useScreenSize();
   const isLandscape = width > height * 1.5;
   console.log(data);
-  console.log(data?.active_game);
-  console.log(activeGameParams);
 
   useEffect(() => {
     if (data?.active_game && !activeGameParams.game_id) {
@@ -58,7 +59,6 @@ export function TicTacToe() {
         board: data.active_game[1].tiles,
       });
     }
-    console.log("first");
   }, [activeGameParams.game_id, data?.active_game, walletSelector.accountId]);
 
   useEffect(() => {
@@ -82,16 +82,21 @@ export function TicTacToe() {
       }}
       gap={4}
     >
-      <Info
-        data={data}
-        activeGameParams={activeGameParams}
-        setActiveGameParams={setActiveGameParams}
-      />
-      <Board
-        isLandscape={isLandscape}
-        activeGameParams={activeGameParams}
-        setActiveGameParams={setActiveGameParams}
-      />
+      {data && tokensData && (
+        <>
+          <Info
+            data={data}
+            tokensData={tokensData}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
+          <Board
+            isLandscape={isLandscape}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
+        </>
+      )}
     </Grid>
   );
 }

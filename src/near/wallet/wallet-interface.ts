@@ -11,7 +11,7 @@ export interface WalletInterface {
   getAccountId(): string;
   getDisplayableAccountId(screenWidth: number): string;
 
-  //getAccountBalance(accountId?:string):Promise<U128String>;
+  getAccountBalance(accountId?: string): Promise<string>;
 
   getNetwork(): string;
   setNetwork(value: string): void;
