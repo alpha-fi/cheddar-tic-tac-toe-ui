@@ -114,16 +114,8 @@ export class TicTacToeContract {
     };
   }
 
-  getDisplayableAccountId(
-    startLength?: number,
-    endLength?: number,
-    maxLength?: number
-  ): string {
-    return this.wallet.getDisplayableAccountId(
-      startLength,
-      endLength,
-      maxLength
-    );
+  getDisplayableAccountId(screenWidth: number): string {
+    return this.wallet.getDisplayableAccountId(screenWidth);
   }
 
   /**

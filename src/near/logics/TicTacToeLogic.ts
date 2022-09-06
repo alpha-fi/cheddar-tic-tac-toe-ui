@@ -35,16 +35,8 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.get_contract_params();
   }
 
-  getDisplayableAccountId(
-    startLength?: number,
-    endLength?: number,
-    maxLength?: number
-  ): string {
-    return this.ticTacToeContract.getDisplayableAccountId(
-      startLength,
-      endLength,
-      maxLength
-    );
+  getDisplayableAccountId(screenWidth: number): string {
+    return this.ticTacToeContract.getDisplayableAccountId(screenWidth);
   }
 
   getLastGames(): Promise<[number, FinalizedGame][]> {

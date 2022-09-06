@@ -28,15 +28,29 @@ export class SelectorWallet implements WalletInterface {
       ?.accountId!;
   }
 
-  getDisplayableAccountId(
-    startLength = 10,
-    endLength = 10,
-    maxLength = 22
-  ): string {
+  getDisplayableAccountId(screenWidth: number): string {
+    const { startLength, endLength, maxLength } =
+      this.getAccountLengths(screenWidth);
     const accountId = this.getAccountId();
     return accountId.length > maxLength
-      ? accountId.slice(0, startLength) + ".." + accountId.slice(0 - endLength)
+      ? accountId.slice(0, startLength) +
+          ".." +
+          (endLength === 0 ? "" : accountId.slice(0 - endLength))
       : accountId;
+  }
+
+  private getAccountLengths(screenWidth: number): {
+    startLength: number;
+    endLength: number;
+    maxLength: number;
+  } {
+    if (screenWidth < 480) {
+      return { startLength: 7, endLength: 0, maxLength: 8 };
+    } else if (screenWidth < 768) {
+      return { startLength: 8, endLength: 8, maxLength: 18 };
+    } else {
+      return { startLength: 10, endLength: 10, maxLength: 22 };
+    }
   }
 
   async getAccountBalance(accountId?: string | undefined): Promise<string> {
