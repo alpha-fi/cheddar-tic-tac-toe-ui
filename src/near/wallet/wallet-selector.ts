@@ -5,7 +5,7 @@ import {
 } from "@near-wallet-selector/core";
 import { BrowserWalletSignAndSendTransactionParams } from "@near-wallet-selector/core/lib/wallet";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
-import { nearConfig } from "../../near";
+import { ENV, getEnv } from "../config";
 //import { TGas } from "../../util/conversions";
 //import { BatchTransaction } from "../batch-transaction";
 //import { U128String } from "../util";
@@ -71,7 +71,7 @@ export class SelectorWallet implements WalletInterface {
                 }
             }`;
 
-    const result = await fetch(nearConfig.nodeUrl, {
+    const result = await fetch(getEnv(ENV).nearEnv.nodeUrl, {
       method: "POST",
       body,
       headers: {
@@ -79,7 +79,9 @@ export class SelectorWallet implements WalletInterface {
       },
     });
     const resultJson = await result.json();
-    return resultJson.result.amount; //---------as U128String;
+    return resultJson.result
+      ? `balance: ${resultJson.result.amount}`
+      : resultJson.error.data;
   }
 
   setNetwork(value: string): void {
@@ -113,7 +115,7 @@ export class SelectorWallet implements WalletInterface {
     try {
       const argsAsString = JSON.stringify(args);
       let argsBase64 = Buffer.from(argsAsString).toString("base64");
-      const provider = new JsonRpcProvider(nearConfig.nodeUrl);
+      const provider = new JsonRpcProvider(getEnv(ENV).nearEnv.nodeUrl);
       const rawResult = await provider.query({
         request_type: "call_function",
         account_id: contract,
@@ -174,7 +176,7 @@ export class SelectorWallet implements WalletInterface {
   }
 */
   async queryChain(method: string, args: object): Promise<any> {
-    const provider = new JsonRpcProvider(nearConfig.nodeUrl);
+    const provider = new JsonRpcProvider(getEnv(ENV).nearEnv.nodeUrl);
     return provider.sendJsonRpc(method, args);
   }
 }

@@ -10,7 +10,6 @@ import { setupModal } from "@near-wallet-selector/modal-ui";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
-import { contractName, nearConfig } from "../near";
 import { setupNearWalletCustom } from "../near/wallet/selector-utils";
 import "./WalletSelectorContext.css";
 import { NEP141 } from "../near/contracts/NEP141";
@@ -60,7 +59,7 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
-      network: nearConfig.networkId as NetworkId,
+      network: getEnv(ENV).nearEnv.networkId as NetworkId,
       debug: true,
       modules: [
         setupNearWallet({ iconUrl: nearIcon }),
@@ -68,7 +67,9 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
         setupNearWalletCustom(),
       ],
     });
-    const _modal = setupModal(_selector, { contractId: contractName });
+    const _modal = setupModal(_selector, {
+      contractId: getEnv(ENV).contractId,
+    });
     const state = _selector.store.getState();
 
     setAccounts(state.accounts);
