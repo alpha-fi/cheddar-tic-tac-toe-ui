@@ -18,7 +18,7 @@ import { CrossIcon } from "../../../shared/components/CrossIcon";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
 import {
   GameParamsState,
-  initialActiveGameParamsState2,
+  initialActiveGameParamsState,
 } from "../containers/TicTacToe";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import TokenName from "./TokenName";
@@ -54,7 +54,7 @@ export function ActiveGame({
   };
 
   const handleCloseGame = () => {
-    setActiveGameParams(initialActiveGameParamsState2);
+    setActiveGameParams(initialActiveGameParamsState);
   };
 
   useEffect(() => {
