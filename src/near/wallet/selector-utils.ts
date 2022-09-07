@@ -5,12 +5,12 @@ import {
 } from "@near-wallet-selector/core";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
-import { ENV, getEnv } from "../config";
+import { nearConfig } from "../index";
 
 export const setupNearWalletCustom = () => {
   return async (options: any) => {
     const wallet = await setupMyNearWallet({
-      walletUrl: getEnv(ENV).nearEnv.walletUrl, // get walletUrl from config
+      walletUrl: nearConfig.walletUrl, // get walletUrl from config
       iconUrl: "./assets/near-wallet-iconx.png",
     })(options);
 
@@ -35,7 +35,7 @@ export const setupNearWalletCustom = () => {
 
 export async function setupSelector(): Promise<WalletSelector> {
   return setupWalletSelector({
-    network: (getEnv(ENV).nearEnv.networkId as NetworkId) || "testnet",
+    network: (nearConfig.networkId as NetworkId) || "testnet",
     modules: [setupNearWalletCustom(), setupSender(), setupMyNearWallet()],
   });
 }

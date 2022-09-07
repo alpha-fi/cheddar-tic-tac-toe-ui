@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { useContractParams } from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
-import { useWhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
 import Board from "../components/Board";
 import Info from "../components/Info";
 
@@ -20,7 +19,7 @@ export type GameParamsState = {
   board: ("O" | "X" | null)[][];
 };
 
-export const initialActiveGameParamsState = {
+export const initialActiveGameParamsState2 = {
   game_id: null,
   game_result: { result: null, winner_id: null },
   player1: null,
@@ -39,29 +38,40 @@ export const initialActiveGameParamsState = {
 
 export function TicTacToe() {
   const [activeGameParams, setActiveGameParams] = useState<GameParamsState>(
-    initialActiveGameParamsState
+    initialActiveGameParamsState2
   );
   const walletSelector = useWalletSelector();
-
   const { data } = useContractParams();
-  const { data: tokensData } = useWhiteListedTokens();
 
   const { height, width } = useScreenSize();
   const isLandscape = width > height * 1.5;
   console.log(data);
+  console.log(data?.active_game);
+  console.log(activeGameParams);
 
   useEffect(() => {
     if (data?.active_game && !activeGameParams.game_id) {
       setActiveGameParams({
-        ...initialActiveGameParamsState,
+        ...initialActiveGameParamsState2,
         game_id: data.active_game[0],
         current_player: data.active_game[1].current_player,
         board: data.active_game[1].tiles,
-        player1: data.active_game[1].player1,
-        player2: data.active_game[1].player2,
       });
     }
+    console.log("first");
   }, [activeGameParams.game_id, data?.active_game, walletSelector.accountId]);
+
+  useEffect(() => {
+    const currentPlayer = data?.active_game?.[1].current_player;
+    if (currentPlayer) {
+      setActiveGameParams((prev) => {
+        return {
+          ...prev,
+          current_player: currentPlayer,
+        };
+      });
+    }
+  }, [data?.active_game]);
 
   return (
     <Grid
@@ -72,21 +82,16 @@ export function TicTacToe() {
       }}
       gap={4}
     >
-      {data && tokensData && (
-        <>
-          <Info
-            data={data}
-            tokensData={tokensData}
-            activeGameParams={activeGameParams}
-            setActiveGameParams={setActiveGameParams}
-          />
-          <Board
-            isLandscape={isLandscape}
-            activeGameParams={activeGameParams}
-            setActiveGameParams={setActiveGameParams}
-          />
-        </>
-      )}
+      <Info
+        data={data}
+        activeGameParams={activeGameParams}
+        setActiveGameParams={setActiveGameParams}
+      />
+      <Board
+        isLandscape={isLandscape}
+        activeGameParams={activeGameParams}
+        setActiveGameParams={setActiveGameParams}
+      />
     </Grid>
   );
 }

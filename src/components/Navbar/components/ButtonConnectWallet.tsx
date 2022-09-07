@@ -1,12 +1,10 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Button, Menu, MenuButton, MenuList } from "@chakra-ui/react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import useScreenSize from "../../../hooks/useScreenSize";
 import { YellowButton } from "../../../shared/components/YellowButton";
 
 export function ButtonConnectWallet() {
   const walletSelector = useWalletSelector();
-  const { width } = useScreenSize();
 
   const handleOnClick = async () => {
     if (walletSelector.selector.isSignedIn() && walletSelector.wallet) {
@@ -27,7 +25,7 @@ export function ButtonConnectWallet() {
             borderRadius="full"
             rightIcon={<ChevronDownIcon />}
           >
-            {walletSelector.ticTacToeLogic?.getDisplayableAccountId(width)}
+            {walletSelector.accountId}
           </MenuButton>
           <MenuList
             minWidth="auto"

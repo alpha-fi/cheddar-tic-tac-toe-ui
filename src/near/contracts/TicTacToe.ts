@@ -114,8 +114,16 @@ export class TicTacToeContract {
     };
   }
 
-  getDisplayableAccountId(screenWidth: number): string {
-    return this.wallet.getDisplayableAccountId(screenWidth);
+  getDisplayableAccountId(
+    startLength?: number,
+    endLength?: number,
+    maxLength?: number
+  ): string {
+    return this.wallet.getDisplayableAccountId(
+      startLength,
+      endLength,
+      maxLength
+    );
   }
 
   /**
@@ -128,10 +136,6 @@ export class TicTacToeContract {
     return this.wallet.view(this.contractId, "get_active_games", {});
   }
 
-  get_account_balance(accountId: string): Promise<string> {
-    return this.wallet.getAccountBalance(accountId);
-  }
-
   get_last_games(): Promise<[number, FinalizedGame][]> {
     return this.wallet.view(this.contractId, "get_last_games", {});
   }
@@ -142,16 +146,6 @@ export class TicTacToeContract {
 
   get_contract_params(): Promise<ContractParams> {
     return this.wallet.view(this.contractId, "get_contract_params", {});
-  }
-
-  get_token_min_deposit(accountId: string): Promise<string> {
-    return this.wallet.view(this.contractId, "get_token_min_deposit", {
-      token_id: accountId,
-    });
-  }
-
-  get_whitelisted_tokens(): Promise<[string, string][]> {
-    return this.wallet.view(this.contractId, "get_whitelisted_tokens", {});
   }
 
   make_move(
