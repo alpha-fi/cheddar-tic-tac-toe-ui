@@ -79,9 +79,7 @@ export class SelectorWallet implements WalletInterface {
       },
     });
     const resultJson = await result.json();
-    return resultJson.result
-      ? `balance: ${resultJson.result.amount}`
-      : resultJson.error.data;
+    return resultJson.result ? resultJson.result.amount : resultJson.error.data;
   }
 
   setNetwork(value: string): void {

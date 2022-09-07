@@ -1,5 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { GameParams } from "../../../hooks/useContractParams";
 import { GameParamsState } from "../containers/TicTacToe";
 import { BoardSquare } from "./BoardSquare";
 
@@ -23,6 +25,9 @@ export default function Board({
     row: null,
     column: null,
   });
+
+  const { data } = useQuery<GameParams>("contractParams");
+
   const boardSize = {
     base: "260px",
     sm: isLandscape ? "260px" : "350px",
@@ -30,6 +35,7 @@ export default function Board({
     lg: "455px",
     "2xl": "605px",
   };
+
   const squareSize = {
     base: "80px",
     sm: isLandscape ? "80px" : "110px",
@@ -37,6 +43,18 @@ export default function Board({
     lg: "145px",
     "2xl": "195px",
   };
+
+  useEffect(() => {
+    if (
+      data?.active_game === undefined &&
+      loadingSquare.row &&
+      loadingSquare.column
+    ) {
+      setLoadingSquare({ row: null, column: null });
+    }
+  }, [data?.active_game, loadingSquare]);
+
+  console.log(activeGameParams);
 
   return (
     <Flex justifyContent="center">

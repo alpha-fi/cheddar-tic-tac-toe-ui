@@ -20,7 +20,7 @@ export type GameParamsState = {
   board: ("O" | "X" | null)[][];
 };
 
-export const initialActiveGameParamsState2 = {
+export const initialActiveGameParamsState = {
   game_id: null,
   game_result: { result: null, winner_id: null },
   player1: null,
@@ -39,7 +39,7 @@ export const initialActiveGameParamsState2 = {
 
 export function TicTacToe() {
   const [activeGameParams, setActiveGameParams] = useState<GameParamsState>(
-    initialActiveGameParamsState2
+    initialActiveGameParamsState
   );
   const walletSelector = useWalletSelector();
 
@@ -53,25 +53,15 @@ export function TicTacToe() {
   useEffect(() => {
     if (data?.active_game && !activeGameParams.game_id) {
       setActiveGameParams({
-        ...initialActiveGameParamsState2,
+        ...initialActiveGameParamsState,
         game_id: data.active_game[0],
         current_player: data.active_game[1].current_player,
         board: data.active_game[1].tiles,
+        player1: data.active_game[1].player1,
+        player2: data.active_game[1].player2,
       });
     }
   }, [activeGameParams.game_id, data?.active_game, walletSelector.accountId]);
-
-  useEffect(() => {
-    const currentPlayer = data?.active_game?.[1].current_player;
-    if (currentPlayer) {
-      setActiveGameParams((prev) => {
-        return {
-          ...prev,
-          current_player: currentPlayer,
-        };
-      });
-    }
-  }, [data?.active_game]);
 
   return (
     <Grid
