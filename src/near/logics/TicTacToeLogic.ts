@@ -31,20 +31,24 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.get_available_players();
   }
 
+  getAccountBalance(accountId: string): Promise<string> {
+    return this.ticTacToeContract.get_account_balance(accountId);
+  }
+
   getContractParams(): Promise<ContractParams> {
     return this.ticTacToeContract.get_contract_params();
   }
 
-  getDisplayableAccountId(
-    startLength?: number,
-    endLength?: number,
-    maxLength?: number
-  ): string {
-    return this.ticTacToeContract.getDisplayableAccountId(
-      startLength,
-      endLength,
-      maxLength
-    );
+  getTokenMinDeposit(accountId: string): Promise<string> {
+    return this.ticTacToeContract.get_token_min_deposit(accountId);
+  }
+
+  getWhiteListedTokens(): Promise<[string, string][]> {
+    return this.ticTacToeContract.get_whitelisted_tokens();
+  }
+
+  getDisplayableAccountId(screenWidth: number): string {
+    return this.ticTacToeContract.getDisplayableAccountId(screenWidth);
   }
 
   getLastGames(): Promise<[number, FinalizedGame][]> {
