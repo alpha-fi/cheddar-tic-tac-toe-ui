@@ -47,8 +47,8 @@ export default function Board({
   useEffect(() => {
     if (
       data?.active_game === undefined &&
-      loadingSquare.row &&
-      loadingSquare.column
+      loadingSquare.row !== null &&
+      loadingSquare.column !== null
     ) {
       setLoadingSquare({ row: null, column: null });
     }

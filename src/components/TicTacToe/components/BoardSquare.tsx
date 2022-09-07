@@ -49,8 +49,8 @@ export function BoardSquare({
       data?.active_game &&
       activeGameParams.board[row][column] === null &&
       activeGameParams.current_player.account_id === walletSelector.accountId &&
-      !loadingSquare.column &&
-      !loadingSquare.row
+      loadingSquare.column === null &&
+      loadingSquare.row === null
     ) {
       const gameId = parseInt(data?.active_game?.[0]!);
       console.log("play(", gameId, row, column, ")");
@@ -94,14 +94,15 @@ export function BoardSquare({
   const isAvailableToClick =
     !activeGameParams.board[row][column] &&
     activeGameParams.current_player.account_id === walletSelector.accountId &&
-    !loadingSquare.column &&
-    !loadingSquare.row;
+    loadingSquare.column === null &&
+    loadingSquare.row === null;
+  console.log(isAvailableToClick);
 
   const isActiveTurn =
     data?.active_game &&
     activeGameParams.current_player.account_id === walletSelector.accountId &&
-    !loadingSquare.row &&
-    !loadingSquare.column;
+    loadingSquare.row === null &&
+    loadingSquare.column === null;
 
   return (
     <Box
