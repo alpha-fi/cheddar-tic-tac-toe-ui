@@ -54,8 +54,6 @@ export default function Board({
     }
   }, [data?.active_game, loadingSquare]);
 
-  console.log(activeGameParams);
-
   return (
     <Flex justifyContent="center">
       <Box

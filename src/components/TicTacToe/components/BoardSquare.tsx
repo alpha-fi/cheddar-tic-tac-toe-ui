@@ -44,7 +44,6 @@ export function BoardSquare({
   const handleClick = async (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
-    console.log(e.currentTarget.id);
     if (
       data?.active_game &&
       activeGameParams.board[row][column] === null &&
@@ -53,7 +52,6 @@ export function BoardSquare({
       loadingSquare.row === null
     ) {
       const gameId = parseInt(data?.active_game?.[0]!);
-      console.log("play(", gameId, row, column, ")");
       setLoadingSquare({ row, column });
       try {
         if (walletSelector.ticTacToeLogic) {
@@ -96,7 +94,6 @@ export function BoardSquare({
     activeGameParams.current_player.account_id === walletSelector.accountId &&
     loadingSquare.column === null &&
     loadingSquare.row === null;
-  console.log(isAvailableToClick);
 
   const isActiveTurn =
     data?.active_game &&
