@@ -29,8 +29,8 @@ const components = {
 };
 
 const fonts = {
-  heading: `'Titillium Web', sans-serif`,
-  body: `'Titillium Web', sans-serif`,
+  heading: `'Bubblegum Sans', cursive`,
+  body: `'Bubblegum Sans', cursive`,
 };
 
 const colors = {

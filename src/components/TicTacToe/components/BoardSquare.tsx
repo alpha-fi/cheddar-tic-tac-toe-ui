@@ -4,6 +4,7 @@ import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import { useQuery } from "react-query";
 import { GameParams } from "../../../hooks/useContractParams";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
+import { getTransactionLastResult } from "near-api-js/lib/providers";
 import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
 import { GameParamsState } from "../containers/TicTacToe";
@@ -36,72 +37,63 @@ export function BoardSquare({
 }: Props) {
   const walletSelector = useWalletSelector();
   const { data } = useQuery<GameParams>("contractParams");
+  const currentPlayer = data?.active_game?.[1].current_player.account_id;
   const border = "5px solid";
   const borderColor = "purpleCheddar";
-  const tiles = data?.active_game?.[1].tiles;
-  const currentPlayer = data?.active_game?.[1].current_player;
 
   const handleClick = async (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     console.log(e.currentTarget.id);
     if (
-      data?.active_game &&
       activeGameParams.board[row][column] === null &&
-      activeGameParams.current_player.account_id === walletSelector.accountId &&
-      !loadingSquare.column &&
-      !loadingSquare.row
+      currentPlayer === walletSelector.accountId
     ) {
       const gameId = parseInt(data?.active_game?.[0]!);
       console.log("play(", gameId, row, column, ")");
       setLoadingSquare({ row, column });
       try {
         if (walletSelector.ticTacToeLogic) {
-          await walletSelector.ticTacToeLogic.play(gameId, row, column);
+          const response = await walletSelector.ticTacToeLogic.play(
+            gameId,
+            row,
+            column
+          );
+          setActiveGameParams((prev) => {
+            return {
+              ...prev,
+              board: getTransactionLastResult(response),
+            };
+          });
         }
       } catch (error) {
         console.error(error);
+      } finally {
         setLoadingSquare({ row: null, column: null });
       }
     }
   };
 
+  const tiles = data?.active_game?.[1].tiles;
   useEffect(() => {
-    if (
-      tiles &&
-      tiles[row][column] !== activeGameParams.board[row][column] &&
-      currentPlayer
-    ) {
+    if (tiles && tiles[row][column] !== activeGameParams.board[row][column]) {
       setActiveGameParams((prev) => {
         return {
           ...prev,
           board: tiles,
-          current_player: currentPlayer,
         };
       });
+      //setLoading(false);
       setLoadingSquare({ row: null, column: null });
     }
   }, [
-    activeGameParams,
-    currentPlayer,
+    activeGameParams.board,
     column,
     row,
     setActiveGameParams,
     tiles,
     setLoadingSquare,
   ]);
-
-  const isAvailableToClick =
-    !activeGameParams.board[row][column] &&
-    activeGameParams.current_player.account_id === walletSelector.accountId &&
-    !loadingSquare.column &&
-    !loadingSquare.row;
-
-  const isActiveTurn =
-    data?.active_game &&
-    activeGameParams.current_player.account_id === walletSelector.accountId &&
-    !loadingSquare.row &&
-    !loadingSquare.column;
 
   return (
     <Box
@@ -114,27 +106,18 @@ export function BoardSquare({
       borderColor={borderColor}
     >
       <Box
-        cursor={isAvailableToClick ? "pointer" : "auto"}
+        cursor={currentPlayer === walletSelector.accountId ? "pointer" : "auto"}
         id={`r${row}c${column}`}
         w="100%"
         h="100%"
         onClick={handleClick}
-        _hover={isAvailableToClick ? { bg: "#FFF4" } : {}}
       >
         {activeGameParams.board[row][column] && (
           <Flex justifyContent="center" alignItems="center" h="100%">
             {activeGameParams.board[row][column] === "O" ? (
-              <CircleIcon
-                w="75%"
-                h="75%"
-                color={isActiveTurn ? "yellowCheddar" : "#ffd26288"}
-              />
+              <CircleIcon w="75%" h="75%" color="yellowCheddar" />
             ) : (
-              <CrossIcon
-                w="65%"
-                h="65%"
-                color={isActiveTurn ? "yellowCheddar" : "#ffd26288"}
-              />
+              <CrossIcon w="65%" h="65%" color="yellowCheddar" />
             )}
           </Flex>
         )}

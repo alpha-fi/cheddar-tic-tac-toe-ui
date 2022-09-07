@@ -9,9 +9,9 @@ export type EventHandler = (this: Document, ev: any) => any;
 //-----------------------
 export interface WalletInterface {
   getAccountId(): string;
-  getDisplayableAccountId(screenWidth: number): string;
+  getDisplayableAccountId(): string;
 
-  getAccountBalance(accountId?: string): Promise<string>;
+  //getAccountBalance(accountId?:string):Promise<U128String>;
 
   getNetwork(): string;
   setNetwork(value: string): void;

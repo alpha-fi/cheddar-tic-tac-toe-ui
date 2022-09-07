@@ -5,7 +5,7 @@ import {
 } from "@near-wallet-selector/core";
 import { BrowserWalletSignAndSendTransactionParams } from "@near-wallet-selector/core/lib/wallet";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
-import { ENV, getEnv } from "../config";
+import { nearConfig } from "../../near";
 //import { TGas } from "../../util/conversions";
 //import { BatchTransaction } from "../batch-transaction";
 //import { U128String } from "../util";
@@ -28,29 +28,15 @@ export class SelectorWallet implements WalletInterface {
       ?.accountId!;
   }
 
-  getDisplayableAccountId(screenWidth: number): string {
-    const { startLength, endLength, maxLength } =
-      this.getAccountLengths(screenWidth);
+  getDisplayableAccountId(
+    startLength = 10,
+    endLength = 10,
+    maxLength = 22
+  ): string {
     const accountId = this.getAccountId();
     return accountId.length > maxLength
-      ? accountId.slice(0, startLength) +
-          ".." +
-          (endLength === 0 ? "" : accountId.slice(0 - endLength))
+      ? accountId.slice(0, startLength) + ".." + accountId.slice(0 - endLength)
       : accountId;
-  }
-
-  private getAccountLengths(screenWidth: number): {
-    startLength: number;
-    endLength: number;
-    maxLength: number;
-  } {
-    if (screenWidth < 480) {
-      return { startLength: 7, endLength: 0, maxLength: 8 };
-    } else if (screenWidth < 768) {
-      return { startLength: 8, endLength: 8, maxLength: 18 };
-    } else {
-      return { startLength: 10, endLength: 10, maxLength: 22 };
-    }
   }
 
   async getAccountBalance(accountId?: string | undefined): Promise<string> {
@@ -71,7 +57,7 @@ export class SelectorWallet implements WalletInterface {
                 }
             }`;
 
-    const result = await fetch(getEnv(ENV).nearEnv.nodeUrl, {
+    const result = await fetch(nearConfig.nodeUrl, {
       method: "POST",
       body,
       headers: {
@@ -79,7 +65,7 @@ export class SelectorWallet implements WalletInterface {
       },
     });
     const resultJson = await result.json();
-    return resultJson.result ? resultJson.result.amount : resultJson.error.data;
+    return resultJson.result.amount; //---------as U128String;
   }
 
   setNetwork(value: string): void {
@@ -113,7 +99,7 @@ export class SelectorWallet implements WalletInterface {
     try {
       const argsAsString = JSON.stringify(args);
       let argsBase64 = Buffer.from(argsAsString).toString("base64");
-      const provider = new JsonRpcProvider(getEnv(ENV).nearEnv.nodeUrl);
+      const provider = new JsonRpcProvider(nearConfig.nodeUrl);
       const rawResult = await provider.query({
         request_type: "call_function",
         account_id: contract,
@@ -174,7 +160,7 @@ export class SelectorWallet implements WalletInterface {
   }
 */
   async queryChain(method: string, args: object): Promise<any> {
-    const provider = new JsonRpcProvider(getEnv(ENV).nearEnv.nodeUrl);
+    const provider = new JsonRpcProvider(nearConfig.nodeUrl);
     return provider.sendJsonRpc(method, args);
   }
 }

@@ -11,7 +11,6 @@ export function PurpleButton(props: Props) {
       bg="purpleCheddar"
       size={props.size}
       onClick={props.onClick}
-      {...props}
     >
       {props.children}
     </ButtonChakra>

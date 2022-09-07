@@ -18,12 +18,10 @@ import { CrossIcon } from "../../../shared/components/CrossIcon";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
 import {
   GameParamsState,
-  initialActiveGameParamsState,
+  initialActiveGameParamsState2,
 } from "../containers/TicTacToe";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import TokenName from "./TokenName";
-import useScreenSize from "../../../hooks/useScreenSize";
-import { formatAccountId } from "../../../shared/helpers/formatAccountId";
 
 type Props = {
   data: GameParams | undefined;
@@ -39,7 +37,6 @@ export function ActiveGame({
   const [timeLeft, settimeLeft] = useState<number | undefined>();
   const [loadingFinalizedGame, setLoadingFinalizedGame] = useState(false);
   const walletSelector = useWalletSelector();
-  const { width } = useScreenSize();
 
   const handleGiveUp = () => {
     if (data?.active_game?.[0]) {
@@ -54,7 +51,7 @@ export function ActiveGame({
   };
 
   const handleCloseGame = () => {
-    setActiveGameParams(initialActiveGameParamsState);
+    setActiveGameParams(initialActiveGameParamsState2);
   };
 
   useEffect(() => {
@@ -153,11 +150,7 @@ export function ActiveGame({
                     {activeGameParams.game_result.winner_id ===
                     walletSelector.accountId
                       ? "You Are The Winner!"
-                      : `The Winner is 
-                      ${formatAccountId(
-                        activeGameParams.game_result.winner_id,
-                        width
-                      )}`}
+                      : `The Winner is ${activeGameParams.game_result.winner_id}`}
                   </Text>
                   <Text>
                     Reward:{" "}
@@ -229,10 +222,7 @@ export function ActiveGame({
                 {data.active_game[1].current_player.account_id ===
                 walletSelector.accountId
                   ? "You"
-                  : formatAccountId(
-                      data.active_game[1].current_player.account_id,
-                      width
-                    )}
+                  : data.active_game[1].current_player.account_id}
               </Text>
             </Flex>
             <Text>
