@@ -15,9 +15,13 @@ import { WaiitingListElement } from "./WaiitingListElement";
 
 type Props = {
   showingActiveGame: boolean;
+  showingWaitingListForm: boolean;
 };
 
-export default function WaitingList({ showingActiveGame }: Props) {
+export default function WaitingList({
+  showingActiveGame,
+  showingWaitingListForm,
+}: Props) {
   const { data } = useContractParams();
   const walletSelector = useWalletSelector();
   const { width } = useScreenSize();
@@ -25,7 +29,15 @@ export default function WaitingList({ showingActiveGame }: Props) {
   return (
     <AccordionItem
       bg="#fffc"
-      borderRadius={showingActiveGame ? "0" : "8px 8px 0 0"}
+      borderRadius={
+        showingActiveGame && showingWaitingListForm
+          ? "0"
+          : showingActiveGame
+          ? "0 0 8px 8px"
+          : showingWaitingListForm
+          ? "8px 8px 0 0"
+          : "8px"
+      }
     >
       <h2>
         <AccordionButton _focus={{ boxShadow: "0 0 0 0 #0000" }}>

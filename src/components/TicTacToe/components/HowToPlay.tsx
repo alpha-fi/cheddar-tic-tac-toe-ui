@@ -11,13 +11,22 @@ import { CrossIcon } from "../../../shared/components/CrossIcon";
 
 type Props = {
   showingReferral: boolean;
+  showingStats: boolean;
 };
 
-export function HowToPlay({ showingReferral }: Props) {
+export function HowToPlay({ showingReferral, showingStats }: Props) {
   return (
     <AccordionItem
       bg="#fffc"
-      borderRadius={showingReferral ? "0" : "0 0 8px 8px"}
+      borderRadius={
+        showingReferral && showingStats
+          ? "0"
+          : showingReferral
+          ? "8px 8px 0 0"
+          : showingStats
+          ? "0 0 8px 8px"
+          : "8px"
+      }
     >
       <h2>
         <AccordionButton _focus={{ boxShadow: "0 0 0 0 #0000" }}>

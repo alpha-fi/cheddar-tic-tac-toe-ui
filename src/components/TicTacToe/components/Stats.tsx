@@ -29,7 +29,7 @@ export function UserStats({ data }: Props) {
   }, [walletSelector.ticTacToeLogic, data?.active_game]);
 
   return (
-    <AccordionItem bg="#fffc">
+    <AccordionItem bg="#fffc" borderRadius="8px 8px 0 0">
       <h2>
         <AccordionButton _focus={{ boxShadow: "0 0 0 0 #0000" }}>
           <Box flex="1" textAlign="center">

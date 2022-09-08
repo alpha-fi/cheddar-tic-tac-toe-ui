@@ -115,7 +115,10 @@ export function ActiveGame({
   ]);
 
   return (
-    <AccordionItem bg="#fffc" borderRadius="8px 8px 0 0">
+    <AccordionItem
+      bg="#fffc"
+      borderRadius={data?.active_game ? "8px" : "8px 8px 0 0"}
+    >
       <h2>
         <AccordionButton _focus={{ boxShadow: "0 0 0 0 #0000" }}>
           <Box flex="1" textAlign="center">
@@ -123,7 +126,7 @@ export function ActiveGame({
               Actual Game
             </Text>
           </Box>
-          <AccordionIcon />
+          {!data?.active_game && <AccordionIcon />}
         </AccordionButton>
       </h2>
       <AccordionPanel

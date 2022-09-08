@@ -1,4 +1,4 @@
-import { Accordion } from "@chakra-ui/react";
+import { Accordion, Box } from "@chakra-ui/react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { GameParams } from "../../../hooks/useContractParams";
 import WaitingList from "./WaitingList";
@@ -38,27 +38,45 @@ export default function Info({
   }, [data?.available_players, walletSelector.accountId]);
 
   return (
-    <Accordion defaultIndex={[0]} allowToggle>
-      {activeGameParams.game_id && (
-        <ActiveGame
-          data={data}
-          activeGameParams={activeGameParams}
-          setActiveGameParams={setActiveGameParams}
+    <Box>
+      <Accordion
+        index={data?.active_game ? 0 : undefined}
+        defaultIndex={[0]}
+        allowToggle
+        mb="30px"
+      >
+        {activeGameParams.game_id && (
+          <ActiveGame
+            data={data}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={setActiveGameParams}
+          />
+        )}
+        {!data?.active_game && (
+          <WaitingList
+            showingActiveGame={activeGameParams.game_id !== null}
+            showingWaitingListForm={
+              walletSelector.selector.isSignedIn() &&
+              !data?.active_game &&
+              !haveOwnChallenge
+            }
+          />
+        )}
+        {walletSelector.selector.isSignedIn() &&
+          !data?.active_game &&
+          !haveOwnChallenge && <WaitingListForm tokensData={tokensData} />}
+      </Accordion>
+
+      <Accordion allowToggle>
+        {walletSelector.selector.isSignedIn() && <UserStats data={data} />}
+        <HowToPlay
+          showingReferral={walletSelector.accountId !== null}
+          showingStats={walletSelector.selector.isSignedIn()}
         />
-      )}
-      {!data?.active_game && (
-        <WaitingList showingActiveGame={activeGameParams.game_id !== null} />
-      )}
-
-      {walletSelector.selector.isSignedIn() &&
-        !data?.active_game &&
-        !haveOwnChallenge && <WaitingListForm tokensData={tokensData} />}
-
-      {walletSelector.selector.isSignedIn() && <UserStats data={data} />}
-      <HowToPlay showingReferral={walletSelector.accountId !== null} />
-      {walletSelector.accountId && (
-        <Referral accountId={walletSelector.accountId} />
-      )}
-    </Accordion>
+        {walletSelector.accountId && (
+          <Referral accountId={walletSelector.accountId} />
+        )}
+      </Accordion>
+    </Box>
   );
 }
