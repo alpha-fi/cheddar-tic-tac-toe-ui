@@ -50,11 +50,18 @@ export default function WaitingList({
         </AccordionButton>
       </h2>
       <AccordionPanel m="12px 16px" bg="#eee" borderRadius="8px" pb={4}>
-        {data?.available_players && data.available_players.length === 0 && (
-          <Flex justifyContent="center" alignItems="center">
-            <Text>No Players Availble. Be The First!</Text>
-          </Flex>
-        )}
+        {(data?.available_players && data.available_players.length === 0) ||
+          (data?.available_players &&
+            data.available_players.length ===
+              data.available_players.filter(
+                (player) =>
+                  player[0] !== walletSelector.accountId &&
+                  player[1].opponent_id !== walletSelector.accountId
+              ).length && (
+              <Flex justifyContent="center" alignItems="center">
+                <Text>No Players Availble. Be The First!</Text>
+              </Flex>
+            ))}
         {walletSelector.selector.isSignedIn() &&
           data?.available_players &&
           data.available_players
