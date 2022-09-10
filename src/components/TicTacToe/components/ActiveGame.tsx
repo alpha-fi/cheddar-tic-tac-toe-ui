@@ -24,6 +24,10 @@ import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import TokenName from "./TokenName";
 import useScreenSize from "../../../hooks/useScreenSize";
 import { formatAccountId } from "../../../shared/helpers/formatAccountId";
+import {
+  addNotification,
+  hasUserPermission,
+} from "../../../shared/helpers/notifications";
 
 type Props = {
   data: GameParams | undefined;
@@ -91,17 +95,32 @@ export function ActiveGame({
             (item) => item[0].toString() === activeGameParams.game_id
           );
           if (game) {
+            const result = game[1].game_result === "Tie" ? "Tie" : "Win";
+            const winnerId = game[1].game_result.Win ?? "";
             setActiveGameParams((prev) => {
               return {
                 ...prev,
                 game_result: {
-                  result: game[1].game_result === "Tie" ? "Tie" : "Win",
-                  winner_id: game[1].game_result.Win ?? "",
+                  result: result,
+                  winner_id: winnerId,
                 },
                 reward_or_tie_refund: game[1].reward_or_tie_refund,
                 board: game[1].board,
               };
             });
+            if (hasUserPermission()) {
+              let msg;
+              if (result === "Tie") {
+                msg = "Game Over: Tied Game!";
+              } else {
+                if (winnerId === walletSelector.accountId) {
+                  msg = "Game Over: You Win!";
+                } else {
+                  msg = "Game Over: You Lose!";
+                }
+              }
+              addNotification(msg);
+            }
           }
         })
         .catch((err) => console.error(err))
@@ -112,6 +131,7 @@ export function ActiveGame({
     data,
     setActiveGameParams,
     walletSelector.ticTacToeLogic,
+    walletSelector.accountId,
   ]);
 
   return (

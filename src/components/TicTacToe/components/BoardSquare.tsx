@@ -8,6 +8,10 @@ import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
 import { GameParamsState } from "../containers/TicTacToe";
 import { LoadingSquare } from "./Board";
+import {
+  addNotification,
+  hasUserPermission,
+} from "../../../shared/helpers/notifications";
 
 type Props = {
   column: number;
@@ -78,6 +82,12 @@ export function BoardSquare({
         };
       });
       setLoadingSquare({ row: null, column: null });
+      if (
+        currentPlayer.account_id === walletSelector.accountId &&
+        hasUserPermission()
+      ) {
+        addNotification("Is Your Turn");
+      }
     }
   }, [
     activeGameParams,

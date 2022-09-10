@@ -34,6 +34,35 @@ interface ActiveGameData {
   tiles: ("O" | "X" | null)[][];
 }
 
+/*
+const testData: [string, ActiveGameData] = [
+  "3",
+  {
+    current_duration_sec: 0,
+    current_player: { piece: "X", account_id: "cookie-monster.testnet" },
+    game_status: "Active",
+    initiated_at_sec: 1661958737,
+    last_turn_timestamp_sec: 0,
+    player1: "cookie-monster.testnet",
+    player2: "oreos.testnet",
+    reward: { balance: "1000000000000000000000000", token_id: "near" },
+    tiles: [
+      ["O", "X", null],
+      ["O", "X", null],
+      [null, "O", null],
+    ],
+  },
+];
+
+const getParams = async (walletSelector: WalletSelectorContextValue) => {
+  const resp = await walletSelector.tictactoeContract?.get_contract_params();
+  return {
+    ...resp,
+    active_game: resp?.max_game_duration ? testData : undefined,
+  };
+};
+*/
+
 const getParams = async (walletSelector: WalletSelectorContextValue) => {
   const resp = await walletSelector.tictactoeContract?.get_contract_params();
   return {
@@ -52,6 +81,7 @@ export const useContractParams = () => {
     ["contractParams"],
     () => getParams(walletSelector),
     {
+      refetchIntervalInBackground: true,
       refetchInterval: 4000,
       cacheTime: 0,
       notifyOnChangePropsExclusions: ["isStale", "isRefetching", "isFetching"],
