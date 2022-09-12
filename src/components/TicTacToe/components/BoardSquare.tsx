@@ -9,7 +9,8 @@ import { CrossIcon } from "../../../shared/components/CrossIcon";
 import { GameParamsState } from "../containers/TicTacToe";
 import { LoadingSquare } from "./Board";
 import {
-  addNotification,
+  addSWNotification,
+  askUserPermission,
   hasUserPermission,
 } from "../../../shared/helpers/notifications";
 
@@ -56,6 +57,7 @@ export function BoardSquare({
       loadingSquare.row === null
     ) {
       const gameId = parseInt(data?.active_game?.[0]!);
+      askUserPermission();
       setLoadingSquare({ row, column });
       try {
         if (walletSelector.ticTacToeLogic) {
@@ -86,7 +88,7 @@ export function BoardSquare({
         currentPlayer.account_id === walletSelector.accountId &&
         hasUserPermission()
       ) {
-        addNotification("Is Your Turn");
+        addSWNotification("Is Your Turn");
       }
     }
   }, [
@@ -94,8 +96,9 @@ export function BoardSquare({
     currentPlayer,
     column,
     row,
-    setActiveGameParams,
     tiles,
+    walletSelector.accountId,
+    setActiveGameParams,
     setLoadingSquare,
   ]);
 

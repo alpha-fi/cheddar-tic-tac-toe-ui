@@ -4,8 +4,28 @@ export function isPushNotificationSupported() {
   return "serviceWorker" in navigator && "PushManager" in window;
 }
 
-export function registerServiceWorker() {
-  return navigator.serviceWorker.register("/sw.js");
+export async function registerServiceWorker() {
+  return navigator.serviceWorker
+    .register("/sw.js")
+    .then((registration) => {
+      let serviceWorker;
+      if (registration.installing) {
+        serviceWorker = registration.installing;
+      } else if (registration.waiting) {
+        serviceWorker = registration.waiting;
+      } else if (registration.active) {
+        serviceWorker = registration.active;
+      }
+      if (serviceWorker) {
+        console.log(`SW: ${serviceWorker.state}`);
+        serviceWorker.addEventListener("statechange", (e) => {
+          console.log(e.target);
+        });
+      }
+    })
+    .catch((error) => {
+      console.log("Something went wrong during service worker registration.");
+    });
 }
 
 export function isNotificationSupported() {
@@ -31,4 +51,20 @@ export function addNotification(msg: string) {
     badge: cheddarIcon,
     requireInteraction: true,
   }).addEventListener("click", () => window.focus());
+}
+
+export function addSWNotification(msg: string) {
+  navigator.serviceWorker.getRegistration().then((sw) => {
+    if (sw) {
+      sw.showNotification("Cheddar TicTacToe", {
+        body: msg,
+        icon: cheddarIcon,
+        vibrate: [200, 100, 200],
+        tag: "new-product",
+        badge: cheddarIcon,
+        requireInteraction: true,
+        //actions: [{ action: "open", title: "Open", icon: cheddarIcon }],
+      });
+    }
+  });
 }

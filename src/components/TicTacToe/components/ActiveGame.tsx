@@ -25,7 +25,7 @@ import TokenName from "./TokenName";
 import useScreenSize from "../../../hooks/useScreenSize";
 import { formatAccountId } from "../../../shared/helpers/formatAccountId";
 import {
-  addNotification,
+  addSWNotification,
   hasUserPermission,
 } from "../../../shared/helpers/notifications";
 
@@ -119,7 +119,7 @@ export function ActiveGame({
                   msg = "Game Over: You Lose!";
                 }
               }
-              addNotification(msg);
+              addSWNotification(msg);
             }
           }
         })

@@ -5,10 +5,11 @@ import { useContractParams } from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
 import { useWhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
 import {
-  addNotification,
+  addSWNotification,
   askUserPermission,
   hasUserPermission,
-  isNotificationSupported,
+  isPushNotificationSupported,
+  registerServiceWorker,
 } from "../../../shared/helpers/notifications";
 import Board from "../components/Board";
 import Info from "../components/Info";
@@ -54,26 +55,22 @@ export function TicTacToe() {
 
   const { height, width } = useScreenSize();
   const isLandscape = width > height * 1.5;
-  console.log(
-    new Date().toLocaleTimeString(),
-    //document.visibilityState,
-    //document.hasFocus(),
-    data
-  );
+  console.log(new Date().toLocaleTimeString(), data);
 
   useEffect(() => {
-    if (isNotificationSupported()) {
+    if (isPushNotificationSupported()) {
       console.log("Notifications supported");
       askUserPermission();
     } else {
       console.log("Notifications NOT supported");
     }
+    registerServiceWorker();
   }, []);
 
   useEffect(() => {
     if (data?.active_game && !activeGameParams.game_id) {
       if (hasUserPermission()) {
-        addNotification("You Have an Active Game");
+        addSWNotification("You Have an Active Game");
       }
       setActiveGameParams({
         ...initialActiveGameParamsState,
