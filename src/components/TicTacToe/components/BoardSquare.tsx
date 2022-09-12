@@ -8,6 +8,11 @@ import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
 import { GameParamsState } from "../containers/TicTacToe";
 import { LoadingSquare } from "./Board";
+import {
+  addSWNotification,
+  askUserPermission,
+  hasUserPermission,
+} from "../../../shared/helpers/notifications";
 
 type Props = {
   column: number;
@@ -52,6 +57,7 @@ export function BoardSquare({
       loadingSquare.row === null
     ) {
       const gameId = parseInt(data?.active_game?.[0]!);
+      askUserPermission();
       setLoadingSquare({ row, column });
       try {
         if (walletSelector.ticTacToeLogic) {
@@ -78,14 +84,21 @@ export function BoardSquare({
         };
       });
       setLoadingSquare({ row: null, column: null });
+      if (
+        currentPlayer.account_id === walletSelector.accountId &&
+        hasUserPermission()
+      ) {
+        addSWNotification("Is Your Turn");
+      }
     }
   }, [
     activeGameParams,
     currentPlayer,
     column,
     row,
-    setActiveGameParams,
     tiles,
+    walletSelector.accountId,
+    setActiveGameParams,
     setLoadingSquare,
   ]);
 
