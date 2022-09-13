@@ -17,13 +17,6 @@ import {
 type Props = {
   column: number;
   row: number;
-  squareSize: {
-    base: string;
-    sm: string;
-    md: string;
-    lg: string;
-    "2xl": string;
-  };
   activeGameParams: GameParamsState;
   setActiveGameParams: React.Dispatch<React.SetStateAction<GameParamsState>>;
   loadingSquare: LoadingSquare;
@@ -33,7 +26,6 @@ type Props = {
 export function BoardSquare({
   column,
   row,
-  squareSize,
   activeGameParams,
   setActiveGameParams,
   loadingSquare,
@@ -116,8 +108,8 @@ export function BoardSquare({
 
   return (
     <Box
-      height={squareSize}
-      width={squareSize}
+      height="100%"
+      width="100%"
       borderTop={row > 0 ? border : "0px"}
       borderBottom={row < 2 ? border : "0px"}
       borderLeft={column > 0 ? border : "0px"}

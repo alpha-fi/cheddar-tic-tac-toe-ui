@@ -1,5 +1,5 @@
 import { Grid } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { useContractParams } from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
@@ -48,12 +48,15 @@ export function TicTacToe() {
   const [activeGameParams, setActiveGameParams] = useState<GameParamsState>(
     initialActiveGameParamsState
   );
-  const walletSelector = useWalletSelector();
+  const [boardSize, setBoardSize] = useState(0);
 
+  const tictactoeContainer = useRef<HTMLDivElement | null>(null);
+
+  const walletSelector = useWalletSelector();
   const { data } = useContractParams();
   const { data: tokensData } = useWhiteListedTokens();
-
   const { height, width } = useScreenSize();
+
   const isLandscape = width > height * 1.5;
   console.log(new Date().toLocaleTimeString(), data);
 
@@ -83,6 +86,17 @@ export function TicTacToe() {
     }
   }, [activeGameParams.game_id, data?.active_game, walletSelector.accountId]);
 
+  useEffect(() => {
+    if (tictactoeContainer.current) {
+      const maxHeight = height - 180 > 346 ? height - 180 : 346;
+      const isFullWidthBoard = width < 480 || (width < 768 && !isLandscape);
+      const maxWidth = isFullWidthBoard
+        ? tictactoeContainer.current.offsetWidth
+        : (tictactoeContainer.current.offsetWidth - 20) / 2;
+      setBoardSize(maxHeight > maxWidth ? maxWidth : maxHeight);
+    }
+  }, [tictactoeContainer.current?.offsetWidth, height, isLandscape, width]);
+
   return (
     <Grid
       templateColumns={{
@@ -90,7 +104,8 @@ export function TicTacToe() {
         sm: isLandscape ? "1fr 1fr" : "1fr",
         md: "1fr 1fr",
       }}
-      gap={4}
+      gap="20px"
+      ref={tictactoeContainer}
     >
       {data && tokensData && (
         <>
@@ -104,6 +119,7 @@ export function TicTacToe() {
             isLandscape={isLandscape}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
+            boardSize={boardSize}
           />
         </>
       )}
