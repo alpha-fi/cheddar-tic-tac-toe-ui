@@ -44,6 +44,7 @@ export default function Board({
     <Flex justifyContent="center">
       <Grid
         templateColumns="1fr 1fr 1fr"
+        templateRows="1fr 1fr 1fr"
         height={boardSize}
         visibility={boardSize === 0 ? "hidden" : "inherit"}
         width={boardSize}
