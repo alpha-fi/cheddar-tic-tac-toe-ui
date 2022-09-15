@@ -311,16 +311,18 @@ export function ActiveGame({
                     Give Up
                   </PurpleButton>
                 )}
-                {
-                  <Button
-                    size="sm"
-                    colorScheme="red"
-                    borderRadius="full"
-                    onClick={handleStopGame}
-                  >
-                    Reclaim Game
-                  </Button>
-                }
+                {timeLeft === 0 &&
+                  data.active_game[1].current_player.account_id !==
+                    walletSelector.accountId && (
+                    <Button
+                      size="sm"
+                      colorScheme="red"
+                      borderRadius="full"
+                      onClick={handleStopGame}
+                    >
+                      Reclaim Game
+                    </Button>
+                  )}
               </Flex>
             </Flex>
           )}
