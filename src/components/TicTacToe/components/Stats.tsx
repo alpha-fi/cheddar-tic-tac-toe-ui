@@ -25,7 +25,8 @@ export function UserStats({ data }: Props) {
   useEffect(() => {
     walletSelector.ticTacToeLogic
       ?.getPlayerStats()
-      .then((resp) => setStats(resp));
+      .then((resp) => setStats(resp))
+      .catch((error) => console.error(error));
   }, [walletSelector.ticTacToeLogic, data?.active_game]);
 
   return (

@@ -58,7 +58,7 @@ export function TicTacToe() {
   const { height, width } = useScreenSize();
 
   const isLandscape = width > height * 1.5;
-  console.log(new Date().toLocaleTimeString(), data);
+  //console.log(new Date().toLocaleTimeString(), data);
 
   useEffect(() => {
     if (isPushNotificationSupported()) {
@@ -116,7 +116,6 @@ export function TicTacToe() {
             setActiveGameParams={setActiveGameParams}
           />
           <Board
-            isLandscape={isLandscape}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
             boardSize={boardSize}

@@ -66,8 +66,17 @@ export function OpponentInput({ opponentInput, setOpponentInput }: Props) {
                 exist: balanceExists,
               };
             });
-          });
-      }, 300);
+          })
+          .catch((error) =>
+            setOpponentInput((prev) => {
+              return {
+                ...prev,
+                loading: false,
+                exist: true,
+              };
+            })
+          );
+      }, 400);
       setTimer(timerId);
     }
   }, [opponentInput.id, setOpponentInput, walletSelector.ticTacToeLogic]);

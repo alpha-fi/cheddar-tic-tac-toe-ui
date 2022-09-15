@@ -218,8 +218,8 @@ export class TicTacToeLogic {
     wallet.signAndSendTransactions({ transactions });
   }
 
-  stopGame(gameId: number) {
-    this.ticTacToeContract.stop_game(gameId);
+  stopGame(gameId: number): Promise<FinalExecutionOutcome> {
+    return this.ticTacToeContract.stop_game(gameId);
   }
 
   private generateTransaction(

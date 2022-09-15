@@ -12,14 +12,12 @@ export type LoadingSquare = {
 
 type Props = {
   boardSize: number;
-  isLandscape: boolean;
   activeGameParams: GameParamsState;
   setActiveGameParams: React.Dispatch<React.SetStateAction<GameParamsState>>;
 };
 
 export default function Board({
   boardSize,
-  isLandscape,
   activeGameParams,
   setActiveGameParams,
 }: Props) {

@@ -34,7 +34,7 @@ export function isNotificationSupported() {
 
 export async function askUserPermission() {
   return await Notification.requestPermission().then((resp) =>
-    console.log(resp)
+    console.log("Notification Permission: " + resp)
   );
 }
 

@@ -28,6 +28,8 @@ import {
   addSWNotification,
   hasUserPermission,
 } from "../../../shared/helpers/notifications";
+import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
+import { ErrorModal } from "../../../shared/components/ErrorModal";
 
 type Props = {
   data: GameParams | undefined;
@@ -42,18 +44,29 @@ export function ActiveGame({
 }: Props) {
   const [timeLeft, settimeLeft] = useState<number | undefined>();
   const [loadingFinalizedGame, setLoadingFinalizedGame] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const walletSelector = useWalletSelector();
   const { width } = useScreenSize();
 
   const handleGiveUp = () => {
     if (data?.active_game?.[0]) {
-      walletSelector.ticTacToeLogic?.giveUp(parseInt(data.active_game[0]));
+      walletSelector.ticTacToeLogic
+        ?.giveUp(parseInt(data.active_game[0]))
+        .catch((error) => {
+          console.error(error);
+          setErrorMsg(getErrorMessage(error));
+        });
     }
   };
 
   const handleStopGame = () => {
     if (data?.active_game?.[0]) {
-      walletSelector.ticTacToeLogic?.stopGame(parseInt(data.active_game[0]));
+      walletSelector.ticTacToeLogic
+        ?.stopGame(parseInt(data.active_game[0]))
+        .catch((error) => {
+          console.error(error);
+          setErrorMsg(getErrorMessage(error));
+        });
     }
   };
 
@@ -123,7 +136,10 @@ export function ActiveGame({
             }
           }
         })
-        .catch((err) => console.error(err))
+        .catch((error) => {
+          console.error(error);
+          setErrorMsg(getErrorMessage(error));
+        })
         .finally(() => setLoadingFinalizedGame(false));
     }
   }, [
@@ -135,55 +151,79 @@ export function ActiveGame({
   ]);
 
   return (
-    <AccordionItem
-      bg="#fffc"
-      borderRadius={data?.active_game ? "8px" : "8px 8px 0 0"}
-    >
-      <h2>
-        <AccordionButton _focus={{ boxShadow: "0 0 0 0 #0000" }}>
-          <Box flex="1" textAlign="center">
-            <Text as="h2" textAlign="center" fontSize="1.1em" fontWeight="700">
-              Actual Game
-            </Text>
-          </Box>
-          {!data?.active_game && <AccordionIcon />}
-        </AccordionButton>
-      </h2>
-      <AccordionPanel
-        pb={4}
-        bg="#eee"
-        borderRadius="8px"
-        justifyContent="space-between"
-        alignItems="center"
-        m="12px 16px"
+    <>
+      <AccordionItem
+        bg="#fffc"
+        borderRadius={data?.active_game ? "8px" : "8px 8px 0 0"}
       >
-        {loadingFinalizedGame && (
-          <Flex h="100%" justifyContent="center" alignItems="center">
-            <Spinner
-              thickness="0px"
-              speed="0.65s"
-              size="xl"
-              bgImage={cheddarIcon}
-            />
-          </Flex>
-        )}
-        {data && !data.active_game && activeGameParams.game_result.result && (
-          <Flex flexDirection="column" alignItems="center" rowGap={2}>
-            {activeGameParams.game_result.result === "Win" &&
-              activeGameParams.game_result.winner_id && (
-                <>
-                  <Text>
-                    {activeGameParams.game_result.winner_id ===
-                    walletSelector.accountId
-                      ? "You Are The Winner!"
-                      : `The Winner is 
+        <h2>
+          <AccordionButton _focus={{ boxShadow: "0 0 0 0 #0000" }}>
+            <Box flex="1" textAlign="center">
+              <Text
+                as="h2"
+                textAlign="center"
+                fontSize="1.1em"
+                fontWeight="700"
+              >
+                Actual Game
+              </Text>
+            </Box>
+            {!data?.active_game && <AccordionIcon />}
+          </AccordionButton>
+        </h2>
+        <AccordionPanel
+          pb={4}
+          bg="#eee"
+          borderRadius="8px"
+          justifyContent="space-between"
+          alignItems="center"
+          m="12px 16px"
+        >
+          {loadingFinalizedGame && (
+            <Flex h="100%" justifyContent="center" alignItems="center">
+              <Spinner
+                thickness="0px"
+                speed="0.65s"
+                size="xl"
+                bgImage={cheddarIcon}
+              />
+            </Flex>
+          )}
+          {data && !data.active_game && activeGameParams.game_result.result && (
+            <Flex flexDirection="column" alignItems="center" rowGap={2}>
+              {activeGameParams.game_result.result === "Win" &&
+                activeGameParams.game_result.winner_id && (
+                  <>
+                    <Text>
+                      {activeGameParams.game_result.winner_id ===
+                      walletSelector.accountId
+                        ? "You Are The Winner!"
+                        : `The Winner is 
                       ${formatAccountId(
                         activeGameParams.game_result.winner_id,
                         width
                       )}`}
-                  </Text>
+                    </Text>
+                    <Text>
+                      Reward:{" "}
+                      {utils.format.formatNearAmount(
+                        activeGameParams.reward_or_tie_refund.balance!
+                      )}{" "}
+                      {
+                        <TokenName
+                          tokenId={
+                            activeGameParams.reward_or_tie_refund.token_id!
+                          }
+                        />
+                      }
+                    </Text>
+                  </>
+                )}
+              {activeGameParams.game_result.result === "Tie" && (
+                <>
+                  <Text>Tied Game!</Text>
                   <Text>
-                    Reward:{" "}
+                    Refund:{" "}
                     {utils.format.formatNearAmount(
                       activeGameParams.reward_or_tie_refund.balance!
                     )}{" "}
@@ -197,99 +237,81 @@ export function ActiveGame({
                   </Text>
                 </>
               )}
-            {activeGameParams.game_result.result === "Tie" && (
-              <>
-                <Text>Tied Game!</Text>
+              <Button
+                size="sm"
+                colorScheme="red"
+                borderRadius="full"
+                onClick={handleCloseGame}
+              >
+                Close
+              </Button>
+            </Flex>
+          )}
+          {data && data.active_game && (
+            <Flex flexDirection="column" alignItems="center" rowGap={2}>
+              <Flex alignItems="center">
+                <Text>Current: </Text>
+                {data.active_game[1].current_player.piece === "O" ? (
+                  <CircleIcon
+                    w="26px"
+                    h="26px"
+                    p="3px"
+                    borderRadius="4px"
+                    mx="5px"
+                    bg="#0009"
+                    color="yellowCheddar"
+                  />
+                ) : (
+                  <CrossIcon
+                    w="26px"
+                    h="26px"
+                    p="3px"
+                    borderRadius="4px"
+                    mx="5px"
+                    bg="#0009"
+                    color="yellowCheddar"
+                  />
+                )}
                 <Text>
-                  Refund:{" "}
-                  {utils.format.formatNearAmount(
-                    activeGameParams.reward_or_tie_refund.balance!
-                  )}{" "}
-                  {
-                    <TokenName
-                      tokenId={activeGameParams.reward_or_tie_refund.token_id!}
-                    />
-                  }
+                  {data.active_game[1].current_player.account_id ===
+                  walletSelector.accountId
+                    ? "You"
+                    : formatAccountId(
+                        data.active_game[1].current_player.account_id,
+                        width
+                      )}
                 </Text>
-              </>
-            )}
-            <Button
-              size="sm"
-              colorScheme="red"
-              borderRadius="full"
-              onClick={handleCloseGame}
-            >
-              Close
-            </Button>
-          </Flex>
-        )}
-        {data && data.active_game && (
-          <Flex flexDirection="column" alignItems="center" rowGap={2}>
-            <Flex alignItems="center">
-              <Text>Current: </Text>
-              {data.active_game[1].current_player.piece === "O" ? (
-                <CircleIcon
-                  w="26px"
-                  h="26px"
-                  p="3px"
-                  borderRadius="4px"
-                  mx="5px"
-                  bg="#0009"
-                  color="yellowCheddar"
-                />
-              ) : (
-                <CrossIcon
-                  w="26px"
-                  h="26px"
-                  p="3px"
-                  borderRadius="4px"
-                  mx="5px"
-                  bg="#0009"
-                  color="yellowCheddar"
-                />
-              )}
+              </Flex>
+              <Text>
+                Game Started at:{" "}
+                {
+                  new Date(data.active_game[1].initiated_at_sec * 1000)
+                    .toString()
+                    .split(" ")[4]
+                }
+              </Text>
+              <Text>
+                Total Bet:{" "}
+                {utils.format.formatNearAmount(
+                  data.active_game[1].reward.balance
+                )}{" "}
+                {<TokenName tokenId={data.active_game[1].reward.token_id} />}
+              </Text>
               <Text>
                 {data.active_game[1].current_player.account_id ===
                 walletSelector.accountId
-                  ? "You"
-                  : formatAccountId(
-                      data.active_game[1].current_player.account_id,
-                      width
-                    )}
+                  ? "Turn "
+                  : "Opponent "}
+                Seconds Left: {timeLeft}
               </Text>
-            </Flex>
-            <Text>
-              Game Started at:{" "}
-              {
-                new Date(data.active_game[1].initiated_at_sec * 1000)
-                  .toString()
-                  .split(" ")[4]
-              }
-            </Text>
-            <Text>
-              Total Bet:{" "}
-              {utils.format.formatNearAmount(
-                data.active_game[1].reward.balance
-              )}{" "}
-              {<TokenName tokenId={data.active_game[1].reward.token_id} />}
-            </Text>
-            <Text>
-              {data.active_game[1].current_player.account_id ===
-              walletSelector.accountId
-                ? "Turn "
-                : "Opponent "}
-              Seconds Left: {timeLeft}
-            </Text>
-            <Flex gap={3}>
-              {data.active_game[1].current_player.account_id ===
-                walletSelector.accountId && (
-                <PurpleButton size="sm" onClick={handleGiveUp}>
-                  Give Up
-                </PurpleButton>
-              )}
-              {timeLeft === 0 &&
-                data.active_game[1].current_player.account_id !==
+              <Flex gap={3}>
+                {data.active_game[1].current_player.account_id ===
                   walletSelector.accountId && (
+                  <PurpleButton size="sm" onClick={handleGiveUp}>
+                    Give Up
+                  </PurpleButton>
+                )}
+                {
                   <Button
                     size="sm"
                     colorScheme="red"
@@ -298,11 +320,13 @@ export function ActiveGame({
                   >
                     Reclaim Game
                   </Button>
-                )}
+                }
+              </Flex>
             </Flex>
-          </Flex>
-        )}
-      </AccordionPanel>
-    </AccordionItem>
+          )}
+        </AccordionPanel>
+      </AccordionItem>
+      <ErrorModal msg={errorMsg} setMsg={setErrorMsg} />
+    </>
   );
 }

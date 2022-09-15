@@ -1,5 +1,5 @@
 import { Box, Flex, Spinner } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import { useQuery } from "react-query";
 import { GameParams } from "../../../hooks/useContractParams";
@@ -13,6 +13,8 @@ import {
   askUserPermission,
   hasUserPermission,
 } from "../../../shared/helpers/notifications";
+import { ErrorModal } from "../../../shared/components/ErrorModal";
+import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
 
 type Props = {
   column: number;
@@ -31,6 +33,8 @@ export function BoardSquare({
   loadingSquare,
   setLoadingSquare,
 }: Props) {
+  const [errorMsg, setErrorMsg] = useState("");
+
   const walletSelector = useWalletSelector();
   const { data } = useQuery<GameParams>("contractParams");
   const border = "5px solid";
@@ -38,9 +42,7 @@ export function BoardSquare({
   const tiles = data?.active_game?.[1].tiles;
   const currentPlayer = data?.active_game?.[1].current_player;
 
-  const handleClick = async (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (
       data?.active_game &&
       activeGameParams.board[row][column] === null &&
@@ -51,13 +53,14 @@ export function BoardSquare({
       const gameId = parseInt(data?.active_game?.[0]!);
       askUserPermission();
       setLoadingSquare({ row, column });
-      try {
-        if (walletSelector.ticTacToeLogic) {
-          await walletSelector.ticTacToeLogic.play(gameId, row, column);
-        }
-      } catch (error) {
-        console.error(error);
-        setLoadingSquare({ row: null, column: null });
+      if (walletSelector.ticTacToeLogic) {
+        walletSelector.ticTacToeLogic
+          .play(gameId, row, column)
+          .catch((error) => {
+            console.error(error);
+            setErrorMsg(getErrorMessage(error));
+            setLoadingSquare({ row: null, column: null });
+          });
       }
     }
   };
@@ -107,51 +110,54 @@ export function BoardSquare({
     loadingSquare.column === null;
 
   return (
-    <Box
-      height="100%"
-      width="100%"
-      borderTop={row > 0 ? border : "0px"}
-      borderBottom={row < 2 ? border : "0px"}
-      borderLeft={column > 0 ? border : "0px"}
-      borderRight={column < 2 ? border : "0px"}
-      borderColor={borderColor}
-    >
+    <>
       <Box
-        cursor={isAvailableToClick ? "pointer" : "auto"}
-        id={`r${row}c${column}`}
-        w="100%"
-        h="100%"
-        onClick={handleClick}
-        _hover={isAvailableToClick ? { bg: "#FFF4" } : {}}
+        height="100%"
+        width="100%"
+        borderTop={row > 0 ? border : "0px"}
+        borderBottom={row < 2 ? border : "0px"}
+        borderLeft={column > 0 ? border : "0px"}
+        borderRight={column < 2 ? border : "0px"}
+        borderColor={borderColor}
       >
-        {activeGameParams.board[row][column] && (
-          <Flex justifyContent="center" alignItems="center" h="100%">
-            {activeGameParams.board[row][column] === "O" ? (
-              <CircleIcon
-                w="75%"
-                h="75%"
-                color={isActiveTurn ? "yellowCheddar" : "#ffd26288"}
+        <Box
+          cursor={isAvailableToClick ? "pointer" : "auto"}
+          id={`r${row}c${column}`}
+          w="100%"
+          h="100%"
+          onClick={handleClick}
+          _hover={isAvailableToClick ? { bg: "#FFF4" } : {}}
+        >
+          {activeGameParams.board[row][column] && (
+            <Flex justifyContent="center" alignItems="center" h="100%">
+              {activeGameParams.board[row][column] === "O" ? (
+                <CircleIcon
+                  w="75%"
+                  h="75%"
+                  color={isActiveTurn ? "yellowCheddar" : "#ffd26288"}
+                />
+              ) : (
+                <CrossIcon
+                  w="65%"
+                  h="65%"
+                  color={isActiveTurn ? "yellowCheddar" : "#ffd26288"}
+                />
+              )}
+            </Flex>
+          )}
+          {loadingSquare.column === column && loadingSquare.row === row && (
+            <Flex h="100%" justifyContent="center" alignItems="center">
+              <Spinner
+                thickness="0px"
+                speed="0.65s"
+                size="xl"
+                bgImage={cheddarIcon}
               />
-            ) : (
-              <CrossIcon
-                w="65%"
-                h="65%"
-                color={isActiveTurn ? "yellowCheddar" : "#ffd26288"}
-              />
-            )}
-          </Flex>
-        )}
-        {loadingSquare.column === column && loadingSquare.row === row && (
-          <Flex h="100%" justifyContent="center" alignItems="center">
-            <Spinner
-              thickness="0px"
-              speed="0.65s"
-              size="xl"
-              bgImage={cheddarIcon}
-            />
-          </Flex>
-        )}
+            </Flex>
+          )}
+        </Box>
       </Box>
-    </Box>
+      <ErrorModal msg={errorMsg} setMsg={setErrorMsg} />
+    </>
   );
 }
