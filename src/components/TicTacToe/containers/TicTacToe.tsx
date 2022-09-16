@@ -88,7 +88,7 @@ export function TicTacToe() {
 
   useEffect(() => {
     if (tictactoeContainer.current) {
-      const maxHeight = height - 180 > 346 ? height - 180 : 346;
+      const maxHeight = height - 160 > 346 ? height - 160 : 346;
       const isFullWidthBoard = width < 480 || (width < 768 && !isLandscape);
       const maxWidth = isFullWidthBoard
         ? tictactoeContainer.current.offsetWidth
@@ -96,6 +96,10 @@ export function TicTacToe() {
       setBoardSize(maxHeight > maxWidth ? maxWidth : maxHeight);
     }
   }, [tictactoeContainer.current?.offsetWidth, height, isLandscape, width]);
+
+  const boardFirst =
+    activeGameParams.game_id !== null &&
+    (width < 480 || (!isLandscape && width < 768));
 
   return (
     <Grid
@@ -110,15 +114,19 @@ export function TicTacToe() {
       {data && tokensData && (
         <>
           <Info
+            boardFirst={boardFirst}
+            isLandScape={isLandscape}
+            boardSize={boardSize}
             data={data}
             tokensData={tokensData}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
           />
           <Board
+            boardFirst={boardFirst}
+            boardSize={boardSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
-            boardSize={boardSize}
           />
         </>
       )}

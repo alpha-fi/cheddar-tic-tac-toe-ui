@@ -11,12 +11,14 @@ export type LoadingSquare = {
 };
 
 type Props = {
+  boardFirst: boolean;
   boardSize: number;
   activeGameParams: GameParamsState;
   setActiveGameParams: React.Dispatch<React.SetStateAction<GameParamsState>>;
 };
 
 export default function Board({
+  boardFirst,
   boardSize,
   activeGameParams,
   setActiveGameParams,

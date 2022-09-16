@@ -1,4 +1,4 @@
-import { Accordion, Box } from "@chakra-ui/react";
+import { Accordion, Flex } from "@chakra-ui/react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { GameParams } from "../../../hooks/useContractParams";
 import WaitingList from "./WaitingList";
@@ -12,15 +12,21 @@ import { Referral } from "./Referral";
 import { WhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
 
 type Props = {
+  boardFirst: boolean;
+  boardSize: number;
   data: GameParams | undefined;
   tokensData: WhiteListedTokens[];
+  isLandScape: boolean;
   activeGameParams: GameParamsState;
   setActiveGameParams: React.Dispatch<React.SetStateAction<GameParamsState>>;
 };
 
 export default function Info({
+  boardFirst,
+  boardSize,
   data,
   tokensData,
+  isLandScape,
   activeGameParams,
   setActiveGameParams,
 }: Props) {
@@ -38,8 +44,13 @@ export default function Info({
   }, [data?.available_players, walletSelector.accountId]);
 
   return (
-    <Box>
+    <Flex
+      alignItems="center"
+      flexDirection="column"
+      gridRowStart={boardFirst ? "2" : "1"}
+    >
       <Accordion
+        width={isLandScape ? "100%" : boardSize}
         index={data?.active_game ? 0 : undefined}
         defaultIndex={[0]}
         allowToggle
@@ -67,7 +78,7 @@ export default function Info({
           !haveOwnChallenge && <WaitingListForm tokensData={tokensData} />}
       </Accordion>
 
-      <Accordion allowToggle>
+      <Accordion allowToggle width={isLandScape ? "100%" : boardSize}>
         {walletSelector.selector.isSignedIn() && <UserStats data={data} />}
         <HowToPlay
           showingReferral={walletSelector.accountId !== null}
@@ -77,6 +88,6 @@ export default function Info({
           <Referral accountId={walletSelector.accountId} />
         )}
       </Accordion>
-    </Box>
+    </Flex>
   );
 }

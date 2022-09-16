@@ -42,7 +42,7 @@ export default function Main() {
   return (
     <Box>
       <Navbar />
-      <Container maxW="container.xl" p="30px">
+      <Container maxW="container.xl" p="20px">
         <TicTacToe />
       </Container>
       <Footer />
