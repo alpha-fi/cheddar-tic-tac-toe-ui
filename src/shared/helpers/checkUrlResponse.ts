@@ -15,10 +15,6 @@ function removeQueryString(savedParams = "") {
   }
 }
 
-function hasSuccessValue(obj: {}): obj is { SuccessValue: string } {
-  return "SuccessValue" in obj;
-}
-
 async function checkRedirectSearchParamsMultiple(accountId: string): Promise<
   {
     err?: string;
@@ -43,12 +39,10 @@ async function checkRedirectSearchParamsMultiple(accountId: string): Promise<
     );*/
 
     if (errorCode) {
-      const newError = "Wallet error"; // + " " + errorMessage;
-      console.log(newError);
       //console.error(newError);
       return [
         {
-          err: newError,
+          err: errorCode,
         },
       ];
     }
@@ -62,7 +56,6 @@ async function checkRedirectSearchParamsMultiple(accountId: string): Promise<
     } else {
       transactionArray = [txHash];
     }
-    console.log(transactionArray);
 
     const decodedTxHashArray = transactionArray.map((hash) =>
       utils.serialize.base_decode(hash)
@@ -75,9 +68,6 @@ async function checkRedirectSearchParamsMultiple(accountId: string): Promise<
         return await provider.txStatus(decodedTxHash, accountId);
       })
     );
-    console.log(finalExecOutcomeArray);
-    console.log(hasSuccessValue(finalExecOutcomeArray[0].status));
-    console.log(getTransactionLastResult(finalExecOutcomeArray[0]));
 
     let output = [];
     for (let i = 0; i < finalExecOutcomeArray.length; i++) {
@@ -144,8 +134,6 @@ export const checkUrlResponse = async (accountId: string) => {
       accountId
     );
 
-    let method = "";
-    let err;
     let args: any[] = [];
 
     searchParamsResultArray.forEach((searchParamsResult) => {
@@ -161,7 +149,8 @@ export const checkUrlResponse = async (accountId: string) => {
       }
 
       if (errResult) {
-        err = errResult;
+        response.type = "error";
+        response.msg = errResult;
         return;
       }
 
@@ -180,25 +169,28 @@ export const checkUrlResponse = async (accountId: string) => {
       }
     });
 
-    if (err) {
-      response.type = "error";
-      switch (err) {
+    if (response.type === "error") {
+      switch (response.msg) {
         default:
-          response.msg = "Wallet Error, Please Try Again.";
+          response.msg =
+            "Wallet Error, Please Try Again. If You Have Enough Balance In Your Account And The Error Persists, Contact The System Administrator.";
           break;
       }
-    } else if (method) {
-      switch (method) {
-        case "offer":
-          console.log("your offer was successful");
-          break;
-
+    } else if (
+      response.method &&
+      searchParamsResultArray[0].finalExecutionOutcome
+    ) {
+      response.type = "success";
+      response.url = `${getEnv(ENV).nearEnv.explorerUrl}transactions/${
+        searchParamsResultArray[0].finalExecutionOutcome.transaction.hash
+      }`;
+      switch (response.method) {
         default:
-          console.log("Method", method);
-          console.log("Args", args.join("\n"));
+          response.msg = "Your Transaction Was Successful";
           break;
       }
     }
   }
+  console.log(response);
   return response;
 };
