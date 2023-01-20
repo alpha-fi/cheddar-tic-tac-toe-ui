@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
+import { GridSize } from "../../lib/constants";
 
 type Props = {
   showingReferral: boolean;
@@ -46,7 +47,7 @@ export function HowToPlay({ showingReferral, showingStats }: Props) {
         alignItems="center"
         m="12px 16px"
       >
-        <Text>- There is a 3 by 3 grid.</Text>
+        <Text>- This is a {GridSize.rows} by {GridSize.columns} grid.</Text>
         <Text>
           - One player will be{" "}
           <CircleIcon
@@ -72,12 +73,12 @@ export function HowToPlay({ showingReferral, showingStats }: Props) {
         </Text>
         <Text>- You will take turns to put your marks.</Text>
         <Text>
-          - The first player to get 3 of their marks in a row (vertical,
+          - The first player to get 5 of their marks in a row (vertical,
           horizontal or diagonally) is the winner.
         </Text>
-        <Text>- When all 9 squares are full, the game is over.</Text>
+        <Text>- When all {GridSize.columns * GridSize.rows} squares are full, the game is over.</Text>
         <Text>
-          - If no player has 3 markes in a row, the game ends in a tie
+          - If no player has 5 markes in a row, the game ends in a tie.
         </Text>
       </AccordionPanel>
     </AccordionItem>

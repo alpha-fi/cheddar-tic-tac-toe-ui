@@ -72,7 +72,7 @@ export default function Board({
         visibility={boardSize === 0 ? "hidden" : "inherit"}
         width={boardSize}
         bg="#333c"
-        border="10px solid"
+        border="8px solid"
         borderRadius="8px"
         borderColor="purpleCheddar"
       >
