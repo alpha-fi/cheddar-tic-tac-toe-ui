@@ -38,7 +38,7 @@ export function BoardSquare({
 
   const walletSelector = useWalletSelector();
   const { data } = useQuery<GameParams>("contractParams");
-  const border = "0.5px solid";
+  const border = "0.3px solid";
   const borderColor = "purpleCheddar";
   const tiles = data?.active_game?.[1].tiles;
   const currentPlayer = data?.active_game?.[1].current_player;
@@ -113,9 +113,9 @@ export function BoardSquare({
   return (
     <>
       <Box
-        minHeight="2rem"
+        minHeight="1.5rem"
         maxHeight="100%"
-        minWidth="2rem"
+        minWidth="1.5rem"
         maxWidth="100%"
         borderTop={row > 0 ? border : "0px"}
         borderBottom={row < GridSize.rows ? border : "0px"}
