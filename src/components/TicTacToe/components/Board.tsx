@@ -2,6 +2,7 @@ import { Flex, Grid } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { GameParams } from "../../../hooks/useContractParams";
+import { GridSize } from "../../lib/constants";
 import { GameParamsState } from "../containers/TicTacToe";
 import { BoardSquare } from "./BoardSquare";
 
@@ -27,7 +28,7 @@ export default function Board({
     row: null,
     column: null,
   });
-
+  const [grid, setGrid] = useState<JSX.Element[][]>([]);
   const { data } = useQuery<GameParams>("contractParams");
 
   useEffect(() => {
@@ -40,11 +41,33 @@ export default function Board({
     }
   }, [data?.active_game, loadingSquare]);
 
+  useEffect(() => {
+    let newGrid:JSX.Element[][] = [];
+    for(let i = 0; i < GridSize.rows; i++) {
+      let row:JSX.Element[] = [];
+      for(let j = 0; j < GridSize.columns; j++) {
+        row.push(
+        <BoardSquare
+          row={i}
+          column={j}
+          activeGameParams={activeGameParams}
+          setActiveGameParams={setActiveGameParams}
+          loadingSquare={loadingSquare}
+          setLoadingSquare={setLoadingSquare}
+        />
+        );
+      }
+      newGrid.push(row);
+    }
+   setGrid(newGrid)
+  }, [activeGameParams,loadingSquare,setActiveGameParams]);
+
   return (
     <Flex justifyContent="center">
-      <Grid
-        templateColumns="1fr 1fr 1fr"
-        templateRows="1fr 1fr 1fr"
+      <Grid flex="1"
+        style={{overflow:"auto"}}
+        templateColumns={`repeat(${GridSize.columns},1fr)`}
+        templateRows={`repeat(${GridSize.rows},1fr)`}
         height={boardSize}
         visibility={boardSize === 0 ? "hidden" : "inherit"}
         width={boardSize}
@@ -53,78 +76,13 @@ export default function Board({
         borderRadius="8px"
         borderColor="purpleCheddar"
       >
-        <BoardSquare
-          row={0}
-          column={0}
-          activeGameParams={activeGameParams}
-          setActiveGameParams={setActiveGameParams}
-          loadingSquare={loadingSquare}
-          setLoadingSquare={setLoadingSquare}
-        />
-        <BoardSquare
-          row={0}
-          column={1}
-          activeGameParams={activeGameParams}
-          setActiveGameParams={setActiveGameParams}
-          loadingSquare={loadingSquare}
-          setLoadingSquare={setLoadingSquare}
-        />
-        <BoardSquare
-          row={0}
-          column={2}
-          activeGameParams={activeGameParams}
-          setActiveGameParams={setActiveGameParams}
-          loadingSquare={loadingSquare}
-          setLoadingSquare={setLoadingSquare}
-        />
-        <BoardSquare
-          row={1}
-          column={0}
-          activeGameParams={activeGameParams}
-          setActiveGameParams={setActiveGameParams}
-          loadingSquare={loadingSquare}
-          setLoadingSquare={setLoadingSquare}
-        />
-        <BoardSquare
-          row={1}
-          column={1}
-          activeGameParams={activeGameParams}
-          setActiveGameParams={setActiveGameParams}
-          loadingSquare={loadingSquare}
-          setLoadingSquare={setLoadingSquare}
-        />
-        <BoardSquare
-          row={1}
-          column={2}
-          activeGameParams={activeGameParams}
-          setActiveGameParams={setActiveGameParams}
-          loadingSquare={loadingSquare}
-          setLoadingSquare={setLoadingSquare}
-        />
-        <BoardSquare
-          row={2}
-          column={0}
-          activeGameParams={activeGameParams}
-          setActiveGameParams={setActiveGameParams}
-          loadingSquare={loadingSquare}
-          setLoadingSquare={setLoadingSquare}
-        />
-        <BoardSquare
-          row={2}
-          column={1}
-          activeGameParams={activeGameParams}
-          setActiveGameParams={setActiveGameParams}
-          loadingSquare={loadingSquare}
-          setLoadingSquare={setLoadingSquare}
-        />
-        <BoardSquare
-          row={2}
-          column={2}
-          activeGameParams={activeGameParams}
-          setActiveGameParams={setActiveGameParams}
-          loadingSquare={loadingSquare}
-          setLoadingSquare={setLoadingSquare}
-        />
+        {grid.map((row: JSX.Element[], i) => (
+           row.map((square, j) => (
+           <>
+           {square}
+           </>
+          ))
+        ))}
       </Grid>
     </Flex>
   );

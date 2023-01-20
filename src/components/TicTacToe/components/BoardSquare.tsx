@@ -15,6 +15,7 @@ import {
 } from "../../../shared/helpers/notifications";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
 import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
+import { GridSize } from "../../lib/constants";
 
 type Props = {
   column: number;
@@ -112,12 +113,14 @@ export function BoardSquare({
   return (
     <>
       <Box
-        height="100%"
-        width="100%"
+        minHeight="7rem"
+        maxHeight="100%"
+        minWidth="7rem"
+        maxWidth="100%"
         borderTop={row > 0 ? border : "0px"}
-        borderBottom={row < 2 ? border : "0px"}
+        borderBottom={row < GridSize.rows ? border : "0px"}
         borderLeft={column > 0 ? border : "0px"}
-        borderRight={column < 2 ? border : "0px"}
+        borderRight={column < GridSize.columns ? border : "0px"}
         borderColor={borderColor}
       >
         <Box

@@ -59,7 +59,7 @@ export default function WaitingList({
                 player[1].opponent_id !== walletSelector.accountId
             ).length && (
             <Flex justifyContent="center" alignItems="center">
-              <Text>No Players Availble. Be The First!</Text>
+              <Text>No Players Available. Be The First!</Text>
             </Flex>
           )}
         {walletSelector.selector.isSignedIn() &&

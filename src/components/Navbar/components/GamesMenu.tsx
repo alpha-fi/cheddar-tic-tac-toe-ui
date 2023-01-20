@@ -8,7 +8,6 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Text,
 } from "@chakra-ui/react";
 import checkersIcon from "../../../assets/checkers-icon.png";
 import gamepadIcon from "../../../assets/gamepad-icon.svg";

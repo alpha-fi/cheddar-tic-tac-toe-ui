@@ -11,6 +11,7 @@ import {
   isPushNotificationSupported,
   registerServiceWorker,
 } from "../../../shared/helpers/notifications";
+import { GridSize } from "../../lib/constants";
 import Board from "../components/Board";
 import Info from "../components/Info";
 
@@ -68,6 +69,19 @@ export function TicTacToe() {
       console.log("Notifications NOT supported");
     }
     registerServiceWorker();
+    let board:null[][] = []
+    for(let i = 0; i < GridSize.rows; i++) {
+        board[i] = []
+        for(let j = 0; j < GridSize.columns; j++) {
+            board[i][j] = null
+        }
+    }
+    setActiveGameParams(prevActiveParams => {
+      return { 
+        ...prevActiveParams, 
+        board:board
+      }
+    })
   }, []);
 
   useEffect(() => {
