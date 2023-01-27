@@ -11,6 +11,7 @@ export function ButtonConnectWallet() {
   const handleOnClick = async () => {
     if (walletSelector.selector.isSignedIn() && walletSelector.wallet) {
       walletSelector.wallet.signOut();
+      window.location.reload() // to update the active game state
     } else {
       walletSelector.modal.show();
     }
