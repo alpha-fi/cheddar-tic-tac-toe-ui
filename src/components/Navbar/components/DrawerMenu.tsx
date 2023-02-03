@@ -84,7 +84,7 @@ export function DrawerMenu() {
                   />
                 </Box>
               </Link>
-              <Link
+              {/* <Link
                 p="16px 24px"
                 display="flex"
                 href="https://draw.cheddar.farm"
@@ -97,7 +97,7 @@ export function DrawerMenu() {
                 <Text fontSize="1.2em" ml="8px">
                   🎨
                 </Text>
-              </Link>
+              </Link> */}
               <Link
                 p="16px 24px"
                 display="flex"

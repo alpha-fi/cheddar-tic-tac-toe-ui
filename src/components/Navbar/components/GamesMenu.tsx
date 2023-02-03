@@ -27,7 +27,7 @@ export default function GamesMenu() {
         Play
       </MenuButton>
       <MenuList minWidth="auto">
-        <MenuItem
+        {/* <MenuItem
           as={Link}
           href="https://draw.cheddar.farm"
           target="_blank"
@@ -39,7 +39,7 @@ export default function GamesMenu() {
           <Text fontSize="1.2em" ml="8px">
             🎨
           </Text>
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem
           as={Link}
           href="https://vps179324.iceservers.net/"
