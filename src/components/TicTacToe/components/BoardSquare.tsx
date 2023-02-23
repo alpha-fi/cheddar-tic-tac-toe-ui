@@ -44,9 +44,13 @@ export function BoardSquare({
   const currentPlayer = data?.active_game?.[1].current_player;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    // no account selected
+    // account is not selected
     if(!walletSelector.accountId){
       setErrorMsg("Please connect to wallet.");
+    }
+    // Game is over
+    if(activeGameParams.game_result.result){
+      setErrorMsg("Game is Over.");
     }
    if (
       data?.active_game &&
