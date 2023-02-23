@@ -1,7 +1,7 @@
 import { Grid } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { useContractParams } from "../../../hooks/useContractParams";
+import { Coords, GameId, Piece, Tiles, useContractParams } from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
 import { getTokens } from "../../../shared/helpers/getTokens";
 import {
@@ -20,12 +20,12 @@ export type GameParamsState = {
   game_result: { result: string | null; winner_id: string | null };
   player1: string | null;
   player2: string | null;
-  current_player: { piece: "O" | "X" | null; account_id: string | null };
+  current_player: string | null;
   reward_or_tie_refund: {
     token_id: string | null;
     balance: string | null;
   };
-  board: ("O" | "X" | null)[][];
+  tiles: Tiles | null;
 };
 
 export const initialActiveGameParamsState = {
@@ -33,16 +33,12 @@ export const initialActiveGameParamsState = {
   game_result: { result: null, winner_id: null },
   player1: null,
   player2: null,
-  current_player: { piece: null, account_id: null },
+  current_player: null,
   reward_or_tie_refund: {
     token_id: null,
     balance: null,
   },
-  board: [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ],
+  tiles: null,
 };
 
 export function TicTacToe() {
@@ -69,19 +65,6 @@ export function TicTacToe() {
       console.log("Notifications NOT supported");
     }
     registerServiceWorker();
-    let board:null[][] = []
-    for(let i = 0; i < GridSize.rows; i++) {
-        board[i] = []
-        for(let j = 0; j < GridSize.columns; j++) {
-            board[i][j] = null
-        }
-    }
-    setActiveGameParams(prevActiveParams => {
-      return { 
-        ...prevActiveParams, 
-        board:board
-      }
-    })
   }, []);
 
   useEffect(() => {
@@ -93,7 +76,7 @@ export function TicTacToe() {
         ...initialActiveGameParamsState,
         game_id: data.active_game[0],
         current_player: data.active_game[1].current_player,
-        board: data.active_game[1].tiles,
+        tiles: data.active_game[1].tiles,
         player1: data.active_game[1].player1,
         player2: data.active_game[1].player2,
       });

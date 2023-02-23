@@ -2,6 +2,7 @@ import { Button, Flex, Grid, Text } from "@chakra-ui/react";
 import { utils } from "near-api-js";
 import { useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
+import { GameConfigView } from "../../../hooks/useContractParams";
 import { AvailablePlayerConfig } from "../../../near/contracts/TicTacToe";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
@@ -10,7 +11,7 @@ import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
 import TokenName from "./TokenName";
 
 type Props = {
-  player: [string, AvailablePlayerConfig];
+  player: [string, GameConfigView];
   width: number;
 };
 

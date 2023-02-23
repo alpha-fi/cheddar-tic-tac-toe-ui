@@ -1,5 +1,6 @@
 import { Action, FinalExecutionOutcome } from "@near-wallet-selector/core";
 import { utils } from "near-api-js";
+import { ContractParams, Tiles } from "../../hooks/useContractParams";
 import { ENV, getEnv } from "../config";
 import { DEFAULT_GAS, SelectorWallet } from "../wallet/wallet-selector";
 
@@ -10,12 +11,6 @@ export interface AvailablePlayerConfig {
   referrer_id: string | null;
 }
 
-export interface ContractParams {
-  games: object;
-  available_players: [string, AvailablePlayerConfig][];
-  service_fee_percentage: string;
-  max_game_duration: string;
-}
 export interface FinalizedGame {
   game_result: string | any;
   player1: string;
@@ -24,8 +19,9 @@ export interface FinalizedGame {
     token_id: string;
     balance: string;
   };
-  board: ("O" | "X" | null)[][];
+  tiles: Tiles;
 }
+
 export interface Stats {
   referrer_id: string | null;
   games_played: number;
@@ -76,10 +72,10 @@ export class TicTacToeContract {
             referrer_id && opponent_id
               ? { referrer_id, opponent_id }
               : referrer_id
-              ? { referrer_id }
-              : opponent_id
-              ? { opponent_id }
-              : {},
+                ? { referrer_id }
+                : opponent_id
+                  ? { opponent_id }
+                  : {},
         },
         gas: DEFAULT_GAS,
         deposit:
@@ -162,7 +158,7 @@ export class TicTacToeContract {
     return this.wallet.call(
       this.contractId,
       "make_move",
-      { game_id, row, col },
+      { game_id,coords:{x:row,y:col}},
       undefined,
       "0"
     );

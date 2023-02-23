@@ -97,7 +97,7 @@ export function ActiveGame({
           Math.round(Date.now() / 1000) -
           data.active_game[1].last_turn_timestamp_sec;
       }
-      const maxDuration = parseInt(data.max_game_duration);
+      const maxDuration = data.max_game_duration;
       clearTimer = setTimeout(
         () =>
           settimeLeft(
@@ -115,6 +115,7 @@ export function ActiveGame({
       walletSelector.ticTacToeLogic
         ?.getLastGames()
         .then((resp) => {
+          console.log("herre",resp)
           const game = resp.find(
             (item) => item[0].toString() === activeGameParams.game_id
           );
@@ -129,7 +130,7 @@ export function ActiveGame({
                   winner_id: winnerId,
                 },
                 reward_or_tie_refund: game[1].reward_or_tie_refund,
-                board: game[1].board,
+                tiles: game[1].tiles,
               };
             });
             if (hasUserPermission()) {
@@ -262,7 +263,7 @@ export function ActiveGame({
             <Flex flexDirection="column" alignItems="center" rowGap={2}>
               <Flex alignItems="center">
                 <Text>Current: </Text>
-                {data.active_game[1].current_player.piece === "O" ? (
+                {data.active_game[1].current_player === data.active_game[1].player1 ? (
                   <CircleIcon
                     w="26px"
                     h="26px"
@@ -284,11 +285,11 @@ export function ActiveGame({
                   />
                 )}
                 <Text>
-                  {data.active_game[1].current_player.account_id ===
+                  {data.active_game[1].current_player ===
                   walletSelector.accountId
                     ? "You"
                     : formatAccountId(
-                        data.active_game[1].current_player.account_id,
+                        data.active_game[1].current_player,
                         width
                       )}
                 </Text>
@@ -309,21 +310,21 @@ export function ActiveGame({
                 {<TokenName tokenId={data.active_game[1].reward.token_id} />}
               </Text>
               <Text>
-                {data.active_game[1].current_player.account_id ===
+                {data.active_game[1].current_player ===
                 walletSelector.accountId
                   ? "Turn "
                   : "Opponent "}
                 Seconds Left: {timeLeft}
               </Text>
               <Flex gap={3}>
-                {data.active_game[1].current_player.account_id ===
+                {data.active_game[1].current_player ===
                   walletSelector.accountId && (
                   <PurpleButton size="sm" onClick={handleGiveUp}>
                     Give Up
                   </PurpleButton>
                 )}
                 {timeLeft === 0 &&
-                  data.active_game[1].current_player.account_id !==
+                  data.active_game[1].current_player !==
                     walletSelector.accountId && (
                     <Button
                       size="sm"

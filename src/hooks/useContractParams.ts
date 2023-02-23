@@ -3,35 +3,77 @@ import {
   useWalletSelector,
   WalletSelectorContextValue,
 } from "../contexts/WalletSelectorContext";
-import { AvailablePlayerConfig } from "../near/contracts/TicTacToe";
+
+type TokenContractId = string;
+type AccountId = string;
+export type GameId = number;
+
+enum GameState {
+  NotStarted,
+  Active,
+  Finished,
+};
+
+export interface GameConfigView {
+  token_id: TokenContractId;
+  deposit: string;
+  opponent_id?: string;
+  referrer_id?: string;
+  created_at: number;
+};
+
+interface GameDeposit {
+  token_id: TokenContractId;
+  balance: string;
+};
 
 export interface GameParams {
-  active_game: [string, ActiveGameData] | undefined;
-  games?: object | undefined;
-  available_players?: [string, AvailablePlayerConfig][] | undefined;
-  service_fee_percentage?: string | undefined;
-  max_game_duration?: string | undefined;
-}
+  games: Record<GameId, GameView>;
+  available_players: [string, GameConfigView][];
+  service_fee_percentage: number;
+  max_game_duration: number;
+  last_update_timestamp_sec: number;
+  active_game: [string, GameView] | undefined;
+};
 
-interface CurrentPlayer {
-  account_id: string;
-  piece: "O" | "X" | null;
-}
+export interface ContractParams {
+  games: Record<GameId, GameView>;
+  available_players: [string, GameConfigView][];
+  service_fee_percentage: number;
+  max_game_duration: number;
+  last_update_timestamp_sec: number;
+};
+
+export interface Coords {
+  x: number;
+  y: number;
+};
+
+export enum Piece {
+  X,
+  O,
+};
+
+export interface Tiles {
+   o_coords: Coords[],
+   x_coords: Coords[],
+};
+
+interface GameView {
+  player1: AccountId;
+  player2: AccountId;
+  game_status: GameState;
+  current_player: AccountId;
+  reward: GameDeposit;
+  tiles: Tiles;
+  initiated_at_sec: number;
+  last_turn_timestamp_sec: number;
+  current_duration_sec: number;
+};
 
 interface Reward {
   balance: string;
   token_id: string;
-}
-interface ActiveGameData {
-  current_duration_sec: number;
-  current_player: CurrentPlayer;
-  game_status: string;
-  initiated_at_sec: number;
-  last_turn_timestamp_sec: number;
-  player1: string;
-  player2: string;
-  reward: Reward;
-  tiles: ("O" | "X" | null)[][];
 }
 
 /*
@@ -65,14 +107,11 @@ const getParams = async (walletSelector: WalletSelectorContextValue) => {
 
 const getParams = async (walletSelector: WalletSelectorContextValue) => {
   const resp = await walletSelector.tictactoeContract?.get_contract_params();
-  return {
-    ...resp,
-    active_game: Object.entries(resp?.games || {}).find(
-      (entry) =>
-        entry[1].player1 === walletSelector.accountId ||
-        entry[1].player2 === walletSelector.accountId
-    ),
-  };
+  return {...resp,active_game: Object.entries(resp?.games || {}).find(
+    (entry) =>
+      entry[1].player1 === walletSelector.accountId ||
+      entry[1].player2 === walletSelector.accountId
+  ),} as GameParams;
 };
 
 export const useContractParams = () => {

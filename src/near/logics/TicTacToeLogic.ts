@@ -4,10 +4,10 @@ import {
   Transaction,
   Wallet,
 } from "@near-wallet-selector/core";
+import { ContractParams } from "../../hooks/useContractParams";
 import { NEP141, StorageBalance } from "../contracts/NEP141";
 import {
   AvailablePlayerConfig,
-  ContractParams,
   FinalizedGame,
   Stats,
   TicTacToeContract,

@@ -2,7 +2,7 @@ import { Box, Flex, Spinner } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import { useQuery } from "react-query";
-import { GameParams } from "../../../hooks/useContractParams";
+import {  GameParams,Coords } from "../../../hooks/useContractParams";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
@@ -44,10 +44,14 @@ export function BoardSquare({
   const currentPlayer = data?.active_game?.[1].current_player;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (
+    // no account selected
+    if(!walletSelector.accountId){
+      setErrorMsg("Please connect to wallet.");
+    }
+   if (
       data?.active_game &&
-      activeGameParams.board[row][column] === null &&
-      activeGameParams.current_player.account_id === walletSelector.accountId &&
+      isSquareEmpty && 
+      activeGameParams.current_player === walletSelector.accountId &&
       loadingSquare.column === null &&
       loadingSquare.row === null
     ) {
@@ -69,19 +73,19 @@ export function BoardSquare({
   useEffect(() => {
     if (
       tiles &&
-      tiles[row][column] !== activeGameParams.board[row][column] &&
+      tiles !== activeGameParams.tiles &&
       currentPlayer
     ) {
       setActiveGameParams((prev) => {
         return {
           ...prev,
-          board: tiles,
+          tiles: tiles,
           current_player: currentPlayer,
         };
       });
       setLoadingSquare({ row: null, column: null });
       if (
-        currentPlayer.account_id === walletSelector.accountId &&
+        currentPlayer === walletSelector.accountId &&
         hasUserPermission()
       ) {
         addSWNotification("Is Your Turn");
@@ -98,15 +102,21 @@ export function BoardSquare({
     setLoadingSquare,
   ]);
 
+  const isOCoord =  activeGameParams.tiles?.o_coords.find((coords: Coords)=> coords.x === row && coords.y === column) ? true : false
+  const isXCoord =  activeGameParams.tiles?.x_coords.find((coords: Coords)=> coords.x === row && coords.y === column)? true : false
+
+  // checking for both X AND O coords
+  const isSquareEmpty = !isOCoord && !isXCoord
+
   const isAvailableToClick =
-    !activeGameParams.board[row][column] &&
-    activeGameParams.current_player.account_id === walletSelector.accountId &&
+    isSquareEmpty &&
+    activeGameParams.current_player === walletSelector.accountId &&
     loadingSquare.column === null &&
     loadingSquare.row === null;
 
   const isActiveTurn =
     data?.active_game &&
-    activeGameParams.current_player.account_id === walletSelector.accountId &&
+    activeGameParams.current_player === walletSelector.accountId &&
     loadingSquare.row === null &&
     loadingSquare.column === null;
 
@@ -131,9 +141,9 @@ export function BoardSquare({
           onClick={handleClick}
           _hover={isAvailableToClick ? { bg: "#FFF4" } : {}}
         >
-          {activeGameParams.board[row][column] && (
+          {(isXCoord || isOCoord) && (
             <Flex justifyContent="center" alignItems="center" h="100%">
-              {activeGameParams.board[row][column] === "O" ? (
+              {isOCoord ? (
                 <CircleIcon
                   w="75%"
                   h="75%"
