@@ -9,7 +9,7 @@ import { HowToPlay } from "./HowToPlay";
 import { GameParamsState } from "../containers/TicTacToe";
 import { UserStats } from "./Stats";
 import { Referral } from "./Referral";
-import { WhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
+import { WhiteListedTokens } from "../../../shared/helpers/getTokens";
 
 type Props = {
   boardFirst: boolean;

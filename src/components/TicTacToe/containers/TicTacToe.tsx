@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { useContractParams } from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
-import { useWhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
+import { getTokens } from "../../../shared/helpers/getTokens";
 import {
   addSWNotification,
   askUserPermission,
@@ -54,7 +54,7 @@ export function TicTacToe() {
 
   const walletSelector = useWalletSelector();
   const { data } = useContractParams();
-  const { data: tokensData } = useWhiteListedTokens();
+  const  tokensData  = getTokens();
   const { height, width } = useScreenSize();
 
   const isLandscape = width > height * 1.5;
