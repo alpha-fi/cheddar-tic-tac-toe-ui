@@ -3,7 +3,6 @@ import { utils } from "near-api-js";
 import { useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { GameConfigView } from "../../../hooks/useContractParams";
-import { AvailablePlayerConfig } from "../../../near/contracts/TicTacToe";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
 import { formatAccountId } from "../../../shared/helpers/formatAccountId";
@@ -32,8 +31,9 @@ export function WaiitingListElement({ player, width }: Props) {
           {
             token_id: token_id,
             deposit: deposit,
-            opponent_id: null,
-            referrer_id: referrer_id ?? null,
+            opponent_id: undefined,
+            referrer_id: referrer_id ?? undefined,
+            created_at: undefined,
           },
         ])
         .catch((error) => {

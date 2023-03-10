@@ -1,21 +1,22 @@
 import { Action, FinalExecutionOutcome } from "@near-wallet-selector/core";
 import { utils } from "near-api-js";
-import { ContractParams, Tiles } from "../../hooks/useContractParams";
+import { GameParamsState } from "../../components/TicTacToe";
+import {
+  ContractParams,
+  Coords,
+  GameConfigView,
+  GameId,
+  Piece,
+  Tiles,
+} from "../../hooks/useContractParams";
 import { ENV, getEnv } from "../config";
 import { DEFAULT_GAS, SelectorWallet } from "../wallet/wallet-selector";
-
-export interface AvailablePlayerConfig {
-  token_id: string;
-  deposit: string;
-  opponent_id: string | null;
-  referrer_id: string | null;
-}
 
 export interface FinalizedGame {
   game_result: string | any;
   player1: string;
   player2: string;
-  reward_or_tie_refund: {
+  reward: {
     token_id: string;
     balance: string;
   };
@@ -72,10 +73,10 @@ export class TicTacToeContract {
             referrer_id && opponent_id
               ? { referrer_id, opponent_id }
               : referrer_id
-                ? { referrer_id }
-                : opponent_id
-                  ? { opponent_id }
-                  : {},
+              ? { referrer_id }
+              : opponent_id
+              ? { opponent_id }
+              : {},
         },
         gas: DEFAULT_GAS,
         deposit:
@@ -120,7 +121,7 @@ export class TicTacToeContract {
    * two elements: the first one contains the player's account id. The second one, contains
    * information about the challenge
    */
-  get_active_games(): Promise<any[]> {
+  get_active_games(): Promise<[GameId, GameParamsState][]> {
     return this.wallet.view(this.contractId, "get_active_games", {});
   }
 
@@ -132,7 +133,7 @@ export class TicTacToeContract {
     return this.wallet.view(this.contractId, "get_last_games", {});
   }
 
-  get_available_players(): Promise<[string, AvailablePlayerConfig][]> {
+  get_available_players(): Promise<[string, GameConfigView][]> {
     return this.wallet.view(this.contractId, "get_available_players", {});
   }
 
@@ -150,6 +151,10 @@ export class TicTacToeContract {
     return this.wallet.view(this.contractId, "get_whitelisted_tokens", {});
   }
 
+  get_last_move(game_id: GameId): Promise<[Coords, Piece]> {
+    return this.wallet.view(this.contractId, "get_last_move", { game_id });
+  }
+
   make_move(
     game_id: number,
     row: number,
@@ -158,7 +163,7 @@ export class TicTacToeContract {
     return this.wallet.call(
       this.contractId,
       "make_move",
-      { game_id,coords:{x:row,y:col}},
+      { game_id, coords: { x: row, y: col } },
       undefined,
       "0"
     );

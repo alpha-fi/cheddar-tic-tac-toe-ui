@@ -1,8 +1,7 @@
 import { Box, Flex, Spinner } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
-import { useQuery } from "react-query";
-import {  GameParams,Coords } from "../../../hooks/useContractParams";
+import { Coords, Piece } from "../../../hooks/useContractParams";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
@@ -21,7 +20,7 @@ type Props = {
   column: number;
   row: number;
   activeGameParams: GameParamsState;
-  setActiveGameParams: React.Dispatch<React.SetStateAction<GameParamsState>>;
+  setActiveGameParams: (value: GameParamsState) => void;
   loadingSquare: LoadingSquare;
   setLoadingSquare: React.Dispatch<React.SetStateAction<LoadingSquare>>;
 };
@@ -35,36 +34,81 @@ export function BoardSquare({
   setLoadingSquare,
 }: Props) {
   const [errorMsg, setErrorMsg] = useState("");
-
   const walletSelector = useWalletSelector();
-  const { data } = useQuery<GameParams>("contractParams");
   const border = "0.3px solid";
   const borderColor = "purpleCheddar";
-  const tiles = data?.active_game?.[1].tiles;
-  const currentPlayer = data?.active_game?.[1].current_player;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     // account is not selected
-    if(!walletSelector.accountId){
+    if (!walletSelector.accountId) {
       setErrorMsg("Please connect to wallet.");
     }
     // Game is over
-    if(activeGameParams.game_result.result){
+    if (activeGameParams.game_result.result) {
       setErrorMsg("Game is Over.");
     }
-   if (
-      data?.active_game &&
-      isSquareEmpty && 
+    if (
+      activeGameParams &&
+      isSquareEmpty &&
       activeGameParams.current_player === walletSelector.accountId &&
       loadingSquare.column === null &&
       loadingSquare.row === null
     ) {
-      const gameId = parseInt(data?.active_game?.[0]!);
+      const gameId = activeGameParams.game_id as number;
       askUserPermission();
       setLoadingSquare({ row, column });
       if (walletSelector.ticTacToeLogic) {
         walletSelector.ticTacToeLogic
           .play(gameId, row, column)
+          .then((response) => {
+            const successMsg = Buffer.from(
+              response.status?.SuccessValue ?? "",
+              "base64"
+            ).toString();
+            let result: string = "";
+            let winnerId: string = "";
+            switch (successMsg) {
+              case Piece.O: {
+                result = "Win";
+                winnerId = activeGameParams.player1 as string;
+                break;
+              }
+              case Piece.X: {
+                result = "Win";
+                winnerId = activeGameParams.player2 as string;
+                break;
+              }
+              case "Tie": {
+                result = "Tie";
+                break;
+              }
+              default: {
+                // game is still on
+              }
+            }
+            if (result) {
+              setActiveGameParams({
+                ...activeGameParams,
+                game_result: {
+                  result: result,
+                  winner_id: winnerId,
+                },
+              });
+              if (hasUserPermission()) {
+                let msg;
+                if (result === "Tie") {
+                  msg = "Game Over: Tied Game!";
+                } else {
+                  if (winnerId === walletSelector.accountId) {
+                    msg = "Game Over: You Win!";
+                  } else {
+                    msg = "Game Over: You Lose!";
+                  }
+                }
+                addSWNotification(msg);
+              }
+            }
+          })
           .catch((error) => {
             console.error(error);
             setErrorMsg(getErrorMessage(error));
@@ -74,43 +118,19 @@ export function BoardSquare({
     }
   };
 
-  useEffect(() => {
-    if (
-      tiles &&
-      tiles !== activeGameParams.tiles &&
-      currentPlayer
-    ) {
-      setActiveGameParams((prev) => {
-        return {
-          ...prev,
-          tiles: tiles,
-          current_player: currentPlayer,
-        };
-      });
-      setLoadingSquare({ row: null, column: null });
-      if (
-        currentPlayer === walletSelector.accountId &&
-        hasUserPermission()
-      ) {
-        addSWNotification("Is Your Turn");
-      }
-    }
-  }, [
-    activeGameParams,
-    currentPlayer,
-    column,
-    row,
-    tiles,
-    walletSelector.accountId,
-    setActiveGameParams,
-    setLoadingSquare,
-  ]);
-
-  const isOCoord =  activeGameParams.tiles?.o_coords.find((coords: Coords)=> coords.x === row && coords.y === column) ? true : false
-  const isXCoord =  activeGameParams.tiles?.x_coords.find((coords: Coords)=> coords.x === row && coords.y === column)? true : false
+  const isOCoord = activeGameParams.tiles?.o_coords.find(
+    (coords: Coords) => coords.x === row && coords.y === column
+  )
+    ? true
+    : false;
+  const isXCoord = activeGameParams.tiles?.x_coords.find(
+    (coords: Coords) => coords.x === row && coords.y === column
+  )
+    ? true
+    : false;
 
   // checking for both X AND O coords
-  const isSquareEmpty = !isOCoord && !isXCoord
+  const isSquareEmpty = !isOCoord && !isXCoord;
 
   const isAvailableToClick =
     isSquareEmpty &&
@@ -119,7 +139,7 @@ export function BoardSquare({
     loadingSquare.row === null;
 
   const isActiveTurn =
-    data?.active_game &&
+    activeGameParams &&
     activeGameParams.current_player === walletSelector.accountId &&
     loadingSquare.row === null &&
     loadingSquare.column === null;
@@ -164,11 +184,7 @@ export function BoardSquare({
           )}
           {loadingSquare.column === column && loadingSquare.row === row && (
             <Flex h="100%" justifyContent="center" alignItems="center">
-              <Spinner
-                thickness="0px"
-                speed="0.65s"
-                bgImage={cheddarIcon}
-              />
+              <Spinner thickness="0px" speed="0.65s" bgImage={cheddarIcon} />
             </Flex>
           )}
         </Box>

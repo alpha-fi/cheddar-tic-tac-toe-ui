@@ -4,10 +4,15 @@ import {
   Transaction,
   Wallet,
 } from "@near-wallet-selector/core";
-import { ContractParams } from "../../hooks/useContractParams";
+import {
+  ContractParams,
+  Coords,
+  GameConfigView,
+  GameId,
+  Piece,
+} from "../../hooks/useContractParams";
 import { NEP141, StorageBalance } from "../contracts/NEP141";
 import {
-  AvailablePlayerConfig,
   FinalizedGame,
   Stats,
   TicTacToeContract,
@@ -27,7 +32,7 @@ export class TicTacToeLogic {
     this.actualWallet = this.cheddarContract.wallet.walletSelector.wallet();
   }
 
-  getAvailableGames(): Promise<[string, AvailablePlayerConfig][]> {
+  getAvailableGames(): Promise<[string, GameConfigView][]> {
     return this.ticTacToeContract.get_available_players();
   }
 
@@ -57,6 +62,10 @@ export class TicTacToeLogic {
 
   getPlayerStats(): Promise<Stats> {
     return this.ticTacToeContract.get_stats();
+  }
+
+  getLastMove(gameId: GameId): Promise<[Coords, Piece]> {
+    return this.ticTacToeContract.get_last_move(gameId);
   }
 
   private async getBetActions(
@@ -150,7 +159,7 @@ export class TicTacToeLogic {
   }
 
   async acceptChallenge(
-    challenge: [string, AvailablePlayerConfig],
+    challenge: [string, GameConfigView],
     referrerId?: string
   ): Promise<void> {
     let ticTacToeActions1: Action[] = [];
@@ -162,7 +171,7 @@ export class TicTacToeLogic {
     // If user has a pending bet, it removes it. Else keeps with flow.
     const availableGames = await this.getAvailableGames();
     const isUserWaiting = availableGames.some(
-      (game: [string, AvailablePlayerConfig]) =>
+      (game: [string, GameConfigView]) =>
         game[0] === this.cheddarContract.wallet.getAccountId()
     );
     if (isUserWaiting) {

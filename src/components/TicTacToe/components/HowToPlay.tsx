@@ -47,7 +47,9 @@ export function HowToPlay({ showingReferral, showingStats }: Props) {
         alignItems="center"
         m="12px 16px"
       >
-        <Text>- This is a {GridSize.rows} by {GridSize.columns} grid.</Text>
+        <Text>
+          - This is a {GridSize.rows} by {GridSize.columns} grid.
+        </Text>
         <Text>
           - One player will be{" "}
           <CircleIcon
@@ -76,7 +78,10 @@ export function HowToPlay({ showingReferral, showingStats }: Props) {
           - The first player to get 5 of their marks in a row (vertical,
           horizontal or diagonally) is the winner.
         </Text>
-        <Text>- When all {GridSize.columns * GridSize.rows} squares are full, the game is over.</Text>
+        <Text>
+          - When all {GridSize.columns * GridSize.rows} squares are full, the
+          game is over.
+        </Text>
         <Text>
           - If no player has 5 markes in a row, the game ends in a tie.
         </Text>

@@ -9,16 +9,17 @@ import { HowToPlay } from "./HowToPlay";
 import { GameParamsState } from "../containers/TicTacToe";
 import { UserStats } from "./Stats";
 import { Referral } from "./Referral";
-import { WhiteListedTokens } from "../../../shared/helpers/getTokens";
+import { WhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
+import { isGameIDValid } from "../../../shared/helpers/common";
 
 type Props = {
   boardFirst: boolean;
   boardSize: number;
-  data: GameParams | undefined;
+  data: GameParamsState | undefined;
   tokensData: WhiteListedTokens[];
   isLandScape: boolean;
   activeGameParams: GameParamsState;
-  setActiveGameParams: React.Dispatch<React.SetStateAction<GameParamsState>>;
+  setActiveGameParams: (value: GameParamsState) => void;
 };
 
 export default function Info({
@@ -34,14 +35,13 @@ export default function Info({
   const walletSelector = useWalletSelector();
 
   useEffect(() => {
-    if (data?.available_players) {
+    if (data) {
       setHaveOwnChallenge(
-        data.available_players.filter(
-          (player) => player[0] === walletSelector.accountId
-        ).length > 0
+        data.player1 === walletSelector.accountId ||
+          data.player2 === walletSelector.accountId
       );
     }
-  }, [data?.available_players, walletSelector.accountId]);
+  }, [data, walletSelector.accountId]);
 
   return (
     <Flex
@@ -51,31 +51,28 @@ export default function Info({
     >
       <Accordion
         width={isLandScape ? "100%" : boardSize}
-        index={data?.active_game ? 0 : undefined}
+        index={data ? 0 : undefined}
         defaultIndex={[0]}
         allowToggle
         mb="30px"
       >
-        {activeGameParams.game_id && (
+        {isGameIDValid(activeGameParams.game_id) && (
           <ActiveGame
-            data={data}
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
           />
         )}
-        {!data?.active_game && (
+        {!data && (
           <WaitingList
             showingActiveGame={activeGameParams.game_id !== null}
             showingWaitingListForm={
-              walletSelector.selector.isSignedIn() &&
-              !data?.active_game &&
-              !haveOwnChallenge
+              walletSelector.selector.isSignedIn() && !data && !haveOwnChallenge
             }
           />
         )}
-        {walletSelector.selector.isSignedIn() &&
-          !data?.active_game &&
-          !haveOwnChallenge && <WaitingListForm tokensData={tokensData} />}
+        {walletSelector.selector.isSignedIn() && !data && !haveOwnChallenge && (
+          <WaitingListForm tokensData={tokensData} />
+        )}
       </Accordion>
 
       <Accordion allowToggle width={isLandScape ? "100%" : boardSize}>
