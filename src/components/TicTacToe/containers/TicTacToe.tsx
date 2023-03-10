@@ -56,9 +56,9 @@ export const initialActiveGameParamsState = {
 export function TicTacToe() {
   const [activeGameParams, setActiveGameParams] = useState<GameParamsState>(
     initialActiveGameParamsState
-  );
+  ); // stores active game data first from contarct and then updates according to UI
   const [boardSize, setBoardSize] = useState(0);
-  const [data, setData] = useState<[GameId, GameParamsState]>();
+  const [data, setData] = useState<[GameId, GameParamsState]>(); // stores the active games from contract
 
   const tictactoeContainer = useRef<HTMLDivElement | null>(null);
 
@@ -73,16 +73,17 @@ export function TicTacToe() {
   );
 
   useEffect(() => {
-    if (activeGameData && activeGameData !== data) {
+    if (walletSelector.accountId && activeGameData && activeGameData !== data) {
       setData(activeGameData);
     }
-  }, [activeGameData, data, setData]);
+  }, [walletSelector.accountId, activeGameData, data, setData]);
 
   const isLandscape = width > height * 1.5;
 
   useEffect(() => {
     // clear active games state on disconnecting account
     if (!walletSelector.accountId) {
+      setData(undefined);
       setActiveGameParams(initialActiveGameParamsState);
     }
   }, [walletSelector.accountId]);
