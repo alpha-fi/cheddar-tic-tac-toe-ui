@@ -43,7 +43,7 @@ export function getEnv(env: string): TicTacToeEnv {
           explorerUrl: "https://explorer.testnet.near.org/",
           headers: {},
         },
-        contractId: "tictactoe.cheddar.testnet",
+        contractId: "dev-1678809619493-94113056009823",
         cheddarContractId: "token-v3.cheddar.testnet",
       };
     default:
