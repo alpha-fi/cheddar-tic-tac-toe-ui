@@ -207,4 +207,14 @@ export class TicTacToeContract {
   get_accounts_played(): Promise<string[]> {
     return this.wallet.view(this.contractId, "get_accounts_played", {});
   }
+
+  claim_timeout_win(game_id: number): Promise<FinalExecutionOutcome> {
+    return this.wallet.call(
+      this.contractId,
+      "claim_timeout_win",
+      { game_id },
+      undefined,
+      "0"
+    );
+  }
 }

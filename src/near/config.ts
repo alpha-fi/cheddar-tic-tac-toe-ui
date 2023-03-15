@@ -4,7 +4,8 @@ const MAINNET = "mainnet";
 const TESTNET = "testnet";
 const CHEDDAR_CONTRACT_NAME = 'token.cheddar.near'
 const TESTNET_CHEDDAR_CONTRACT_NAME = 'token-v3.cheddar.testnet'
-const TESTNET_CONTRACT_NAME = "tictactoe.cheddar.testnet"
+const TESTNET_CONTRACT_NAME = "dev-1678809619493-94113056009823"
+// const TESTNET_CONTRACT_NAME = "tictactoe.cheddar.testnet"
 
 export const ENV = TESTNET;
 

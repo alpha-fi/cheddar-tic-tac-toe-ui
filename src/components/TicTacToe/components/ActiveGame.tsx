@@ -70,6 +70,17 @@ export function ActiveGame({
     }
   };
 
+  const handleClaimTimeoutWin = () => {
+    if (data?.active_game?.[0]) {
+      walletSelector.ticTacToeLogic
+        ?.claimTimeoutWin(parseInt(data.active_game[0]))
+        .catch((error) => {
+          console.error(error);
+          setErrorMsg(getErrorMessage(error));
+        });
+    }
+  };
+
   const handleCloseGame = () => {
     setActiveGameParams(initialActiveGameParamsState);
   };
@@ -318,7 +329,7 @@ export function ActiveGame({
                       size="sm"
                       colorScheme="red"
                       borderRadius="full"
-                      onClick={handleStopGame}
+                      onClick={handleClaimTimeoutWin}
                     >
                       Reclaim Game
                     </Button>
