@@ -222,6 +222,10 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.stop_game(gameId);
   }
 
+  claimTimeoutWin(gameId: number): Promise<FinalExecutionOutcome> {
+    return this.ticTacToeContract.claim_timeout_win(gameId);
+  }
+
   private generateTransaction(
     contractId: string,
     actions: Action[]
