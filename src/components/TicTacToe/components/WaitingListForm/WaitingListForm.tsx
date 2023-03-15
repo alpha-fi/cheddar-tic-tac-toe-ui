@@ -11,9 +11,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { utils } from "near-api-js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../../contexts/WalletSelectorContext";
-import { WhiteListedTokens } from "../../../../hooks/useWhiteListedTokens";
+import { WhiteListedTokens } from "../../../../shared/helpers/getTokens";
 import { ErrorModal } from "../../../../shared/components/ErrorModal";
 import { PurpleButton } from "../../../../shared/components/PurpleButton";
 import { getErrorMessage } from "../../../../shared/helpers/getErrorMsg";
@@ -41,6 +41,18 @@ export default function WaitingListForm({ tokensData }: Props) {
 
   const referral = params.get("r") ?? undefined;
 
+  function checkTokenForCheddar(value:string){
+    if (value === "CHEDDAR") {
+      setWithCheddar(true);
+    } else {
+      setWithCheddar(false);
+    }
+  }
+
+  useEffect(() => {
+   checkTokenForCheddar(tokensData[0].name)
+  },[tokensData])
+
   const handleOnClick = () => {
     walletSelector.ticTacToeLogic
       ?.bet(
@@ -60,11 +72,7 @@ export default function WaitingListForm({ tokensData }: Props) {
     setMinDeposit(
       tokensData.find((item) => item.name === e.target.value)?.minDeposit || "1"
     );
-    if (e.target.value === "CHEDDAR") {
-      setWithCheddar(true);
-    } else {
-      setWithCheddar(false);
-    }
+    checkTokenForCheddar(e.target.value)
   };
 
   return (

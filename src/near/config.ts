@@ -1,5 +1,11 @@
+import { WhiteListedTokens } from "../shared/helpers/getTokens";
+
 const MAINNET = "mainnet";
 const TESTNET = "testnet";
+const CHEDDAR_CONTRACT_NAME = 'token.cheddar.near'
+const TESTNET_CHEDDAR_CONTRACT_NAME = 'token-v3.cheddar.testnet'
+const TESTNET_CONTRACT_NAME = "dev-1678809619493-94113056009823"
+// const TESTNET_CONTRACT_NAME = "tictactoe.cheddar.testnet"
 
 export const ENV = TESTNET;
 
@@ -10,6 +16,7 @@ interface NearEnv {
   helperUrl: string;
   explorerUrl: string;
   headers: Object;
+  tokensData: WhiteListedTokens[]
 }
 
 interface TicTacToeEnv {
@@ -29,6 +36,14 @@ export function getEnv(env: string): TicTacToeEnv {
           helperUrl: "https://helper.mainnet.near.org",
           explorerUrl: "https://explorer.mainnet.near.org/",
           headers: {},
+          tokensData: [
+            {
+              "name": "CHEDDAR",
+              "contractId": CHEDDAR_CONTRACT_NAME,
+              "value": "1000000000000000000000000",
+              "minDeposit": "1000000000000000000000000"
+            }
+          ]
         },
         contractId: "NOT SET YET",
         cheddarContractId: "NOT SET YET",
@@ -42,9 +57,17 @@ export function getEnv(env: string): TicTacToeEnv {
           helperUrl: "https://helper.testnet.near.org",
           explorerUrl: "https://explorer.testnet.near.org/",
           headers: {},
+          tokensData: [
+            {
+              "name": "CHEDDAR",
+              "contractId": TESTNET_CHEDDAR_CONTRACT_NAME,
+              "value": "1000000000000000000000000",
+              "minDeposit": "1000000000000000000000000"
+            }
+          ]
         },
-        contractId: "dev-1678809619493-94113056009823",
-        cheddarContractId: "token-v3.cheddar.testnet",
+        contractId: TESTNET_CONTRACT_NAME,
+        cheddarContractId: TESTNET_CHEDDAR_CONTRACT_NAME,
       };
     default:
       throw new Error(`${env} is not a valid NEAR environment`);
