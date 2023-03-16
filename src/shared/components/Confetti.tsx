@@ -4,13 +4,14 @@ import Confetti from "react-confetti";
 type Props = {
   isVisible: boolean;
 };
-export default ({ isVisible }: Props) => {
+
+const CustomConfetti = ({ isVisible }: Props) => {
   const [showConfetti, setShowConfetti] = useState(isVisible);
 
   useEffect(() => {
     setShowConfetti(isVisible);
   }, [isVisible]);
-  
+
   useEffect(() => {
     let clearTimer: any;
     if (isVisible) {
@@ -23,3 +24,5 @@ export default ({ isVisible }: Props) => {
 
   return <Confetti opacity={showConfetti ? 1 : 0} />;
 };
+
+export default CustomConfetti;

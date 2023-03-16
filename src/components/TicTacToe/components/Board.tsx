@@ -128,11 +128,7 @@ export default function Board({
 
   useEffect(() => {
     // game is over (result exists)
-    if (
-      data !== lastMoveData &&
-      activeGameParams.game_id &&
-      data?.[2]
-    ) {
+    if (data !== lastMoveData && activeGameParams.game_id && data?.[2]) {
       setLastMoveData(data);
       getWinnerDetails(data?.[2]);
     }

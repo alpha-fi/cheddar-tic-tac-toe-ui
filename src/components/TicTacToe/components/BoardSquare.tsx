@@ -1,19 +1,13 @@
 import { Box, Flex, Spinner } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
-import { Coords, Piece } from "../../../hooks/useContractParams";
+import { Coords } from "../../../hooks/useContractParams";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
-import {
-  GameParamsState,
-} from "../containers/TicTacToe";
+import { GameParamsState } from "../containers/TicTacToe";
 import { LoadingSquare } from "./Board";
-import {
-  addSWNotification,
-  askUserPermission,
-  hasUserPermission,
-} from "../../../shared/helpers/notifications";
+import { askUserPermission } from "../../../shared/helpers/notifications";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
 import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
 import { GridSize } from "../../lib/constants";

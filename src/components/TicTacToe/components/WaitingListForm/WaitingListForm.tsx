@@ -46,17 +46,13 @@ export default function WaitingListForm({ tokensData }: Props) {
 
   const referral = params.get("r") ?? undefined;
 
-  function checkTokenForCheddar(value:string){
-    if (value === "CHEDDAR") {
-      setWithCheddar(true);
-    } else {
-      setWithCheddar(false);
-    }
+  function checkTokenForCheddar(value: string) {
+    setWithCheddar(value === "CHEDDAR");
   }
 
   useEffect(() => {
-   checkTokenForCheddar(tokensData[0].name)
-  },[tokensData])
+    checkTokenForCheddar(tokensData[0].name);
+  }, [tokensData]);
 
   const handleOnClick = () => {
     walletSelector.ticTacToeLogic
@@ -77,7 +73,7 @@ export default function WaitingListForm({ tokensData }: Props) {
     setMinDeposit(
       tokensData.find((item) => item.name === e.target.value)?.minDeposit || "1"
     );
-    checkTokenForCheddar(e.target.value)
+    checkTokenForCheddar(e.target.value);
   };
 
   return (
@@ -153,7 +149,8 @@ export default function WaitingListForm({ tokensData }: Props) {
                 (opponentInput.id.trim() !== "" && !opponentInput.exist) ||
                 parseFloat(bidInput) <
                   parseFloat(utils.format.formatNearAmount(minDeposit)) ||
-                bidInput.trim() === "" || timeInput < DefaultValues.MIN_AVAILABLE_PLAYER_TIME
+                bidInput.trim() === "" ||
+                timeInput < DefaultValues.MIN_AVAILABLE_PLAYER_TIME
               }
             >
               Join Waiting List

@@ -6,15 +6,12 @@ import {
   Box,
   Button,
   Flex,
-  Spinner,
   Text,
 } from "@chakra-ui/react";
 import { utils } from "near-api-js";
 import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import {
-  getMaxTurnDuration,
-} from "../../../hooks/useContractParams";
+import { getMaxTurnDuration } from "../../../hooks/useContractParams";
 import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
@@ -22,7 +19,6 @@ import {
   GameParamsState,
   initialActiveGameParamsState,
 } from "../containers/TicTacToe";
-import cheddarIcon from "../../../assets/cheddar-icon.svg";
 import TokenName from "./TokenName";
 import useScreenSize from "../../../hooks/useScreenSize";
 import { formatAccountId } from "../../../shared/helpers/formatAccountId";
@@ -61,21 +57,10 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
     }
   };
 
-  const handleStopGame = () => {
+  const handleClaimTimeoutWin = () => {
     if (isNumberValid(activeGameParams.game_id)) {
       walletSelector.ticTacToeLogic
-        ?.stopGame(activeGameParams.game_id as number)
-        .catch((error) => {
-          console.error(error);
-          setErrorMsg(getErrorMessage(error));
-        });
-    }
-  };
-
-  const handleClaimTimeoutWin = () => {
-    if (data?.active_game?.[0]) {
-      walletSelector.ticTacToeLogic
-        ?.claimTimeoutWin(parseInt(data.active_game[0]))
+        ?.claimTimeoutWin(activeGameParams.game_id as number)
         .catch((error) => {
           console.error(error);
           setErrorMsg(getErrorMessage(error));

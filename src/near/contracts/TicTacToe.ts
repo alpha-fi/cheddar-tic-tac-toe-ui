@@ -147,10 +147,6 @@ export class TicTacToeContract {
     });
   }
 
-  get_whitelisted_tokens(): Promise<[string, string][]> {
-    return this.wallet.view(this.contractId, "get_whitelisted_tokens", {});
-  }
-
   get_last_move(
     game_id: GameId
   ): Promise<[Coords | null, Piece, any, number | null]> {
@@ -187,16 +183,6 @@ export class TicTacToeContract {
     );
   }
 
-  stop_game(game_id: number): Promise<FinalExecutionOutcome> {
-    return this.wallet.call(
-      this.contractId,
-      "stop_game",
-      { game_id },
-      undefined,
-      "0"
-    );
-  }
-
   get_user_penalties(): Promise<PenaltiesStats> {
     return this.wallet.view(this.contractId, "get_user_penalties", {
       account_id: this.wallet.getAccountId(),
@@ -219,5 +205,13 @@ export class TicTacToeContract {
       undefined,
       "0"
     );
+  }
+
+  get_max_game_duration(): Promise<number> {
+    return this.wallet.view(this.contractId, "get_max_game_duration", {});
+  }
+
+  get_max_turn_duration(): Promise<number> {
+    return this.wallet.view(this.contractId, "get_max_turn_duration", {});
   }
 }

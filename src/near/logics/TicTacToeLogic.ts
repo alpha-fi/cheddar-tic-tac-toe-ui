@@ -48,10 +48,6 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.get_token_min_deposit(accountId);
   }
 
-  getWhiteListedTokens(): Promise<[string, string][]> {
-    return this.ticTacToeContract.get_whitelisted_tokens();
-  }
-
   getDisplayableAccountId(screenWidth: number): string {
     return this.ticTacToeContract.getDisplayableAccountId(screenWidth);
   }
@@ -235,10 +231,6 @@ export class TicTacToeLogic {
 
     // Call transactions
     wallet.signAndSendTransactions({ transactions });
-  }
-
-  stopGame(gameId: number): Promise<FinalExecutionOutcome> {
-    return this.ticTacToeContract.stop_game(gameId);
   }
 
   claimTimeoutWin(gameId: number): Promise<FinalExecutionOutcome> {

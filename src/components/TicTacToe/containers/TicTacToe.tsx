@@ -1,13 +1,8 @@
 import { AbsoluteCenter, Grid, Img } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import {
-  GameId,
-  Tiles,
-  useCurrentUserActiveGame,
-} from "../../../hooks/useContractParams";
+import { GameId, Reward, Tiles } from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
-import { useWhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
 import { isNumberValid } from "../../../shared/helpers/common";
 import {
   addSWNotification,
@@ -19,6 +14,8 @@ import {
 import Board from "../components/Board";
 import Info from "../components/Info";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
+import { getTokens } from "../../../shared/helpers/getTokens";
+import { useCurrentUserActiveGame } from "../../../hooks/useActiveGame";
 
 export type GameParamsState = {
   game_id: GameId | null;
@@ -26,10 +23,7 @@ export type GameParamsState = {
   player1: string | null;
   player2: string | null;
   current_player: string | null;
-  reward: {
-    token_id: string | null;
-    balance: string | null;
-  };
+  reward: Reward;
   tiles: Tiles | null;
   initiated_at_sec: number | null;
   last_turn_timestamp_sec: number | null;
@@ -66,7 +60,7 @@ export function TicTacToe({ setConfetti }: Props) {
 
   const walletSelector = useWalletSelector();
 
-  const { data: tokensData } = useWhiteListedTokens();
+  const tokensData = getTokens();
   const { height, width } = useScreenSize();
 
   // const [allGames,setAllGames] = useState()

@@ -9,7 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { useAvailablePlayers } from "../../../hooks/useContractParams";
+import { useAvailablePlayers } from "../../../hooks/useAvailablePlayers";
 import useScreenSize from "../../../hooks/useScreenSize";
 import { WaiitingListElement } from "./WaiitingListElement";
 

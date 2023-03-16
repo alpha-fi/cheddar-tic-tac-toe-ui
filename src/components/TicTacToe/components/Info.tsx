@@ -1,6 +1,5 @@
 import { Accordion, Flex } from "@chakra-ui/react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { GameParams } from "../../../hooks/useContractParams";
 import WaitingList from "./WaitingList";
 import WaitingListForm from "./WaitingListForm/WaitingListForm";
 import { useEffect, useState } from "react";
@@ -9,8 +8,8 @@ import { HowToPlay } from "./HowToPlay";
 import { GameParamsState } from "../containers/TicTacToe";
 import { UserStats } from "./Stats";
 import { Referral } from "./Referral";
-import { WhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
 import { isNumberValid } from "../../../shared/helpers/common";
+import { WhiteListedTokens } from "../../../shared/helpers/getTokens";
 
 type Props = {
   boardFirst: boolean;
