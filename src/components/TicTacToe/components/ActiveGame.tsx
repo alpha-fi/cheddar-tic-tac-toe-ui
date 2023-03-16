@@ -12,7 +12,9 @@ import {
 import { utils } from "near-api-js";
 import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { GameParams } from "../../../hooks/useContractParams";
+import {
+  getMaxTurnDuration,
+} from "../../../hooks/useContractParams";
 import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
@@ -26,7 +28,7 @@ import useScreenSize from "../../../hooks/useScreenSize";
 import { formatAccountId } from "../../../shared/helpers/formatAccountId";
 import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
-import { isGameIDValid } from "../../../shared/helpers/common";
+import { isNumberValid } from "../../../shared/helpers/common";
 
 type Props = {
   activeGameParams: GameParamsState;
@@ -34,13 +36,22 @@ type Props = {
 };
 
 export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
-  const [timeLeft, settimeLeft] = useState<number | undefined>();
+  const [timeLeft, setTimeLeft] = useState<number | undefined>();
   const [errorMsg, setErrorMsg] = useState("");
   const walletSelector = useWalletSelector();
   const { width } = useScreenSize();
+  const [maxTurnDuration, setMaxTurnDuration] = useState<number | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    getMaxTurnDuration(walletSelector).then((resp) => {
+      setMaxTurnDuration(resp);
+    });
+  }, []);
 
   const handleGiveUp = () => {
-    if (isGameIDValid(activeGameParams.game_id)) {
+    if (isNumberValid(activeGameParams.game_id)) {
       walletSelector.ticTacToeLogic
         ?.giveUp(activeGameParams.game_id as number)
         .catch((error) => {
@@ -51,7 +62,7 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
   };
 
   const handleStopGame = () => {
-    if (isGameIDValid(activeGameParams.game_id)) {
+    if (isNumberValid(activeGameParams.game_id)) {
       walletSelector.ticTacToeLogic
         ?.stopGame(activeGameParams.game_id as number)
         .catch((error) => {
@@ -77,9 +88,9 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
   };
 
   useEffect(() => {
-    let clearTimer: any;
+    let updateTimer = true;
     let secondsToEnd: number;
-    if (activeGameParams?.max_game_duration) {
+    if (maxTurnDuration) {
       if (activeGameParams.last_turn_timestamp_sec === 0) {
         secondsToEnd =
           Math.round(Date.now() / 1000) -
@@ -89,24 +100,43 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
           Math.round(Date.now() / 1000) -
           (activeGameParams.last_turn_timestamp_sec as number);
       }
-      const maxDuration = activeGameParams.max_game_duration;
-      clearTimer = setTimeout(
-        () =>
-          settimeLeft(
-            secondsToEnd > maxDuration / 9 ? 0 : maxDuration / 9 - secondsToEnd
-          ),
-        1000
-      );
+      const clearTimer = setInterval(() => {
+        setTimeLeft((prevTimeLeft) => {
+          if (secondsToEnd > maxTurnDuration) {
+            return 0; // If time has exceeded max duration, set time left to 0
+          } else {
+            const timeLeft = maxTurnDuration - secondsToEnd;
+            console.log(
+              timeLeft,
+              !prevTimeLeft || updateTimer
+                ? timeLeft
+                : prevTimeLeft === 0
+                ? 0
+                : prevTimeLeft - 1
+            );
+            return !isNumberValid(prevTimeLeft) || updateTimer
+              ? timeLeft
+              : prevTimeLeft === 0
+              ? 0
+              : prevTimeLeft! - 1;
+          }
+        });
+        updateTimer = false;
+      }, 1000);
+      return () => clearInterval(clearTimer);
     }
-    return () => clearTimeout(clearTimer);
-  });
+  }, [
+    maxTurnDuration,
+    activeGameParams.last_turn_timestamp_sec,
+    activeGameParams.initiated_at_sec,
+  ]);
 
   return (
     <>
       <AccordionItem
         bg="#fffc"
         borderRadius={
-          isGameIDValid(activeGameParams.game_id) ? "8px" : "8px 8px 0 0"
+          isNumberValid(activeGameParams.game_id) ? "8px" : "8px 8px 0 0"
         }
       >
         <h2>
@@ -121,7 +151,7 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
                 Actual Game
               </Text>
             </Box>
-            {isGameIDValid(activeGameParams.game_id) && <AccordionIcon />}
+            {isNumberValid(activeGameParams.game_id) && <AccordionIcon />}
           </AccordionButton>
         </h2>
         <AccordionPanel
@@ -182,7 +212,7 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
               </Button>
             </Flex>
           )}
-          {isGameIDValid(activeGameParams.game_id) && (
+          {isNumberValid(activeGameParams.game_id) && (
             <Flex flexDirection="column" alignItems="center" rowGap={2}>
               <Flex alignItems="center">
                 <Text>Current: </Text>
@@ -228,7 +258,7 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
               <Text>
                 Total Bet:{" "}
                 {utils.format.formatNearAmount(
-                  activeGameParams.reward.balance as string
+                  activeGameParams.reward.balance!
                 )}{" "}
                 {
                   <TokenName

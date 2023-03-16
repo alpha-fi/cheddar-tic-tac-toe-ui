@@ -3,13 +3,16 @@ import React, { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { Coords, GameParams, Piece } from "../../../hooks/useContractParams";
 import { useLastMove } from "../../../hooks/useLastMove";
-import { isObjectInArray } from "../../../shared/helpers/common";
+import { getWinnerData, isObjectInArray } from "../../../shared/helpers/common";
 import {
   addSWNotification,
   hasUserPermission,
 } from "../../../shared/helpers/notifications";
 import { GridSize } from "../../lib/constants";
-import { GameParamsState } from "../containers/TicTacToe";
+import {
+  GameParamsState,
+  initialActiveGameParamsState,
+} from "../containers/TicTacToe";
 import { BoardSquare } from "./BoardSquare";
 
 export type LoadingSquare = {
@@ -22,6 +25,7 @@ type Props = {
   boardSize: number;
   activeGameParams: GameParamsState;
   setActiveGameParams: (value: GameParamsState) => void;
+  setConfetti: (value: boolean) => void;
 };
 
 export default function Board({
@@ -29,25 +33,56 @@ export default function Board({
   boardSize,
   activeGameParams,
   setActiveGameParams,
+  setConfetti,
 }: Props) {
   const [loadingSquare, setLoadingSquare] = useState<LoadingSquare>({
     row: null,
     column: null,
   });
   const [grid, setGrid] = useState<JSX.Element[][]>([]);
-  const [lastMoveData, setLastMoveData] = useState<[Coords, Piece] | undefined>(
-    undefined
-  );
+  const [lastMoveData, setLastMoveData] = useState<
+    [Coords | null, Piece, any, number | null] | undefined
+  >(undefined);
   const { data } = useLastMove(activeGameParams.game_id);
   const walletSelector = useWalletSelector();
 
+  function getWinnerDetails(winnerDetails: any) {
+    const { result, winnerId } = getWinnerData(winnerDetails);
+    if (result) {
+      setActiveGameParams({
+        ...initialActiveGameParamsState,
+        game_result: {
+          result: result,
+          winner_id: winnerId,
+        },
+        reward: activeGameParams.reward,
+      });
+      if (winnerId === walletSelector.accountId) {
+        setConfetti(true);
+      }
+      if (hasUserPermission()) {
+        let msg;
+        if (result === "Tie") {
+          msg = "Game Over: Tied Game!";
+        } else {
+          if (winnerId === walletSelector.accountId) {
+            msg = "Game Over: You Win!";
+          } else {
+            msg = "Game Over: You Lose!";
+          }
+        }
+        addSWNotification(msg);
+      }
+    }
+  }
+
   useEffect(() => {
-    // filling data for the first time
+    // filling last move data for the first time
     if (!lastMoveData && data) {
       setLastMoveData(data);
     }
     // on every last data difference updating tiles data
-    if (lastMoveData && data) {
+    if (lastMoveData && data && data?.[0]) {
       if (
         lastMoveData !== data ||
         (!activeGameParams.tiles?.x_coords.length &&
@@ -73,6 +108,7 @@ export default function Board({
           ...activeGameParams,
           tiles: updatedtiles,
           current_player: currentPlayer,
+          last_turn_timestamp_sec: data?.[3],
         });
         setLoadingSquare({ row: null, column: null });
         if (currentPlayer === walletSelector.accountId && hasUserPermission()) {
@@ -89,6 +125,18 @@ export default function Board({
     setLoadingSquare,
     setLastMoveData,
   ]);
+
+  useEffect(() => {
+    // game is over (result exists)
+    if (
+      data !== lastMoveData &&
+      activeGameParams.game_id &&
+      data?.[2]
+    ) {
+      setLastMoveData(data);
+      getWinnerDetails(data?.[2]);
+    }
+  }, [data, activeGameParams.game_id]);
 
   useEffect(() => {
     if (
@@ -113,6 +161,7 @@ export default function Board({
             setActiveGameParams={setActiveGameParams}
             loadingSquare={loadingSquare}
             setLoadingSquare={setLoadingSquare}
+            getWinnerDetails={getWinnerDetails}
           />
         );
       }

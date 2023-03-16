@@ -1,10 +1,11 @@
 import { useQuery } from "react-query";
+import { RefreshIntervalMilliseconds } from "../components/lib/constants";
 import { GameParamsState } from "../components/TicTacToe";
 import {
   useWalletSelector,
   WalletSelectorContextValue,
 } from "../contexts/WalletSelectorContext";
-import { isGameIDValid } from "../shared/helpers/common";
+import { isNumberValid } from "../shared/helpers/common";
 
 type TokenContractId = string;
 type AccountId = string;
@@ -78,6 +79,11 @@ interface Reward {
   token_id: string;
 }
 
+export interface WinnerDetails {
+  Win: "Win";
+  Tie: "Tie";
+}
+
 /*
 const testData: [string, ActiveGameData] = [
   "3",
@@ -127,7 +133,7 @@ export const useAvailablePlayers = () => {
     () => getAvailableGames(walletSelector),
     {
       refetchIntervalInBackground: true,
-      refetchInterval: 4000,
+      refetchInterval: RefreshIntervalMilliseconds,
       cacheTime: 0,
       notifyOnChangePropsExclusions: ["isStale", "isRefetching", "isFetching"],
     }
@@ -148,7 +154,7 @@ export const useActiveGames = () => {
     () => getActiveGames(walletSelector),
     {
       refetchIntervalInBackground: true,
-      refetchInterval: 4000,
+      refetchInterval: RefreshIntervalMilliseconds,
       cacheTime: 0,
       notifyOnChangePropsExclusions: ["isStale", "isRefetching", "isFetching"],
     }
@@ -176,12 +182,40 @@ export const useCurrentUserActiveGame = (activeGameID: any) => {
   return useQuery<[GameId, GameParamsState] | undefined>(
     ["currentActiveGame"],
     () =>
-      isGameIDValid(activeGameID)
+      isNumberValid(activeGameID)
         ? undefined
         : getCurrentActiveGames(walletSelector),
     {
       refetchIntervalInBackground: true,
-      refetchInterval: 4000,
+      refetchInterval: RefreshIntervalMilliseconds,
+      cacheTime: 0,
+      notifyOnChangePropsExclusions: ["isStale", "isRefetching", "isFetching"],
+    }
+  );
+};
+
+export const getMaxGameDuration = async (
+  walletSelector: WalletSelectorContextValue
+) => {
+  const resp = await walletSelector.tictactoeContract?.get_max_game_duration();
+  return resp;
+};
+
+export const getMaxTurnDuration = async (
+  walletSelector: WalletSelectorContextValue
+) => {
+  const resp = await walletSelector.tictactoeContract?.get_max_turn_duration();
+  return resp;
+};
+
+export const useMaxTurnDuration = () => {
+  const walletSelector = useWalletSelector();
+  return useQuery<number | undefined>(
+    ["maxTurnDuration"],
+    () => getMaxTurnDuration(walletSelector),
+    {
+      refetchIntervalInBackground: true,
+      refetchInterval: 1000,
       cacheTime: 0,
       notifyOnChangePropsExclusions: ["isStale", "isRefetching", "isFetching"],
     }

@@ -10,7 +10,7 @@ import { GameParamsState } from "../containers/TicTacToe";
 import { UserStats } from "./Stats";
 import { Referral } from "./Referral";
 import { WhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
-import { isGameIDValid } from "../../../shared/helpers/common";
+import { isNumberValid } from "../../../shared/helpers/common";
 
 type Props = {
   boardFirst: boolean;
@@ -43,6 +43,10 @@ export default function Info({
     }
   }, [data, walletSelector.accountId]);
 
+  const showActiveGame =
+    isNumberValid(activeGameParams.game_id) ||
+    activeGameParams?.game_result?.result;
+
   return (
     <Flex
       alignItems="center"
@@ -56,13 +60,13 @@ export default function Info({
         allowToggle
         mb="30px"
       >
-        {isGameIDValid(activeGameParams.game_id) && (
+        {showActiveGame && (
           <ActiveGame
             activeGameParams={activeGameParams}
             setActiveGameParams={setActiveGameParams}
           />
         )}
-        {!data && (
+        {!isNumberValid(activeGameParams.game_id) && (
           <WaitingList
             showingActiveGame={activeGameParams.game_id !== null}
             showingWaitingListForm={

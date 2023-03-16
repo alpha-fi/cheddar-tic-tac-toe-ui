@@ -1,9 +1,10 @@
 import { useQuery } from "react-query";
+import { RefreshIntervalMilliseconds } from "../components/lib/constants";
 import {
   useWalletSelector,
   WalletSelectorContextValue,
 } from "../contexts/WalletSelectorContext";
-import { isGameIDValid } from "../shared/helpers/common";
+import { isNumberValid } from "../shared/helpers/common";
 import { Coords, GameId, Piece } from "./useContractParams";
 
 export const getLastMove = async (
@@ -16,15 +17,15 @@ export const getLastMove = async (
 
 export const useLastMove = (gameId: GameId | null) => {
   const walletSelector = useWalletSelector();
-  return useQuery<[Coords, Piece] | undefined>(
+  return useQuery<[Coords | null, Piece, any, number | null] | undefined>(
     ["lastMove"],
     () =>
-      isGameIDValid(gameId)
+      isNumberValid(gameId)
         ? getLastMove(walletSelector, gameId as number)
         : undefined,
     {
       refetchIntervalInBackground: true,
-      refetchInterval: 2000,
+      refetchInterval: RefreshIntervalMilliseconds,
       cacheTime: 0,
       notifyOnChangePropsExclusions: ["isStale", "isRefetching", "isFetching"],
     }

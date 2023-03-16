@@ -64,8 +64,18 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.get_stats();
   }
 
-  getLastMove(gameId: GameId): Promise<[Coords, Piece]> {
+  getLastMove(
+    gameId: GameId
+  ): Promise<[Coords | null, Piece, any, number | null]> {
     return this.ticTacToeContract.get_last_move(gameId);
+  }
+
+  get_max_game_duration(): Promise<number> {
+    return this.ticTacToeContract.get_max_game_duration();
+  }
+
+  get_max_turn_duration(): Promise<number> {
+    return this.ticTacToeContract.get_max_turn_duration();
   }
 
   private async getBetActions(

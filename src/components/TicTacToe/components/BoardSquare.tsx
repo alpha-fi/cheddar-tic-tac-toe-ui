@@ -5,7 +5,9 @@ import { Coords, Piece } from "../../../hooks/useContractParams";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
-import { GameParamsState } from "../containers/TicTacToe";
+import {
+  GameParamsState,
+} from "../containers/TicTacToe";
 import { LoadingSquare } from "./Board";
 import {
   addSWNotification,
@@ -23,6 +25,7 @@ type Props = {
   setActiveGameParams: (value: GameParamsState) => void;
   loadingSquare: LoadingSquare;
   setLoadingSquare: React.Dispatch<React.SetStateAction<LoadingSquare>>;
+  getWinnerDetails: (winnerDetails: string | null) => void;
 };
 
 export function BoardSquare({
@@ -32,6 +35,7 @@ export function BoardSquare({
   setActiveGameParams,
   loadingSquare,
   setLoadingSquare,
+  getWinnerDetails,
 }: Props) {
   const [errorMsg, setErrorMsg] = useState("");
   const walletSelector = useWalletSelector();
@@ -65,49 +69,7 @@ export function BoardSquare({
               response.status?.SuccessValue ?? "",
               "base64"
             ).toString();
-            let result: string = "";
-            let winnerId: string = "";
-            switch (successMsg) {
-              case Piece.O: {
-                result = "Win";
-                winnerId = activeGameParams.player1 as string;
-                break;
-              }
-              case Piece.X: {
-                result = "Win";
-                winnerId = activeGameParams.player2 as string;
-                break;
-              }
-              case "Tie": {
-                result = "Tie";
-                break;
-              }
-              default: {
-                // game is still on
-              }
-            }
-            if (result) {
-              setActiveGameParams({
-                ...activeGameParams,
-                game_result: {
-                  result: result,
-                  winner_id: winnerId,
-                },
-              });
-              if (hasUserPermission()) {
-                let msg;
-                if (result === "Tie") {
-                  msg = "Game Over: Tied Game!";
-                } else {
-                  if (winnerId === walletSelector.accountId) {
-                    msg = "Game Over: You Win!";
-                  } else {
-                    msg = "Game Over: You Lose!";
-                  }
-                }
-                addSWNotification(msg);
-              }
-            }
+            getWinnerDetails(successMsg);
           })
           .catch((error) => {
             console.error(error);

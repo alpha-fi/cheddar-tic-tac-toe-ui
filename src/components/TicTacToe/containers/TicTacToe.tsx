@@ -1,4 +1,4 @@
-import { Grid } from "@chakra-ui/react";
+import { AbsoluteCenter, Grid, Img } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import {
@@ -7,7 +7,8 @@ import {
   useCurrentUserActiveGame,
 } from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
-import { getTokens } from "../../../shared/helpers/getTokens";
+import { useWhiteListedTokens } from "../../../hooks/useWhiteListedTokens";
+import { isNumberValid } from "../../../shared/helpers/common";
 import {
   addSWNotification,
   askUserPermission,
@@ -15,9 +16,9 @@ import {
   isPushNotificationSupported,
   registerServiceWorker,
 } from "../../../shared/helpers/notifications";
-import { GridSize } from "../../lib/constants";
 import Board from "../components/Board";
 import Info from "../components/Info";
+import cheddarIcon from "../../../assets/cheddar-icon.svg";
 
 export type GameParamsState = {
   game_id: GameId | null;
@@ -33,7 +34,6 @@ export type GameParamsState = {
   initiated_at_sec: number | null;
   last_turn_timestamp_sec: number | null;
   current_duration_sec: number | null;
-  max_game_duration: number | null;
 };
 
 export const initialActiveGameParamsState = {
@@ -50,16 +50,18 @@ export const initialActiveGameParamsState = {
   initiated_at_sec: null,
   last_turn_timestamp_sec: null,
   current_duration_sec: null,
-  max_game_duration: null,
 };
 
-export function TicTacToe() {
+type Props = {
+  setConfetti: (value: boolean) => void;
+};
+export function TicTacToe({ setConfetti }: Props) {
   const [activeGameParams, setActiveGameParams] = useState<GameParamsState>(
     initialActiveGameParamsState
   ); // stores active game data first from contarct and then updates according to UI
   const [boardSize, setBoardSize] = useState(0);
   const [data, setData] = useState<[GameId, GameParamsState]>(); // stores the active games from contract
-
+  const [isLoading, setLoading] = useState(true);
   const tictactoeContainer = useRef<HTMLDivElement | null>(null);
 
   const walletSelector = useWalletSelector();
@@ -71,6 +73,14 @@ export function TicTacToe() {
   const { data: activeGameData } = useCurrentUserActiveGame(
     activeGameParams.game_id
   );
+
+  // until all data is fetched showing loader
+  useEffect(() => {
+    const clearTimer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    return () => clearTimeout(clearTimer);
+  }, []);
 
   useEffect(() => {
     if (walletSelector.accountId && activeGameData && activeGameData !== data) {
@@ -99,7 +109,13 @@ export function TicTacToe() {
   }, []);
 
   useEffect(() => {
-    if (walletSelector.accountId && data?.[0] && !activeGameParams.game_id) {
+    if (
+      walletSelector.accountId &&
+      data &&
+      isNumberValid(data?.[0]) &&
+      !activeGameParams.game_id &&
+      !activeGameParams.game_result.result // checking result because we set empty state but only result data in Board
+    ) {
       if (hasUserPermission()) {
         addSWNotification("You Have an Active Game");
       }
@@ -114,7 +130,6 @@ export function TicTacToe() {
         last_turn_timestamp_sec: data[1].last_turn_timestamp_sec,
         current_duration_sec: data[1].current_duration_sec,
         reward: data[1].reward,
-        max_game_duration: data[1].max_game_duration,
       });
     }
   }, [activeGameParams.game_id, data?.[0], walletSelector.accountId]);
@@ -139,34 +154,49 @@ export function TicTacToe() {
   }
 
   return (
-    <Grid
-      templateColumns={{
-        base: "1fr",
-        sm: isLandscape ? "1fr 1fr" : "1fr",
-        md: "1fr 1fr",
-      }}
-      gap="20px"
-      ref={tictactoeContainer}
-    >
-      {tokensData && (
-        <>
-          <Info
-            boardFirst={boardFirst}
-            isLandScape={isLandscape}
-            boardSize={boardSize}
-            data={data?.[1]}
-            tokensData={tokensData}
-            activeGameParams={activeGameParams}
-            setActiveGameParams={updateActiveParamsFromChild}
+    <>
+      {isLoading ? (
+        <AbsoluteCenter>
+          <Img
+            className="cheddar-icon"
+            src={cheddarIcon}
+            alt=""
+            width="5rem"
+            height="5rem"
           />
-          <Board
-            boardFirst={boardFirst}
-            boardSize={boardSize}
-            activeGameParams={activeGameParams}
-            setActiveGameParams={updateActiveParamsFromChild}
-          />
-        </>
+        </AbsoluteCenter>
+      ) : (
+        <Grid
+          templateColumns={{
+            base: "1fr",
+            sm: isLandscape ? "1fr 1fr" : "1fr",
+            md: "1fr 1fr",
+          }}
+          gap="20px"
+          ref={tictactoeContainer}
+        >
+          {tokensData && (
+            <>
+              <Info
+                boardFirst={boardFirst}
+                isLandScape={isLandscape}
+                boardSize={boardSize}
+                data={data?.[1]}
+                tokensData={tokensData}
+                activeGameParams={activeGameParams}
+                setActiveGameParams={updateActiveParamsFromChild}
+              />
+              <Board
+                boardFirst={boardFirst}
+                boardSize={boardSize}
+                activeGameParams={activeGameParams}
+                setActiveGameParams={updateActiveParamsFromChild}
+                setConfetti={setConfetti}
+              />
+            </>
+          )}
+        </Grid>
       )}
-    </Grid>
+    </>
   );
 }

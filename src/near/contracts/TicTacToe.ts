@@ -151,7 +151,9 @@ export class TicTacToeContract {
     return this.wallet.view(this.contractId, "get_whitelisted_tokens", {});
   }
 
-  get_last_move(game_id: GameId): Promise<[Coords, Piece]> {
+  get_last_move(
+    game_id: GameId
+  ): Promise<[Coords | null, Piece, any, number | null]> {
     return this.wallet.view(this.contractId, "get_last_move", { game_id });
   }
 
