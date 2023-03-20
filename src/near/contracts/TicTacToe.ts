@@ -6,6 +6,7 @@ import {
   Coords,
   GameConfigView,
   GameId,
+  GameLimitedView,
   Piece,
   Tiles,
 } from "../../hooks/useContractParams";
@@ -203,5 +204,9 @@ export class TicTacToeContract {
       undefined,
       "0"
     );
+  }
+
+  get_game(game_id: number): Promise<GameLimitedView> {
+    return this.wallet.view(this.contractId, "get_game", { game_id });
   }
 }

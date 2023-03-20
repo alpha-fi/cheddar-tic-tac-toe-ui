@@ -77,6 +77,15 @@ export interface WinnerDetails {
   Tie: "Tie";
 }
 
+export interface GameLimitedView {
+  game_result: string;
+  player1: AccountId;
+  player2: AccountId;
+  reward_or_tie_refund: GameDeposit;
+  tiles: Tiles;
+  last_move: Tiles;
+}
+
 /*
 const testData: [string, ActiveGameData] = [
   "3",
@@ -110,4 +119,12 @@ export const getContractParams = async (
         entry[1].player2 === walletSelector.accountId
     ),
   } as GameParams;
+};
+
+export const getGameParams = async (
+  walletSelector: WalletSelectorContextValue,
+  gameID: number
+) => {
+  const resp = await walletSelector.tictactoeContract?.get_game(gameID);
+  return resp;
 };

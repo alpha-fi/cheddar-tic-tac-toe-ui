@@ -26,7 +26,7 @@ export type GameParamsState = {
   player1: string | null;
   player2: string | null;
   current_player: string | null;
-  reward: Reward;
+  total_bet: Reward;
   tiles: Tiles | null;
   initiated_at_sec: number | null;
   last_turn_timestamp_sec: number | null;
@@ -39,7 +39,7 @@ export const initialActiveGameParamsState = {
   player1: null,
   player2: null,
   current_player: null,
-  reward: {
+  total_bet: {
     token_id: null,
     balance: null,
   },
@@ -58,7 +58,7 @@ export function TicTacToe({ setConfetti }: Props) {
   ); // stores active game data first from contarct and then updates according to UI
   const [boardSize, setBoardSize] = useState(0);
   const [data, setData] = useState<[GameId, GameParamsState]>(); // stores the active games from contract
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(false);
   const tictactoeContainer = useRef<HTMLDivElement | null>(null);
   const [tokensData, setTokensData] = useState<WhiteListedTokens[] | null>(
     null
@@ -74,10 +74,10 @@ export function TicTacToe({ setConfetti }: Props) {
     setTokensData(getTokens());
   }, []);
 
-  // until all data is fetched showing loader
-  useLayoutEffect(() => {
-    setLoading(isFetching);
-  }, [isFetching]);
+  // // until all data is fetched showing loader
+  // useLayoutEffect(() => {
+  //   setLoading(isFetching);
+  // }, [isFetching]);
 
   useEffect(() => {
     if (walletSelector.accountId && activeGameData && activeGameData !== data) {
@@ -97,14 +97,10 @@ export function TicTacToe({ setConfetti }: Props) {
 
   useEffect(() => {
     // game is over
-    if (
-      data &&
-      !isNumberValid(activeGameParams.game_id) &&
-      activeGameParams.game_result.result
-    ) {
+    if (data && activeGameParams.game_result.result) {
       setData(undefined);
     }
-  }, [data, activeGameData]);
+  }, [data, activeGameParams.game_result.result]);
 
   useEffect(() => {
     if (isPushNotificationSupported()) {
@@ -137,7 +133,7 @@ export function TicTacToe({ setConfetti }: Props) {
         initiated_at_sec: data[1].initiated_at_sec,
         last_turn_timestamp_sec: data[1].last_turn_timestamp_sec,
         current_duration_sec: data[1].current_duration_sec,
-        reward: data[1].reward,
+        total_bet: data[1].total_bet,
       });
     }
   }, [activeGameParams.game_id, data?.[0], walletSelector.accountId]);

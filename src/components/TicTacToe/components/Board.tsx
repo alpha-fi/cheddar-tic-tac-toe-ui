@@ -60,7 +60,8 @@ export default function Board({
           winner_id: winnerId,
         },
         tiles: activeGameParams.tiles,
-        reward: activeGameParams.reward,
+        total_bet: activeGameParams.total_bet,
+        game_id: activeGameParams.game_id,
       });
       if (winnerId === walletSelector.accountId) {
         setConfetti(true);

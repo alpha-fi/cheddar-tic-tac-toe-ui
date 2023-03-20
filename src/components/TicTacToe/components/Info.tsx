@@ -39,6 +39,8 @@ export default function Info({
         data.player1 === walletSelector.accountId ||
           data.player2 === walletSelector.accountId
       );
+    } else {
+      setHaveOwnChallenge(false);
     }
   }, [data, walletSelector.accountId]);
 
@@ -65,7 +67,7 @@ export default function Info({
             setActiveGameParams={setActiveGameParams}
           />
         )}
-        {!isNumberValid(activeGameParams.game_id) && (
+        {!data && !activeGameParams.game_result.result && (
           <WaitingList
             showingActiveGame={activeGameParams.game_id !== null}
             showingWaitingListForm={

@@ -25,6 +25,7 @@ import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
 import { isNumberValid } from "../../../shared/helpers/common";
 import { DefaultValues } from "../../lib/constants";
+import { getGameParams } from "../../../hooks/useContractParams";
 
 type Props = {
   activeGameParams: GameParamsState;
@@ -36,6 +37,16 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
   const [errorMsg, setErrorMsg] = useState("");
   const walletSelector = useWalletSelector();
   const { width } = useScreenSize();
+  const [refundAmt, setRefundAmt] = useState<undefined | string>(undefined);
+
+  useEffect(() => {
+    if (activeGameParams.game_result.result) {
+      // winner is declared, fetch refund amount
+      getGameParams(walletSelector, activeGameParams.game_id!).then((res) => {
+        setRefundAmt(res?.reward_or_tie_refund.balance);
+      });
+    }
+  }, [activeGameParams.game_result.result]);
 
   const handleGiveUp = () => {
     if (isNumberValid(activeGameParams.game_id)) {
@@ -131,7 +142,8 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
           {activeGameParams?.game_result?.result && (
             <Flex flexDirection="column" alignItems="center" rowGap={2}>
               {activeGameParams.game_result.result === "Win" &&
-                activeGameParams.game_result.winner_id && (
+                activeGameParams.game_result.winner_id &&
+                refundAmt && (
                   <>
                     <Text>
                       {activeGameParams.game_result.winner_id ===
@@ -144,27 +156,25 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
                       )}`}
                     </Text>
                     <Text>
-                      Reward:{" "}
-                      {utils.format.formatNearAmount(
-                        activeGameParams.reward.balance!
-                      )}{" "}
+                      Reward: {utils.format.formatNearAmount(refundAmt)}{" "}
                       {
                         <TokenName
-                          tokenId={activeGameParams.reward.token_id!}
+                          tokenId={activeGameParams.total_bet.token_id!}
                         />
                       }
                     </Text>
                   </>
                 )}
-              {activeGameParams.game_result.result === "Tie" && (
+              {activeGameParams.game_result.result === "Tie" && refundAmt && (
                 <>
                   <Text>Tied Game!</Text>
                   <Text>
-                    Refund:{" "}
-                    {utils.format.formatNearAmount(
-                      activeGameParams.reward.balance!
-                    )}{" "}
-                    {<TokenName tokenId={activeGameParams.reward.token_id!} />}
+                    Refund: {utils.format.formatNearAmount(refundAmt)}{" "}
+                    {
+                      <TokenName
+                        tokenId={activeGameParams.total_bet.token_id!}
+                      />
+                    }
                   </Text>
                 </>
               )}
@@ -178,88 +188,92 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
               </Button>
             </Flex>
           )}
-          {isNumberValid(activeGameParams.game_id) && (
-            <Flex flexDirection="column" alignItems="center" rowGap={2}>
-              <Flex alignItems="center">
-                <Text>Current: </Text>
-                {activeGameParams.current_player ===
-                activeGameParams.player1 ? (
-                  <CircleIcon
-                    w="26px"
-                    h="26px"
-                    p="3px"
-                    borderRadius="4px"
-                    mx="5px"
-                    bg="#0009"
-                    color="yellowCheddar"
-                  />
-                ) : (
-                  <CrossIcon
-                    w="26px"
-                    h="26px"
-                    p="3px"
-                    borderRadius="4px"
-                    mx="5px"
-                    bg="#0009"
-                    color="yellowCheddar"
-                  />
-                )}
+          {isNumberValid(activeGameParams.game_id) &&
+            !activeGameParams.game_result.result && (
+              <Flex flexDirection="column" alignItems="center" rowGap={2}>
+                <Flex alignItems="center">
+                  <Text>Current: </Text>
+                  {activeGameParams.current_player ===
+                  activeGameParams.player1 ? (
+                    <CircleIcon
+                      w="26px"
+                      h="26px"
+                      p="3px"
+                      borderRadius="4px"
+                      mx="5px"
+                      bg="#0009"
+                      color="yellowCheddar"
+                    />
+                  ) : (
+                    <CrossIcon
+                      w="26px"
+                      h="26px"
+                      p="3px"
+                      borderRadius="4px"
+                      mx="5px"
+                      bg="#0009"
+                      color="yellowCheddar"
+                    />
+                  )}
+                  <Text>
+                    {activeGameParams.current_player ===
+                    walletSelector.accountId
+                      ? "You"
+                      : formatAccountId(
+                          activeGameParams.current_player as string,
+                          width
+                        )}
+                  </Text>
+                </Flex>
+                <Text>
+                  Game Started at:{" "}
+                  {
+                    new Date(
+                      (activeGameParams.initiated_at_sec as number) * 1000
+                    )
+                      .toString()
+                      .split(" ")[4]
+                  }
+                </Text>
+                <Text>
+                  Total Bet:{" "}
+                  {utils.format.formatNearAmount(
+                    activeGameParams.total_bet.balance!
+                  )}{" "}
+                  {
+                    <TokenName
+                      tokenId={activeGameParams.total_bet.token_id as string}
+                    />
+                  }
+                </Text>
                 <Text>
                   {activeGameParams.current_player === walletSelector.accountId
-                    ? "You"
-                    : formatAccountId(
-                        activeGameParams.current_player as string,
-                        width
-                      )}
+                    ? "Turn "
+                    : "Opponent "}
+                  Seconds Left: {timeLeft}
                 </Text>
-              </Flex>
-              <Text>
-                Game Started at:{" "}
-                {
-                  new Date((activeGameParams.initiated_at_sec as number) * 1000)
-                    .toString()
-                    .split(" ")[4]
-                }
-              </Text>
-              <Text>
-                Total Bet:{" "}
-                {utils.format.formatNearAmount(
-                  activeGameParams.reward.balance!
-                )}{" "}
-                {
-                  <TokenName
-                    tokenId={activeGameParams.reward.token_id as string}
-                  />
-                }
-              </Text>
-              <Text>
-                {activeGameParams.current_player === walletSelector.accountId
-                  ? "Turn "
-                  : "Opponent "}
-                Seconds Left: {timeLeft}
-              </Text>
-              <Flex gap={3}>
-                {activeGameParams.current_player ===
-                  walletSelector.accountId && (
-                  <PurpleButton size="sm" onClick={handleGiveUp}>
-                    Give Up
-                  </PurpleButton>
-                )}
-                {timeLeft === 0 &&
-                  activeGameParams.current_player !==
+                <Flex gap={3}>
+                  {activeGameParams.current_player ===
                     walletSelector.accountId && (
-                    <Button
-                      size="sm"
-                      colorScheme="red"
-                      borderRadius="full"
-                      onClick={handleClaimTimeoutWin}
-                    >
-                      Reclaim Game
-                    </Button>
+                    <PurpleButton size="sm" onClick={handleGiveUp}>
+                      Give Up
+                    </PurpleButton>
                   )}
+                  {timeLeft === 0 &&
+                    activeGameParams.current_player !==
+                      walletSelector.accountId && (
+                      <Button
+                        size="sm"
+                        colorScheme="red"
+                        borderRadius="full"
+                        onClick={handleClaimTimeoutWin}
+                      >
+                        Reclaim Game
+                      </Button>
+                    )}
+                </Flex>
               </Flex>
-            </Flex>
-          )}
+            )}
         </AccordionPanel>
       </AccordionItem>
       <ErrorModal msg={errorMsg} setMsg={setErrorMsg} />
