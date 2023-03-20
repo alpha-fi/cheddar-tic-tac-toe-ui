@@ -28,7 +28,7 @@ type Props = {
 
 export default function WaitingListForm({ tokensData }: Props) {
   const [bidInput, setBidInput] = useState("");
-  const [timeInput, setTimeInput] = useState(
+  const [availableTimeInput, setTimeInput] = useState<number | string>(
     DefaultValues.MIN_AVAILABLE_PLAYER_TIME
   );
   const [opponentInput, setOpponentInput] = useState({
@@ -58,6 +58,7 @@ export default function WaitingListForm({ tokensData }: Props) {
     walletSelector.ticTacToeLogic
       ?.bet(
         parseFloat(bidInput),
+        +availableTimeInput * 60 * 1e9, // minutes to nanoseconds
         withCheddar,
         referral,
         opponentInput.id.trim() === "" ? undefined : opponentInput.id
@@ -135,7 +136,7 @@ export default function WaitingListForm({ tokensData }: Props) {
             tokenName={tokenName}
           />
           <AvailableTimeInput
-            timeInput={timeInput}
+            availableTimeInput={availableTimeInput}
             setTimeInput={setTimeInput}
           />
           <OpponentInput
@@ -150,7 +151,7 @@ export default function WaitingListForm({ tokensData }: Props) {
                 parseFloat(bidInput) <
                   parseFloat(utils.format.formatNearAmount(minDeposit)) ||
                 bidInput.trim() === "" ||
-                timeInput < DefaultValues.MIN_AVAILABLE_PLAYER_TIME
+                availableTimeInput < DefaultValues.MIN_AVAILABLE_PLAYER_TIME
               }
             >
               Join Waiting List

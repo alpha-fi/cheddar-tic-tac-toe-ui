@@ -15,7 +15,7 @@ type Props = {
   boardFirst: boolean;
   boardSize: number;
   data: GameParamsState | undefined;
-  tokensData: WhiteListedTokens[];
+  tokensData: WhiteListedTokens[] | null;
   isLandScape: boolean;
   activeGameParams: GameParamsState;
   setActiveGameParams: (value: GameParamsState) => void;
@@ -50,7 +50,7 @@ export default function Info({
     <Flex
       alignItems="center"
       flexDirection="column"
-      gridRowStart={boardFirst ? "2" : "1"}
+      // gridRowStart={boardFirst ? "2" : "1"}
     >
       <Accordion
         width={isLandScape ? "100%" : boardSize}
@@ -73,9 +73,10 @@ export default function Info({
             }
           />
         )}
-        {walletSelector.selector.isSignedIn() && !data && !haveOwnChallenge && (
-          <WaitingListForm tokensData={tokensData} />
-        )}
+        {walletSelector.selector.isSignedIn() &&
+          !data &&
+          !haveOwnChallenge &&
+          tokensData && <WaitingListForm tokensData={tokensData} />}
       </Accordion>
 
       <Accordion allowToggle width={isLandScape ? "100%" : boardSize}>

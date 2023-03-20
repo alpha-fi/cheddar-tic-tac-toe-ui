@@ -76,6 +76,7 @@ export class TicTacToeLogic {
 
   private async getBetActions(
     amount: number | string,
+    availableFor?: number,
     withCheddar?: boolean,
     referrerId?: string,
     opponentId?: string
@@ -102,6 +103,7 @@ export class TicTacToeLogic {
       ticTacToeActions.push(
         this.ticTacToeContract.getMakeAvailableAction(
           amount,
+          availableFor,
           referrerId,
           opponentId
         )
@@ -112,6 +114,7 @@ export class TicTacToeLogic {
 
   async bet(
     amount: number,
+    availableFor: number,
     withCheddar?: boolean,
     referrerId?: string,
     opponentId?: string
@@ -119,6 +122,7 @@ export class TicTacToeLogic {
     const wallet: Wallet = await this.actualWallet;
     const { cheddarActions, ticTacToeActions } = await this.getBetActions(
       amount,
+      availableFor,
       withCheddar,
       referrerId,
       opponentId
@@ -190,6 +194,7 @@ export class TicTacToeLogic {
       ticTacToeActions: ticTacToeBetActions,
     } = await this.getBetActions(
       challenge[1].deposit,
+      undefined,
       challenge[1].token_id !== "near",
       referrerId
     );

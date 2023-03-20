@@ -1,9 +1,13 @@
-import { Flex, Grid } from "@chakra-ui/react";
+import { Center, Flex, Grid, Img } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { Coords, GameParams, Piece } from "../../../hooks/useContractParams";
 import { useLastMove } from "../../../hooks/useLastMove";
-import { getWinnerData, isObjectInArray } from "../../../shared/helpers/common";
+import {
+  getWinnerData,
+  isNumberValid,
+  isObjectInArray,
+} from "../../../shared/helpers/common";
 import {
   addSWNotification,
   hasUserPermission,
@@ -14,6 +18,7 @@ import {
   initialActiveGameParamsState,
 } from "../containers/TicTacToe";
 import { BoardSquare } from "./BoardSquare";
+import cheddarIcon from "../../../assets/cheddar-icon.svg";
 
 export type LoadingSquare = {
   row: number | null;
@@ -21,7 +26,6 @@ export type LoadingSquare = {
 };
 
 type Props = {
-  boardFirst: boolean;
   boardSize: number;
   activeGameParams: GameParamsState;
   setActiveGameParams: (value: GameParamsState) => void;
@@ -29,7 +33,6 @@ type Props = {
 };
 
 export default function Board({
-  boardFirst,
   boardSize,
   activeGameParams,
   setActiveGameParams,
@@ -45,6 +48,7 @@ export default function Board({
   >(undefined);
   const { data } = useLastMove(activeGameParams.game_id);
   const walletSelector = useWalletSelector();
+  const [isLoading, setLoading] = useState(true);
 
   function getWinnerDetails(winnerDetails: any) {
     const { result, winnerId } = getWinnerData(winnerDetails);
@@ -55,6 +59,7 @@ export default function Board({
           result: result,
           winner_id: winnerId,
         },
+        tiles: activeGameParams.tiles,
         reward: activeGameParams.reward,
       });
       if (winnerId === walletSelector.accountId) {
@@ -128,7 +133,11 @@ export default function Board({
 
   useEffect(() => {
     // game is over (result exists)
-    if (data !== lastMoveData && activeGameParams.game_id && data?.[2]) {
+    if (
+      data !== lastMoveData &&
+      isNumberValid(activeGameParams.game_id) &&
+      data?.[2]
+    ) {
       setLastMoveData(data);
       getWinnerDetails(data?.[2]);
     }

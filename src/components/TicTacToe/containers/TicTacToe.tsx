@@ -1,5 +1,5 @@
 import { AbsoluteCenter, Grid, Img } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { GameId, Reward, Tiles } from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
@@ -14,7 +14,10 @@ import {
 import Board from "../components/Board";
 import Info from "../components/Info";
 import cheddarIcon from "../../../assets/cheddar-icon.svg";
-import { getTokens } from "../../../shared/helpers/getTokens";
+import {
+  getTokens,
+  WhiteListedTokens,
+} from "../../../shared/helpers/getTokens";
 import { useCurrentUserActiveGame } from "../../../hooks/useActiveGame";
 
 export type GameParamsState = {
@@ -57,24 +60,24 @@ export function TicTacToe({ setConfetti }: Props) {
   const [data, setData] = useState<[GameId, GameParamsState]>(); // stores the active games from contract
   const [isLoading, setLoading] = useState(true);
   const tictactoeContainer = useRef<HTMLDivElement | null>(null);
-
+  const [tokensData, setTokensData] = useState<WhiteListedTokens[] | null>(
+    null
+  );
   const walletSelector = useWalletSelector();
 
-  const tokensData = getTokens();
   const { height, width } = useScreenSize();
 
-  // const [allGames,setAllGames] = useState()
-  const { data: activeGameData } = useCurrentUserActiveGame(
-    activeGameParams.game_id
-  );
+  const { data: activeGameData, isFetching: isFetching } =
+    useCurrentUserActiveGame(activeGameParams.game_id);
+
+  useEffect(() => {
+    setTokensData(getTokens());
+  }, []);
 
   // until all data is fetched showing loader
-  useEffect(() => {
-    const clearTimer = setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-    return () => clearTimeout(clearTimer);
-  }, []);
+  useLayoutEffect(() => {
+    setLoading(isFetching);
+  }, [isFetching]);
 
   useEffect(() => {
     if (walletSelector.accountId && activeGameData && activeGameData !== data) {
@@ -91,6 +94,17 @@ export function TicTacToe({ setConfetti }: Props) {
       setActiveGameParams(initialActiveGameParamsState);
     }
   }, [walletSelector.accountId]);
+
+  useEffect(() => {
+    // game is over
+    if (
+      data &&
+      !isNumberValid(activeGameParams.game_id) &&
+      activeGameParams.game_result.result
+    ) {
+      setData(undefined);
+    }
+  }, [data, activeGameData]);
 
   useEffect(() => {
     if (isPushNotificationSupported()) {
@@ -169,26 +183,21 @@ export function TicTacToe({ setConfetti }: Props) {
           gap="20px"
           ref={tictactoeContainer}
         >
-          {tokensData && (
-            <>
-              <Info
-                boardFirst={boardFirst}
-                isLandScape={isLandscape}
-                boardSize={boardSize}
-                data={data?.[1]}
-                tokensData={tokensData}
-                activeGameParams={activeGameParams}
-                setActiveGameParams={updateActiveParamsFromChild}
-              />
-              <Board
-                boardFirst={boardFirst}
-                boardSize={boardSize}
-                activeGameParams={activeGameParams}
-                setActiveGameParams={updateActiveParamsFromChild}
-                setConfetti={setConfetti}
-              />
-            </>
-          )}
+          <Info
+            boardFirst={boardFirst}
+            isLandScape={isLandscape}
+            boardSize={boardSize}
+            data={data?.[1]}
+            tokensData={tokensData}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={updateActiveParamsFromChild}
+          />
+          <Board
+            boardSize={boardSize}
+            activeGameParams={activeGameParams}
+            setActiveGameParams={updateActiveParamsFromChild}
+            setConfetti={setConfetti}
+          />
         </Grid>
       )}
     </>

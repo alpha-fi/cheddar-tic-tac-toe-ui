@@ -61,22 +61,20 @@ export class TicTacToeContract {
 
   getMakeAvailableAction(
     deposit: number | string,
+    available_for?: number,
     referrer_id?: string,
     opponent_id?: string
   ): Action {
+    const args: any = {};
+    if (referrer_id) args["referrer_id"] = referrer_id;
+    if (opponent_id) args["opponent_id"] = opponent_id;
     return {
       type: "FunctionCall",
       params: {
         methodName: "make_available",
         args: {
-          game_config:
-            referrer_id && opponent_id
-              ? { referrer_id, opponent_id }
-              : referrer_id
-              ? { referrer_id }
-              : opponent_id
-              ? { opponent_id }
-              : {},
+          game_config: args,
+          available_for: available_for,
         },
         gas: DEFAULT_GAS,
         deposit:

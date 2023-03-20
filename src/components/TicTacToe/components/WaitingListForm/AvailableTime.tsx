@@ -12,19 +12,22 @@ import {
 import { DefaultValues } from "../../../lib/constants";
 
 type Props = {
-  timeInput: number;
-  setTimeInput: React.Dispatch<React.SetStateAction<number>>;
+  availableTimeInput: string | number;
+  setTimeInput: React.Dispatch<React.SetStateAction<string | number>>;
 };
 
-export function AvailableTimeInput({ timeInput, setTimeInput }: Props) {
+export function AvailableTimeInput({
+  availableTimeInput,
+  setTimeInput,
+}: Props) {
   const handleTimeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTimeInput(+e.target.value);
+    setTimeInput(e.target.value);
   };
 
   const MinutesExtensionBtn = ({ timePeriod }: { timePeriod: number }) => {
     return (
       <Button
-        onClick={() => setTimeInput((prev) => prev + timePeriod)}
+        onClick={() => setTimeInput((prev) => +prev + timePeriod)}
         colorScheme="purple"
         variant="outline"
         size="xs"
@@ -34,7 +37,9 @@ export function AvailableTimeInput({ timeInput, setTimeInput }: Props) {
     );
   };
   const borderColor =
-    timeInput >= DefaultValues.MIN_AVAILABLE_PLAYER_TIME ? "inherit" : "red";
+    +availableTimeInput >= DefaultValues.MIN_AVAILABLE_PLAYER_TIME
+      ? "inherit"
+      : "red";
 
   return (
     <FormControl mb="10px">
@@ -55,7 +60,7 @@ export function AvailableTimeInput({ timeInput, setTimeInput }: Props) {
         </FormLabel>
         <Input
           onChange={handleTimeInputChange}
-          value={timeInput}
+          value={availableTimeInput}
           borderColor={borderColor}
           boxShadow={`box-shadow: 0 0 0 1px ${borderColor}`}
           _focus={{

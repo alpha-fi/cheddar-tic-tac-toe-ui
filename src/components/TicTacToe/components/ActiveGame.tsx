@@ -11,7 +11,6 @@ import {
 import { utils } from "near-api-js";
 import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { getMaxTurnDuration } from "../../../hooks/useContractParams";
 import { CircleIcon } from "../../../shared/components/CircleIcon";
 import { CrossIcon } from "../../../shared/components/CrossIcon";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
@@ -25,6 +24,7 @@ import { formatAccountId } from "../../../shared/helpers/formatAccountId";
 import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
 import { isNumberValid } from "../../../shared/helpers/common";
+import { DefaultValues } from "../../lib/constants";
 
 type Props = {
   activeGameParams: GameParamsState;
@@ -36,15 +36,6 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
   const [errorMsg, setErrorMsg] = useState("");
   const walletSelector = useWalletSelector();
   const { width } = useScreenSize();
-  const [maxTurnDuration, setMaxTurnDuration] = useState<number | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    getMaxTurnDuration(walletSelector).then((resp) => {
-      setMaxTurnDuration(resp);
-    });
-  }, []);
 
   const handleGiveUp = () => {
     if (isNumberValid(activeGameParams.game_id)) {
@@ -75,43 +66,33 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
   useEffect(() => {
     let updateTimer = true;
     let secondsToEnd: number;
-    if (maxTurnDuration) {
-      if (activeGameParams.last_turn_timestamp_sec === 0) {
-        secondsToEnd =
-          Math.round(Date.now() / 1000) -
-          (activeGameParams.initiated_at_sec as number);
-      } else {
-        secondsToEnd =
-          Math.round(Date.now() / 1000) -
-          (activeGameParams.last_turn_timestamp_sec as number);
-      }
-      const clearTimer = setInterval(() => {
-        setTimeLeft((prevTimeLeft) => {
-          if (secondsToEnd > maxTurnDuration) {
-            return 0; // If time has exceeded max duration, set time left to 0
-          } else {
-            const timeLeft = maxTurnDuration - secondsToEnd;
-            console.log(
-              timeLeft,
-              !prevTimeLeft || updateTimer
-                ? timeLeft
-                : prevTimeLeft === 0
-                ? 0
-                : prevTimeLeft - 1
-            );
-            return !isNumberValid(prevTimeLeft) || updateTimer
-              ? timeLeft
-              : prevTimeLeft === 0
-              ? 0
-              : prevTimeLeft! - 1;
-          }
-        });
-        updateTimer = false;
-      }, 1000);
-      return () => clearInterval(clearTimer);
+    if (activeGameParams.last_turn_timestamp_sec === 0) {
+      secondsToEnd =
+        Math.round(Date.now() / 1000) -
+        (activeGameParams.initiated_at_sec as number);
+    } else {
+      secondsToEnd =
+        Math.round(Date.now() / 1000) -
+        (activeGameParams.last_turn_timestamp_sec as number);
     }
+    const maxTurnDuration = DefaultValues.MAX_TURN_DURATION;
+    const clearTimer = setInterval(() => {
+      setTimeLeft((prevTimeLeft) => {
+        if (secondsToEnd > maxTurnDuration) {
+          return 0; // If time has exceeded max duration, set time left to 0
+        } else {
+          const timeLeft = maxTurnDuration - secondsToEnd;
+          return !isNumberValid(prevTimeLeft) || updateTimer
+            ? timeLeft
+            : prevTimeLeft === 0
+            ? 0
+            : prevTimeLeft! - 1;
+        }
+      });
+      updateTimer = false;
+    }, 1000);
+    return () => clearInterval(clearTimer);
   }, [
-    maxTurnDuration,
     activeGameParams.last_turn_timestamp_sec,
     activeGameParams.initiated_at_sec,
   ]);
