@@ -4,7 +4,7 @@ const MAINNET = "mainnet";
 const TESTNET = "testnet";
 const CHEDDAR_CONTRACT_NAME = "token.cheddar.near";
 const TESTNET_CHEDDAR_CONTRACT_NAME = "token-v3.cheddar.testnet";
-const TESTNET_CONTRACT_NAME = "dev-1679316333308-27039001237430";
+const TESTNET_CONTRACT_NAME = "dev-1679318334666-50666764091599";
 // const TESTNET_CONTRACT_NAME = "tictactoe.cheddar.testnet"
 const MIN_CHEDDAR_DEPOSIT_VALUE = "50000000000000000000000000";
 
