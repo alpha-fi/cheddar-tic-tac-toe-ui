@@ -111,17 +111,3 @@ export const getContractParams = async (
     ),
   } as GameParams;
 };
-
-export const getMaxGameDuration = async (
-  walletSelector: WalletSelectorContextValue
-) => {
-  const resp = await walletSelector.tictactoeContract?.get_max_game_duration();
-  return resp;
-};
-
-export const getMaxTurnDuration = async (
-  walletSelector: WalletSelectorContextValue
-) => {
-  const resp = await walletSelector.tictactoeContract?.get_max_turn_duration();
-  return resp;
-};

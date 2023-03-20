@@ -204,12 +204,4 @@ export class TicTacToeContract {
       "0"
     );
   }
-
-  get_max_game_duration(): Promise<number> {
-    return this.wallet.view(this.contractId, "get_max_game_duration", {});
-  }
-
-  get_max_turn_duration(): Promise<number> {
-    return this.wallet.view(this.contractId, "get_max_turn_duration", {});
-  }
 }
