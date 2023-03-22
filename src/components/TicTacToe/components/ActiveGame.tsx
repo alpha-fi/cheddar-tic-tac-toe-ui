@@ -192,30 +192,32 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
             !activeGameParams.game_result.result && (
               <Flex flexDirection="column" alignItems="center" rowGap={2}>
                 <Flex alignItems="center">
-                  <Text>Current: </Text>
+                  <Text fontSize="2xl" as="b">
+                    Current:{" "}
+                  </Text>
                   {activeGameParams.current_player ===
                   activeGameParams.player1 ? (
                     <CircleIcon
-                      w="26px"
-                      h="26px"
+                      w="40px"
+                      h="40px"
                       p="3px"
                       borderRadius="4px"
                       mx="5px"
                       bg="#0009"
-                      color="yellowCheddar"
+                      color="OColor"
                     />
                   ) : (
                     <CrossIcon
-                      w="26px"
-                      h="26px"
+                      w="40px"
+                      h="40px"
                       p="3px"
                       borderRadius="4px"
                       mx="5px"
                       bg="#0009"
-                      color="yellowCheddar"
+                      color="XColor"
                     />
                   )}
-                  <Text>
+                  <Text fontSize="2xl" as="b">
                     {activeGameParams.current_player ===
                     walletSelector.accountId
                       ? "You"

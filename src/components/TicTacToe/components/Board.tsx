@@ -1,24 +1,20 @@
-import { Center, Flex, Grid, Img } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Flex, Grid } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { Coords, GameParams, Piece } from "../../../hooks/useContractParams";
+import { Coords, Piece } from "../../../hooks/useContractParams";
 import { useLastMove } from "../../../hooks/useLastMove";
 import {
   getWinnerData,
   isNumberValid,
   isObjectInArray,
 } from "../../../shared/helpers/common";
-import {
-  addSWNotification,
-  hasUserPermission,
-} from "../../../shared/helpers/notifications";
+import { addSWNotification } from "../../../shared/helpers/notifications";
 import { GridSize } from "../../lib/constants";
 import {
   GameParamsState,
   initialActiveGameParamsState,
 } from "../containers/TicTacToe";
 import { BoardSquare } from "./BoardSquare";
-import cheddarIcon from "../../../assets/cheddar-icon.svg";
 
 export type LoadingSquare = {
   row: number | null;
@@ -66,19 +62,18 @@ export default function Board({
       if (winnerId === walletSelector.accountId) {
         setConfetti(true);
       }
-      if (hasUserPermission()) {
-        let msg;
-        if (result === "Tie") {
-          msg = "Game Over: Tied Game!";
+
+      let msg;
+      if (result === "Tie") {
+        msg = "Game Over: Tied Game!";
+      } else {
+        if (winnerId === walletSelector.accountId) {
+          msg = "Game Over: You Win!";
         } else {
-          if (winnerId === walletSelector.accountId) {
-            msg = "Game Over: You Win!";
-          } else {
-            msg = "Game Over: You Lose!";
-          }
+          msg = "Game Over: You Lose!";
         }
-        addSWNotification(msg);
       }
+      addSWNotification(msg);
     }
   }
 
@@ -116,9 +111,14 @@ export default function Board({
           current_player: currentPlayer,
           last_turn_timestamp_sec: data?.[3],
         });
+        // scroll to that particular move on board
+        const block = document.getElementById(`r${data[0].x}c${data[0].y}`);
+        if (block) {
+          block.scrollIntoView({ block: "center", inline: "center" });
+        }
         setLoadingSquare({ row: null, column: null });
-        if (currentPlayer === walletSelector.accountId && hasUserPermission()) {
-          addSWNotification("Is Your Turn");
+        if (currentPlayer === walletSelector.accountId) {
+          addSWNotification("It's Your Turn");
         }
       }
     }
@@ -186,7 +186,7 @@ export default function Board({
         height={boardSize}
         visibility={boardSize === 0 ? "hidden" : "inherit"}
         width={boardSize}
-        bg="#333c"
+        bg="#2D2727"
         border="8px solid"
         borderRadius="8px"
         borderColor="purpleCheddar"

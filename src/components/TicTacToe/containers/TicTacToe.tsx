@@ -7,7 +7,6 @@ import { isNumberValid } from "../../../shared/helpers/common";
 import {
   addSWNotification,
   askUserPermission,
-  hasUserPermission,
   isPushNotificationSupported,
   registerServiceWorker,
 } from "../../../shared/helpers/notifications";
@@ -120,9 +119,8 @@ export function TicTacToe({ setConfetti }: Props) {
       !activeGameParams.game_id &&
       !activeGameParams.game_result.result // checking result because we set empty state but only result data in Board
     ) {
-      if (hasUserPermission()) {
-        addSWNotification("You Have an Active Game");
-      }
+      addSWNotification("You Have an Active Game");
+
       setActiveGameParams({
         ...initialActiveGameParamsState,
         game_id: data[0],

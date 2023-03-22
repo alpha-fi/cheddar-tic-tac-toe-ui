@@ -54,17 +54,25 @@ export function addNotification(msg: string) {
 }
 
 export function addSWNotification(msg: string) {
-  navigator.serviceWorker.getRegistration().then((sw) => {
-    if (sw) {
-      sw.showNotification("Cheddar TicTacToe", {
-        body: msg,
-        icon: cheddarIcon,
-        vibrate: [200, 100, 200],
-        tag: "new-product",
-        badge: cheddarIcon,
-        requireInteraction: true,
-        //actions: [{ action: "open", title: "Open", icon: cheddarIcon }],
+  // on Mac notifications doesn't work, thus showing alert
+  var isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  if (isMac) {
+    alert(msg);
+  } else {
+    if (hasUserPermission()) {
+      navigator.serviceWorker.getRegistration().then((sw) => {
+        if (sw) {
+          sw.showNotification("Cheddar TicTacToe", {
+            body: msg,
+            icon: cheddarIcon,
+            vibrate: [200, 100, 200],
+            tag: "new-product",
+            badge: cheddarIcon,
+            requireInteraction: true,
+            //actions: [{ action: "open", title: "Open", icon: cheddarIcon }],
+          });
+        }
       });
     }
-  });
+  }
 }

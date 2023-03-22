@@ -38,6 +38,8 @@ const colors = {
   yellowCheddar: "#ffd262",
   purpleCheddar: "#8542eb",
   textCheddar: "#333",
+  XColor: "#16FF00",
+  OColor: "#FDFF00",
 };
 
 const config = {

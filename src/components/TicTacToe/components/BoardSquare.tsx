@@ -40,50 +40,49 @@ export function BoardSquare({
     // account is not selected
     if (!walletSelector.accountId) {
       setErrorMsg("Please connect to wallet.");
-    }
-    // Game is over
-    if (activeGameParams.game_result.result) {
-      setErrorMsg("Game is Over.");
-    }
-    if (
-      activeGameParams &&
-      isSquareEmpty &&
-      activeGameParams.current_player === walletSelector.accountId &&
-      loadingSquare.column === null &&
-      loadingSquare.row === null
-    ) {
-      const gameId = activeGameParams.game_id as number;
-      askUserPermission();
-      setLoadingSquare({ row, column });
-      if (walletSelector.ticTacToeLogic) {
-        walletSelector.ticTacToeLogic
-          .play(gameId, row, column)
-          .then((response) => {
-            const successMsg = Buffer.from(
-              response.status?.SuccessValue ?? "",
-              "base64"
-            ).toString();
-            getWinnerDetails(successMsg);
-          })
-          .catch((error) => {
-            console.error(error);
-            setErrorMsg(getErrorMessage(error));
-            setLoadingSquare({ row: null, column: null });
-          });
+    } else {
+      // Game is over
+      if (activeGameParams.game_result.result) {
+        setErrorMsg("Game is Over.");
+      }
+      if (
+        activeGameParams &&
+        isSquareEmpty &&
+        activeGameParams.current_player === walletSelector.accountId &&
+        loadingSquare.column === null &&
+        loadingSquare.row === null
+      ) {
+        const gameId = activeGameParams.game_id as number;
+        askUserPermission();
+        setLoadingSquare({ row, column });
+        if (walletSelector.ticTacToeLogic) {
+          walletSelector.ticTacToeLogic
+            .play(gameId, row, column)
+            .then((response) => {
+              const successMsg = Buffer.from(
+                // @ts-ignore
+                response.status!.SuccessValue ?? "",
+                "base64"
+              ).toString();
+              getWinnerDetails(successMsg);
+            })
+            .catch((error) => {
+              console.error(error);
+              setErrorMsg(getErrorMessage(error));
+              setLoadingSquare({ row: null, column: null });
+            });
+        }
       }
     }
   };
 
-  const isOCoord = activeGameParams.tiles?.o_coords.find(
+  const isOCoord = !!activeGameParams.tiles?.o_coords.find(
     (coords: Coords) => coords.x === row && coords.y === column
-  )
-    ? true
-    : false;
-  const isXCoord = activeGameParams.tiles?.x_coords.find(
+  );
+
+  const isXCoord = !!activeGameParams.tiles?.x_coords.find(
     (coords: Coords) => coords.x === row && coords.y === column
-  )
-    ? true
-    : false;
+  );
 
   // checking for both X AND O coords
   const isSquareEmpty = !isOCoord && !isXCoord;
@@ -103,9 +102,9 @@ export function BoardSquare({
   return (
     <>
       <Box
-        minHeight="1.5rem"
+        minHeight="2rem"
         maxHeight="100%"
-        minWidth="1.5rem"
+        minWidth="2rem"
         maxWidth="100%"
         borderTop={row > 0 ? border : "0px"}
         borderBottom={row < GridSize.rows ? border : "0px"}
@@ -124,17 +123,9 @@ export function BoardSquare({
           {(isXCoord || isOCoord) && (
             <Flex justifyContent="center" alignItems="center" h="100%">
               {isOCoord ? (
-                <CircleIcon
-                  w="75%"
-                  h="75%"
-                  color={isActiveTurn ? "yellowCheddar" : "#ffd26288"}
-                />
+                <CircleIcon w="75%" h="75%" color="OColor" />
               ) : (
-                <CrossIcon
-                  w="65%"
-                  h="65%"
-                  color={isActiveTurn ? "yellowCheddar" : "#ffd26288"}
-                />
+                <CrossIcon w="65%" h="65%" color="XColor" />
               )}
             </Flex>
           )}
