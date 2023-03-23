@@ -111,9 +111,10 @@ export default function Board({
           current_player: currentPlayer,
           last_turn_timestamp_sec: data?.[3],
         });
-        // scroll to that particular move on board
+        // scroll to that particular move on board and color the block to red
         const block = document.getElementById(`r${data[0].x}c${data[0].y}`);
         if (block) {
+          block.style.backgroundColor = "red";
           block.scrollIntoView({ block: "center", inline: "center" });
         }
         setLoadingSquare({ row: null, column: null });

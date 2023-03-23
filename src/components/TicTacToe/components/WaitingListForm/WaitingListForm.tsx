@@ -58,7 +58,7 @@ export default function WaitingListForm({ tokensData }: Props) {
     walletSelector.ticTacToeLogic
       ?.bet(
         parseFloat(bidInput),
-        +availableTimeInput * 60 * 1e9, // minutes to nanoseconds
+        +availableTimeInput * 60, // minutes to seconds
         withCheddar,
         referral,
         opponentInput.id.trim() === "" ? undefined : opponentInput.id

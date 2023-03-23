@@ -93,12 +93,6 @@ export function BoardSquare({
     loadingSquare.column === null &&
     loadingSquare.row === null;
 
-  const isActiveTurn =
-    activeGameParams &&
-    activeGameParams.current_player === walletSelector.accountId &&
-    loadingSquare.row === null &&
-    loadingSquare.column === null;
-
   return (
     <>
       <Box
