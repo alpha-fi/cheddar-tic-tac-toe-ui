@@ -73,7 +73,7 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
   const handleCloseGame = () => {
     setActiveGameParams(initialActiveGameParamsState);
     // remove data from LS
-    localStorage.removeItem(LSKeys.ACTIVE_GAME_PARAMS);
+    sessionStorage.removeItem(LSKeys.ACTIVE_GAME_PARAMS);
   };
 
   useEffect(() => {

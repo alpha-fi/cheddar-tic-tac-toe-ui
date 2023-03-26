@@ -70,7 +70,7 @@ export function TicTacToe({ setConfetti }: Props) {
   // store active game data to LS
   useEffect(() => {
     if (isNumberValid(activeGameParams.game_id)) {
-      localStorage.setItem(
+      sessionStorage.setItem(
         LSKeys.ACTIVE_GAME_PARAMS,
         JSON.stringify(activeGameParams)
       );
@@ -79,7 +79,7 @@ export function TicTacToe({ setConfetti }: Props) {
 
   // if not active game data found using API, checking for LS
   useEffect(() => {
-    const lsData = localStorage.getItem(LSKeys.ACTIVE_GAME_PARAMS);
+    const lsData = sessionStorage.getItem(LSKeys.ACTIVE_GAME_PARAMS);
     if (lsData) {
       setActiveGameParams(JSON.parse(lsData));
     }
@@ -131,7 +131,7 @@ export function TicTacToe({ setConfetti }: Props) {
   }, []);
 
   useEffect(() => {
-    const lsData = localStorage.getItem(LSKeys.ACTIVE_GAME_PARAMS);
+    const lsData = sessionStorage.getItem(LSKeys.ACTIVE_GAME_PARAMS);
     if (
       walletSelector.accountId &&
       data &&
