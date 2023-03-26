@@ -18,6 +18,7 @@ import {
   WhiteListedTokens,
 } from "../../../shared/helpers/getTokens";
 import { useCurrentUserActiveGame } from "../../../hooks/useActiveGame";
+import { LSKeys } from "../../lib/constants";
 
 export type GameParamsState = {
   game_id: GameId | null;
@@ -66,6 +67,24 @@ export function TicTacToe({ setConfetti }: Props) {
 
   const { height, width } = useScreenSize();
 
+  // store active game data to LS
+  useEffect(() => {
+    if (isNumberValid(activeGameParams.game_id)) {
+      localStorage.setItem(
+        LSKeys.ACTIVE_GAME_PARAMS,
+        JSON.stringify(activeGameParams)
+      );
+    }
+  }, [activeGameParams]);
+
+  // if not active game data found using API, checking for LS
+  useEffect(() => {
+    const lsData = localStorage.getItem(LSKeys.ACTIVE_GAME_PARAMS);
+    if (lsData) {
+      setActiveGameParams(JSON.parse(lsData));
+    }
+  }, []);
+
   const { data: activeGameData, isFetching: isFetching } =
     useCurrentUserActiveGame(activeGameParams.game_id);
 
@@ -112,12 +131,12 @@ export function TicTacToe({ setConfetti }: Props) {
   }, []);
 
   useEffect(() => {
+    const lsData = localStorage.getItem(LSKeys.ACTIVE_GAME_PARAMS);
     if (
       walletSelector.accountId &&
       data &&
       isNumberValid(data?.[0]) &&
-      !activeGameParams.game_id &&
-      !activeGameParams.game_result.result // checking result because we set empty state but only result data in Board
+      !lsData
     ) {
       addSWNotification("You Have an Active Game");
 

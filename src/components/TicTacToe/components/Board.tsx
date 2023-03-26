@@ -28,6 +28,8 @@ type Props = {
   setConfetti: (value: boolean) => void;
 };
 
+const BoardBGColor = "#2D2727";
+
 export default function Board({
   boardSize,
   activeGameParams,
@@ -78,12 +80,8 @@ export default function Board({
   }
 
   useEffect(() => {
-    // filling last move data for the first time
-    if (!lastMoveData && data) {
-      setLastMoveData(data);
-    }
     // on every last data difference updating tiles data
-    if (lastMoveData && data && data?.[0]) {
+    if (data && data?.[0]) {
       if (
         lastMoveData !== data ||
         (!activeGameParams.tiles?.x_coords.length &&
@@ -111,10 +109,15 @@ export default function Board({
           current_player: currentPlayer,
           last_turn_timestamp_sec: data?.[3],
         });
+        // display it only if the result is not declared
+        if (data?.[2]) return;
         // scroll to that particular move on board and color the block to red
         const block = document.getElementById(`r${data[0].x}c${data[0].y}`);
         if (block) {
           block.style.backgroundColor = "red";
+          setTimeout(() => {
+            block.style.backgroundColor = BoardBGColor;
+          }, 5000);
           block.scrollIntoView({ block: "center", inline: "center" });
         }
         setLoadingSquare({ row: null, column: null });
@@ -187,7 +190,7 @@ export default function Board({
         height={boardSize}
         visibility={boardSize === 0 ? "hidden" : "inherit"}
         width={boardSize}
-        bg="#2D2727"
+        bg={BoardBGColor}
         border="8px solid"
         borderRadius="8px"
         borderColor="purpleCheddar"

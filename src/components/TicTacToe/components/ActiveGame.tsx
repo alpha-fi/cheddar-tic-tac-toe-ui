@@ -24,7 +24,7 @@ import { formatAccountId } from "../../../shared/helpers/formatAccountId";
 import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
 import { isNumberValid } from "../../../shared/helpers/common";
-import { DefaultValues } from "../../lib/constants";
+import { DefaultValues, LSKeys } from "../../lib/constants";
 import { getGameParams } from "../../../hooks/useContractParams";
 
 type Props = {
@@ -72,6 +72,8 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
 
   const handleCloseGame = () => {
     setActiveGameParams(initialActiveGameParamsState);
+    // remove data from LS
+    localStorage.removeItem(LSKeys.ACTIVE_GAME_PARAMS);
   };
 
   useEffect(() => {
