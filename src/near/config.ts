@@ -2,10 +2,11 @@ import { WhiteListedTokens } from "../shared/helpers/getTokens";
 
 const MAINNET = "mainnet";
 const TESTNET = "testnet";
-const CHEDDAR_CONTRACT_NAME = 'token.cheddar.near'
-const TESTNET_CHEDDAR_CONTRACT_NAME = 'token-v3.cheddar.testnet'
-const TESTNET_CONTRACT_NAME = "dev-1678809619493-94113056009823"
+const CHEDDAR_CONTRACT_NAME = "token.cheddar.near";
+const TESTNET_CHEDDAR_CONTRACT_NAME = "token-v3.cheddar.testnet";
+const TESTNET_CONTRACT_NAME = "dev-1679596451659-52090257725023";
 // const TESTNET_CONTRACT_NAME = "tictactoe.cheddar.testnet"
+const MIN_CHEDDAR_DEPOSIT_VALUE = "50" + "0".repeat(24);
 
 export const ENV = TESTNET;
 
@@ -16,7 +17,7 @@ interface NearEnv {
   helperUrl: string;
   explorerUrl: string;
   headers: Object;
-  tokensData: WhiteListedTokens[]
+  tokensData: WhiteListedTokens[];
 }
 
 interface TicTacToeEnv {
@@ -38,12 +39,11 @@ export function getEnv(env: string): TicTacToeEnv {
           headers: {},
           tokensData: [
             {
-              "name": "CHEDDAR",
-              "contractId": CHEDDAR_CONTRACT_NAME,
-              "value": "1000000000000000000000000",
-              "minDeposit": "1000000000000000000000000"
-            }
-          ]
+              name: "CHEDDAR",
+              contractId: CHEDDAR_CONTRACT_NAME,
+              minDeposit: MIN_CHEDDAR_DEPOSIT_VALUE,
+            },
+          ],
         },
         contractId: "NOT SET YET",
         cheddarContractId: "NOT SET YET",
@@ -59,12 +59,11 @@ export function getEnv(env: string): TicTacToeEnv {
           headers: {},
           tokensData: [
             {
-              "name": "CHEDDAR",
-              "contractId": TESTNET_CHEDDAR_CONTRACT_NAME,
-              "value": "1000000000000000000000000",
-              "minDeposit": "1000000000000000000000000"
-            }
-          ]
+              name: "CHEDDAR",
+              contractId: TESTNET_CHEDDAR_CONTRACT_NAME,
+              minDeposit: MIN_CHEDDAR_DEPOSIT_VALUE,
+            },
+          ],
         },
         contractId: TESTNET_CONTRACT_NAME,
         cheddarContractId: TESTNET_CHEDDAR_CONTRACT_NAME,

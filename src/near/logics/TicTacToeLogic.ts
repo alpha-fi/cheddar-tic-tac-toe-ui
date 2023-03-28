@@ -4,10 +4,15 @@ import {
   Transaction,
   Wallet,
 } from "@near-wallet-selector/core";
+import {
+  ContractParams,
+  Coords,
+  GameConfigView,
+  GameId,
+  Piece,
+} from "../../hooks/useContractParams";
 import { NEP141, StorageBalance } from "../contracts/NEP141";
 import {
-  AvailablePlayerConfig,
-  ContractParams,
   FinalizedGame,
   Stats,
   TicTacToeContract,
@@ -27,7 +32,7 @@ export class TicTacToeLogic {
     this.actualWallet = this.cheddarContract.wallet.walletSelector.wallet();
   }
 
-  getAvailableGames(): Promise<[string, AvailablePlayerConfig][]> {
+  getAvailableGames(): Promise<[string, GameConfigView][]> {
     return this.ticTacToeContract.get_available_players();
   }
 
@@ -43,10 +48,6 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.get_token_min_deposit(accountId);
   }
 
-  getWhiteListedTokens(): Promise<[string, string][]> {
-    return this.ticTacToeContract.get_whitelisted_tokens();
-  }
-
   getDisplayableAccountId(screenWidth: number): string {
     return this.ticTacToeContract.getDisplayableAccountId(screenWidth);
   }
@@ -59,8 +60,15 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.get_stats();
   }
 
+  getLastMove(
+    gameId: GameId
+  ): Promise<[Coords | null, Piece, any, number | null]> {
+    return this.ticTacToeContract.get_last_move(gameId);
+  }
+
   private async getBetActions(
     amount: number | string,
+    availableFor?: number,
     withCheddar?: boolean,
     referrerId?: string,
     opponentId?: string
@@ -87,6 +95,7 @@ export class TicTacToeLogic {
       ticTacToeActions.push(
         this.ticTacToeContract.getMakeAvailableAction(
           amount,
+          availableFor,
           referrerId,
           opponentId
         )
@@ -97,6 +106,7 @@ export class TicTacToeLogic {
 
   async bet(
     amount: number,
+    availableFor: number,
     withCheddar?: boolean,
     referrerId?: string,
     opponentId?: string
@@ -104,6 +114,7 @@ export class TicTacToeLogic {
     const wallet: Wallet = await this.actualWallet;
     const { cheddarActions, ticTacToeActions } = await this.getBetActions(
       amount,
+      availableFor,
       withCheddar,
       referrerId,
       opponentId
@@ -150,7 +161,7 @@ export class TicTacToeLogic {
   }
 
   async acceptChallenge(
-    challenge: [string, AvailablePlayerConfig],
+    challenge: [string, GameConfigView],
     referrerId?: string
   ): Promise<void> {
     let ticTacToeActions1: Action[] = [];
@@ -162,7 +173,7 @@ export class TicTacToeLogic {
     // If user has a pending bet, it removes it. Else keeps with flow.
     const availableGames = await this.getAvailableGames();
     const isUserWaiting = availableGames.some(
-      (game: [string, AvailablePlayerConfig]) =>
+      (game: [string, GameConfigView]) =>
         game[0] === this.cheddarContract.wallet.getAccountId()
     );
     if (isUserWaiting) {
@@ -175,6 +186,7 @@ export class TicTacToeLogic {
       ticTacToeActions: ticTacToeBetActions,
     } = await this.getBetActions(
       challenge[1].deposit,
+      undefined,
       challenge[1].token_id !== "near",
       referrerId
     );
@@ -216,10 +228,6 @@ export class TicTacToeLogic {
 
     // Call transactions
     wallet.signAndSendTransactions({ transactions });
-  }
-
-  stopGame(gameId: number): Promise<FinalExecutionOutcome> {
-    return this.ticTacToeContract.stop_game(gameId);
   }
 
   claimTimeoutWin(gameId: number): Promise<FinalExecutionOutcome> {

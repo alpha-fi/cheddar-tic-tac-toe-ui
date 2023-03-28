@@ -1,31 +1,29 @@
 import { Action, FinalExecutionOutcome } from "@near-wallet-selector/core";
 import { utils } from "near-api-js";
+import { GameParamsState } from "../../components/TicTacToe";
+import {
+  ContractParams,
+  Coords,
+  GameConfigView,
+  GameId,
+  GameLimitedView,
+  Piece,
+  Tiles,
+} from "../../hooks/useContractParams";
 import { ENV, getEnv } from "../config";
 import { DEFAULT_GAS, SelectorWallet } from "../wallet/wallet-selector";
 
-export interface AvailablePlayerConfig {
-  token_id: string;
-  deposit: string;
-  opponent_id: string | null;
-  referrer_id: string | null;
-}
-
-export interface ContractParams {
-  games: object;
-  available_players: [string, AvailablePlayerConfig][];
-  service_fee_percentage: string;
-  max_game_duration: string;
-}
 export interface FinalizedGame {
   game_result: string | any;
   player1: string;
   player2: string;
-  reward_or_tie_refund: {
+  reward: {
     token_id: string;
     balance: string;
   };
-  board: ("O" | "X" | null)[][];
+  tiles: Tiles;
 }
+
 export interface Stats {
   referrer_id: string | null;
   games_played: number;
@@ -64,22 +62,20 @@ export class TicTacToeContract {
 
   getMakeAvailableAction(
     deposit: number | string,
+    available_for?: number,
     referrer_id?: string,
     opponent_id?: string
   ): Action {
+    const args: any = {};
+    if (referrer_id) args["referrer_id"] = referrer_id;
+    if (opponent_id) args["opponent_id"] = opponent_id;
     return {
       type: "FunctionCall",
       params: {
         methodName: "make_available",
         args: {
-          game_config:
-            referrer_id && opponent_id
-              ? { referrer_id, opponent_id }
-              : referrer_id
-              ? { referrer_id }
-              : opponent_id
-              ? { opponent_id }
-              : {},
+          game_config: args,
+          available_for: available_for,
         },
         gas: DEFAULT_GAS,
         deposit:
@@ -124,7 +120,7 @@ export class TicTacToeContract {
    * two elements: the first one contains the player's account id. The second one, contains
    * information about the challenge
    */
-  get_active_games(): Promise<any[]> {
+  get_active_games(): Promise<[GameId, GameParamsState][]> {
     return this.wallet.view(this.contractId, "get_active_games", {});
   }
 
@@ -136,7 +132,7 @@ export class TicTacToeContract {
     return this.wallet.view(this.contractId, "get_last_games", {});
   }
 
-  get_available_players(): Promise<[string, AvailablePlayerConfig][]> {
+  get_available_players(): Promise<[string, GameConfigView][]> {
     return this.wallet.view(this.contractId, "get_available_players", {});
   }
 
@@ -150,8 +146,10 @@ export class TicTacToeContract {
     });
   }
 
-  get_whitelisted_tokens(): Promise<[string, string][]> {
-    return this.wallet.view(this.contractId, "get_whitelisted_tokens", {});
+  get_last_move(
+    game_id: GameId
+  ): Promise<[Coords | null, Piece, any, number | null]> {
+    return this.wallet.view(this.contractId, "get_last_move", { game_id });
   }
 
   make_move(
@@ -162,7 +160,7 @@ export class TicTacToeContract {
     return this.wallet.call(
       this.contractId,
       "make_move",
-      { game_id, row, col },
+      { game_id, coords: { x: row, y: col } },
       undefined,
       "0"
     );
@@ -181,16 +179,6 @@ export class TicTacToeContract {
       { game_id },
       undefined,
       "1"
-    );
-  }
-
-  stop_game(game_id: number): Promise<FinalExecutionOutcome> {
-    return this.wallet.call(
-      this.contractId,
-      "stop_game",
-      { game_id },
-      undefined,
-      "0"
     );
   }
 
@@ -216,5 +204,9 @@ export class TicTacToeContract {
       undefined,
       "0"
     );
+  }
+
+  get_game(game_id: number): Promise<GameLimitedView> {
+    return this.wallet.view(this.contractId, "get_game", { game_id });
   }
 }

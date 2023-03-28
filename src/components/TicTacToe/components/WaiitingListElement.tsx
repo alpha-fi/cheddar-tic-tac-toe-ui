@@ -2,7 +2,7 @@ import { Button, Flex, Grid, Text } from "@chakra-ui/react";
 import { utils } from "near-api-js";
 import { useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { AvailablePlayerConfig } from "../../../near/contracts/TicTacToe";
+import { GameConfigView } from "../../../hooks/useContractParams";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
 import { formatAccountId } from "../../../shared/helpers/formatAccountId";
@@ -10,7 +10,7 @@ import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
 import TokenName from "./TokenName";
 
 type Props = {
-  player: [string, AvailablePlayerConfig];
+  player: [string, GameConfigView];
   width: number;
 };
 
@@ -31,8 +31,9 @@ export function WaiitingListElement({ player, width }: Props) {
           {
             token_id: token_id,
             deposit: deposit,
-            opponent_id: null,
-            referrer_id: referrer_id ?? null,
+            opponent_id: undefined,
+            referrer_id: referrer_id ?? undefined,
+            created_at: undefined,
           },
         ])
         .catch((error) => {

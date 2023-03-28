@@ -9,7 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { useContractParams } from "../../../hooks/useContractParams";
+import { useAvailablePlayers } from "../../../hooks/useAvailablePlayers";
 import useScreenSize from "../../../hooks/useScreenSize";
 import { WaiitingListElement } from "./WaiitingListElement";
 
@@ -22,7 +22,7 @@ export default function WaitingList({
   showingActiveGame,
   showingWaitingListForm,
 }: Props) {
-  const { data } = useContractParams();
+  const { data } = useAvailablePlayers();
   const walletSelector = useWalletSelector();
   const { width } = useScreenSize();
 
@@ -50,22 +50,20 @@ export default function WaitingList({
         </AccordionButton>
       </h2>
       <AccordionPanel m="12px 16px" bg="#eee" borderRadius="8px" pb={4}>
-        {data?.available_players &&
-          data.available_players.length ===
-            data.available_players.filter(
-              (player) =>
-                player[0] !== walletSelector.accountId &&
-                player[1].opponent_id &&
-                player[1].opponent_id !== walletSelector.accountId
-            ).length && (
-            <Flex justifyContent="center" alignItems="center">
-              <Text>No Players Availble. Be The First!</Text>
-            </Flex>
-          )}
+        {data?.length ===
+          data?.filter(
+            (player) =>
+              player[0] !== walletSelector.accountId &&
+              player[1].opponent_id &&
+              player[1].opponent_id !== walletSelector.accountId
+          ).length && (
+          <Flex justifyContent="center" alignItems="center">
+            <Text>No Players Available. Be The First!</Text>
+          </Flex>
+        )}
         {walletSelector.selector.isSignedIn() &&
-          data?.available_players &&
-          data.available_players
-            .filter((player) => player[0] === walletSelector.accountId)
+          data
+            ?.filter((player) => player[0] === walletSelector.accountId)
             .map((player, index) => (
               <Box key={player[0]}>
                 {index === 0 && (
@@ -78,9 +76,8 @@ export default function WaitingList({
               </Box>
             ))}
         {walletSelector.selector.isSignedIn() &&
-          data?.available_players &&
-          data.available_players
-            .filter(
+          data
+            ?.filter(
               (player) =>
                 player[0] !== walletSelector.accountId &&
                 player[1].opponent_id === walletSelector.accountId
@@ -96,22 +93,21 @@ export default function WaitingList({
                 <Spacer mb="30px" />
               </Box>
             ))}
-        {data?.available_players &&
-          data.available_players
-            .filter(
-              (player) =>
-                player[0] !== walletSelector.accountId && !player[1].opponent_id
-            )
-            .map((player, index) => (
-              <Box key={player[0]}>
-                {index === 0 && (
-                  <Text fontWeight={700} mb="10px" textAlign="center">
-                    Public Challenges
-                  </Text>
-                )}
-                <WaiitingListElement player={player} width={width} />
-              </Box>
-            ))}
+        {data
+          ?.filter(
+            (player) =>
+              player[0] !== walletSelector.accountId && !player[1].opponent_id
+          )
+          .map((player, index) => (
+            <Box key={player[0]}>
+              {index === 0 && (
+                <Text fontWeight={700} mb="10px" textAlign="center">
+                  Public Challenges
+                </Text>
+              )}
+              <WaiitingListElement player={player} width={width} />
+            </Box>
+          ))}
       </AccordionPanel>
     </AccordionItem>
   );

@@ -12,10 +12,11 @@ import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { GameParams } from "../../../hooks/useContractParams";
 import { Stats } from "../../../near/contracts/TicTacToe";
+import { GameParamsState } from "../containers/TicTacToe";
 import TokenName from "./TokenName";
 
 type Props = {
-  data: GameParams | undefined;
+  data: GameParamsState | undefined;
 };
 
 export function UserStats({ data }: Props) {
@@ -27,7 +28,7 @@ export function UserStats({ data }: Props) {
       ?.getPlayerStats()
       .then((resp) => setStats(resp))
       .catch((error) => console.error(error));
-  }, [walletSelector.ticTacToeLogic, data?.active_game]);
+  }, [walletSelector.ticTacToeLogic, data]);
 
   return (
     <AccordionItem bg="#fffc" borderRadius="8px 8px 0 0">

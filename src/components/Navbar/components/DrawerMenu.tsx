@@ -11,7 +11,6 @@ import {
   IconButton,
   Img,
   Link,
-  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import checkersIcon from "../../../assets/checkers-icon.png";

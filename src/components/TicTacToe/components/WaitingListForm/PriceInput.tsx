@@ -68,7 +68,7 @@ export function PriceInput({
         />
       </Flex>
       <FormErrorMessage justifyContent="center" mt="0">
-        Minimun Deposit: {utils.format.formatNearAmount(minDeposit)} {tokenName}
+        Minimum Deposit: {utils.format.formatNearAmount(minDeposit)} {tokenName}
       </FormErrorMessage>
     </FormControl>
   );

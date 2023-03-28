@@ -17,6 +17,8 @@ import { WhiteListedTokens } from "../../../../shared/helpers/getTokens";
 import { ErrorModal } from "../../../../shared/components/ErrorModal";
 import { PurpleButton } from "../../../../shared/components/PurpleButton";
 import { getErrorMessage } from "../../../../shared/helpers/getErrorMsg";
+import { DefaultValues } from "../../../lib/constants";
+import { AvailableTimeInput } from "./AvailableTime";
 import { OpponentInput } from "./OpponentInput";
 import { PriceInput } from "./PriceInput";
 
@@ -26,6 +28,9 @@ type Props = {
 
 export default function WaitingListForm({ tokensData }: Props) {
   const [bidInput, setBidInput] = useState("");
+  const [availableTimeInput, setTimeInput] = useState<number | string>(
+    DefaultValues.MIN_AVAILABLE_PLAYER_TIME
+  );
   const [opponentInput, setOpponentInput] = useState({
     id: "",
     exist: false,
@@ -41,22 +46,19 @@ export default function WaitingListForm({ tokensData }: Props) {
 
   const referral = params.get("r") ?? undefined;
 
-  function checkTokenForCheddar(value:string){
-    if (value === "CHEDDAR") {
-      setWithCheddar(true);
-    } else {
-      setWithCheddar(false);
-    }
+  function checkTokenForCheddar(value: string) {
+    setWithCheddar(value === "CHEDDAR");
   }
 
   useEffect(() => {
-   checkTokenForCheddar(tokensData[0].name)
-  },[tokensData])
+    checkTokenForCheddar(tokensData[0].name);
+  }, [tokensData]);
 
   const handleOnClick = () => {
     walletSelector.ticTacToeLogic
       ?.bet(
         parseFloat(bidInput),
+        +availableTimeInput * 60, // minutes to seconds
         withCheddar,
         referral,
         opponentInput.id.trim() === "" ? undefined : opponentInput.id
@@ -72,7 +74,7 @@ export default function WaitingListForm({ tokensData }: Props) {
     setMinDeposit(
       tokensData.find((item) => item.name === e.target.value)?.minDeposit || "1"
     );
-    checkTokenForCheddar(e.target.value)
+    checkTokenForCheddar(e.target.value);
   };
 
   return (
@@ -127,14 +129,16 @@ export default function WaitingListForm({ tokensData }: Props) {
               </Select>
             </Flex>
           </FormControl>
-          {
-            <PriceInput
-              bidInput={bidInput}
-              setBidInput={setBidInput}
-              minDeposit={minDeposit}
-              tokenName={tokenName}
-            />
-          }
+          <PriceInput
+            bidInput={bidInput}
+            setBidInput={setBidInput}
+            minDeposit={minDeposit}
+            tokenName={tokenName}
+          />
+          <AvailableTimeInput
+            availableTimeInput={availableTimeInput}
+            setTimeInput={setTimeInput}
+          />
           <OpponentInput
             opponentInput={opponentInput}
             setOpponentInput={setOpponentInput}
@@ -146,7 +150,8 @@ export default function WaitingListForm({ tokensData }: Props) {
                 (opponentInput.id.trim() !== "" && !opponentInput.exist) ||
                 parseFloat(bidInput) <
                   parseFloat(utils.format.formatNearAmount(minDeposit)) ||
-                bidInput.trim() === ""
+                bidInput.trim() === "" ||
+                availableTimeInput < DefaultValues.MIN_AVAILABLE_PLAYER_TIME
               }
             >
               Join Waiting List
