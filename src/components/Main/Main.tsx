@@ -1,6 +1,7 @@
 import { Box, Container, Link, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../contexts/WalletSelectorContext";
+import { getUserRegisterStatus } from "../../hooks/useContractParams";
 import Confetti from "../../shared/components/Confetti";
 import { ErrorModal } from "../../shared/components/ErrorModal";
 import { checkUrlResponse } from "../../shared/helpers/checkUrlResponse";
@@ -14,6 +15,13 @@ export default function Main() {
   const walletSelector = useWalletSelector();
   const toast = useToast();
   const [isConfettiVisible, setShowConfetti] = useState(false);
+  const [isUserRegistered, setUserRegistered] = useState(false);
+
+  useEffect(() => {
+    getUserRegisterStatus(walletSelector).then((resp) => {
+      setUserRegistered(resp);
+    });
+  }, []);
 
   useEffect(() => {
     if (walletSelector.accountId) {
@@ -67,9 +75,16 @@ export default function Main() {
     <>
       <Confetti isVisible={isConfettiVisible} />
       <Box>
-        <Navbar />
+        <Navbar
+          setUserRegistered={(value) => setUserRegistered(value)}
+          isUserRegistered={isUserRegistered}
+        />
         <Container maxW="container.xl" p="20px">
-          <TicTacToe setConfetti={handleConfetti} />
+          <TicTacToe
+            setConfetti={handleConfetti}
+            setUserRegistered={(value) => setUserRegistered(value)}
+            isUserRegistered={isUserRegistered}
+          />
         </Container>
         <Footer />
         <ErrorModal msg={errorMsg} setMsg={setErrorMsg} />

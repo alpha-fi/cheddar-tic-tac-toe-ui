@@ -128,3 +128,15 @@ export const getGameParams = async (
   const resp = await walletSelector.tictactoeContract?.get_game(gameID);
   return resp;
 };
+
+export const getUserRegisterStatus = async (
+  walletSelector: WalletSelectorContextValue
+): Promise<boolean> => {
+  if (walletSelector?.accountId) {
+    const resp = await walletSelector.tictactoeContract?.is_user_registered(
+      walletSelector.accountId
+    );
+    return resp ?? false;
+  }
+  return false;
+};

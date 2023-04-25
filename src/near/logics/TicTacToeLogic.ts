@@ -234,6 +234,18 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.claim_timeout_win(gameId);
   }
 
+  isUserRegistered(accountId: string): Promise<Boolean> {
+    return this.ticTacToeContract.is_user_registered(accountId);
+  }
+
+  unregisterAccount(): Promise<any> {
+    return this.ticTacToeContract.unregister_account();
+  }
+
+  registerAccount(): Promise<any> {
+    return this.ticTacToeContract.storage_deposit();
+  }
+
   private generateTransaction(
     contractId: string,
     actions: Action[]

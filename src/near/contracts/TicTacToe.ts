@@ -60,6 +60,12 @@ export class TicTacToeContract {
     });
   }
 
+  unregister_account(): Promise<any> {
+    return this.wallet.call(this.contractId, "unregister_account", {
+      config: {},
+    });
+  }
+
   getMakeAvailableAction(
     deposit: number | string,
     available_for?: number,
@@ -76,6 +82,10 @@ export class TicTacToeContract {
         args: {
           game_config: args,
           available_for: available_for,
+          bet:
+            typeof deposit === "string"
+              ? deposit
+              : utils.format.parseNearAmount(deposit.toString())!,
         },
         gas: DEFAULT_GAS,
         deposit:
@@ -108,6 +118,26 @@ export class TicTacToeContract {
         deposit: "0",
       },
     };
+  }
+
+  storage_deposit(): Promise<any> {
+    return this.wallet.call(
+      this.contractId,
+      "storage_deposit",
+      { config: {} },
+      undefined,
+      "1.20"
+    );
+  }
+
+  ft_on_transfer(): Promise<any> {
+    return this.wallet.call(
+      this.contractId,
+      "ft_on_transfer",
+      { config: {} },
+      undefined,
+      "0"
+    );
   }
 
   getDisplayableAccountId(screenWidth: number): string {
@@ -208,5 +238,11 @@ export class TicTacToeContract {
 
   get_game(game_id: number): Promise<GameLimitedView> {
     return this.wallet.view(this.contractId, "get_game", { game_id });
+  }
+
+  is_user_registered(account_id: string): Promise<boolean> {
+    return this.wallet.view(this.contractId, "is_user_registered", {
+      account_id,
+    });
   }
 }

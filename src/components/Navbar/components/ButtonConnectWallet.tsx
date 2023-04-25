@@ -4,7 +4,13 @@ import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import useScreenSize from "../../../hooks/useScreenSize";
 import { YellowButton } from "../../../shared/components/YellowButton";
 
-export function ButtonConnectWallet() {
+type Props = {
+  isUserRegistered: boolean;
+};
+
+export function ButtonConnectWallet({
+  isUserRegistered,
+}: Props) {
   const walletSelector = useWalletSelector();
   const { width } = useScreenSize();
 

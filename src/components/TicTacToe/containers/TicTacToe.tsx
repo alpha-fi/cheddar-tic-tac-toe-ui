@@ -1,7 +1,11 @@
 import { AbsoluteCenter, Grid, Img } from "@chakra-ui/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { GameId, Reward, Tiles } from "../../../hooks/useContractParams";
+import {
+  GameId,
+  Reward,
+  Tiles,
+} from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
 import { isNumberValid } from "../../../shared/helpers/common";
 import {
@@ -51,8 +55,15 @@ export const initialActiveGameParamsState = {
 
 type Props = {
   setConfetti: (value: boolean) => void;
+  isUserRegistered: boolean;
+  setUserRegistered: (value: boolean) => void;
 };
-export function TicTacToe({ setConfetti }: Props) {
+
+export function TicTacToe({
+  setConfetti,
+  isUserRegistered,
+  setUserRegistered,
+}: Props) {
   const [activeGameParams, setActiveGameParams] = useState<GameParamsState>(
     initialActiveGameParamsState
   ); // stores active game data first from contarct and then updates according to UI
@@ -63,6 +74,7 @@ export function TicTacToe({ setConfetti }: Props) {
   const [tokensData, setTokensData] = useState<WhiteListedTokens[] | null>(
     null
   );
+
   const walletSelector = useWalletSelector();
 
   const { height, width } = useScreenSize();
@@ -197,6 +209,7 @@ export function TicTacToe({ setConfetti }: Props) {
           ref={tictactoeContainer}
         >
           <Info
+            isUserRegistered={isUserRegistered}
             boardFirst={boardFirst}
             isLandScape={isLandscape}
             boardSize={boardSize}

@@ -19,6 +19,7 @@ type Props = {
   isLandScape: boolean;
   activeGameParams: GameParamsState;
   setActiveGameParams: (value: GameParamsState) => void;
+  isUserRegistered:boolean
 };
 
 export default function Info({
@@ -29,6 +30,7 @@ export default function Info({
   isLandScape,
   activeGameParams,
   setActiveGameParams,
+  isUserRegistered
 }: Props) {
   const [haveOwnChallenge, setHaveOwnChallenge] = useState(false);
   const walletSelector = useWalletSelector();

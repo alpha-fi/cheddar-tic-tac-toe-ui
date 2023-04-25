@@ -18,7 +18,12 @@ import gitbookIcon from "../../../assets/gitbook.svg";
 import GamesMenu from "../components/GamesMenu";
 import { DrawerMenu } from "../components/DrawerMenu";
 
-export default function Navbar() {
+type Props = {
+  isUserRegistered: boolean;
+  setUserRegistered: (value: boolean) => void;
+};
+
+export default function Navbar({ isUserRegistered,setUserRegistered }: Props) {
   return (
     <Box
       position="relative"
@@ -143,7 +148,7 @@ export default function Navbar() {
         </Flex>
 
         <Flex flexDir="row" justifyContent="end">
-          <ButtonConnectWallet />
+          <ButtonConnectWallet isUserRegistered={isUserRegistered} />
           <Box ml={2} display={{ base: "inline-block", lg: "none" }}>
             <DrawerMenu />
           </Box>
