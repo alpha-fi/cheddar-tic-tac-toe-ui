@@ -11,16 +11,20 @@ import {
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { useAvailablePlayers } from "../../../hooks/useAvailablePlayers";
 import useScreenSize from "../../../hooks/useScreenSize";
-import { WaiitingListElement } from "./WaiitingListElement";
+import { WaitingListElement } from "./WaitingListElement";
 
 type Props = {
   showingActiveGame: boolean;
   showingWaitingListForm: boolean;
+  isUserRegistered: boolean;
+  cheddarBalance: number | null;
 };
 
 export default function WaitingList({
   showingActiveGame,
   showingWaitingListForm,
+  isUserRegistered,
+  cheddarBalance,
 }: Props) {
   const { data } = useAvailablePlayers();
   const walletSelector = useWalletSelector();
@@ -71,7 +75,12 @@ export default function WaitingList({
                     My Challenge
                   </Text>
                 )}
-                <WaiitingListElement player={player} width={width} />
+                <WaitingListElement
+                  player={player}
+                  width={width}
+                  isUserRegistered={isUserRegistered}
+                  cheddarBalance={cheddarBalance}
+                />
                 <Spacer mb="30px" />
               </Box>
             ))}
@@ -89,7 +98,12 @@ export default function WaitingList({
                     Private Challenges
                   </Text>
                 )}
-                <WaiitingListElement player={player} width={width} />
+                <WaitingListElement
+                  player={player}
+                  width={width}
+                  isUserRegistered={isUserRegistered}
+                  cheddarBalance={cheddarBalance}
+                />
                 <Spacer mb="30px" />
               </Box>
             ))}
@@ -105,7 +119,12 @@ export default function WaitingList({
                   Public Challenges
                 </Text>
               )}
-              <WaiitingListElement player={player} width={width} />
+              <WaitingListElement
+                player={player}
+                width={width}
+                isUserRegistered={isUserRegistered}
+                cheddarBalance={cheddarBalance}
+              />
             </Box>
           ))}
       </AccordionPanel>

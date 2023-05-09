@@ -15,10 +15,12 @@ export default function TokenName({ tokenId }: Props) {
     if (tokenId === "near") {
       setTokenName("Near");
     } else {
-      const selectorWallet = new SelectorWallet(walletSelector.selector);
-      new NEP141(selectorWallet, tokenId)
-        .ft_metadata()
-        .then((resp) => setTokenName(resp.name));
+      // we currently support only Cheddar
+      setTokenName("Cheddar");
+      // const selectorWallet = new SelectorWallet(walletSelector.selector);
+      // new NEP141(selectorWallet, tokenId)
+      //   .ft_metadata()
+      //   .then((resp) => setTokenName(resp.name));
     }
   }, [tokenId, walletSelector.selector]);
   return <span>{tokenName}</span>;

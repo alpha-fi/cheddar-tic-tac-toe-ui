@@ -75,7 +75,7 @@ export class NEP141 {
   getFtTransferCallAction(
     receiver_id: string,
     amount: number | string,
-    msg?: string
+    msg: string = ""
   ): Action {
     return {
       type: "FunctionCall",

@@ -19,6 +19,7 @@ import { ENV, getEnv } from "../near/config";
 import { TicTacToeLogic } from "../near/logics/TicTacToeLogic";
 import nearIcon from "../assets/near-icon.png";
 import senderIcon from "../assets/sender-icon.png";
+import "@near-wallet-selector/modal-ui/styles.css"; // suggested styling (https://www.npmjs.com/package/@near-wallet-selector/modal-ui)
 
 declare global {
   interface Window {

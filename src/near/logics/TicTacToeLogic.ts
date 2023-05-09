@@ -69,64 +69,35 @@ export class TicTacToeLogic {
   private async getBetActions(
     amount: number | string,
     availableFor?: number,
-    withCheddar?: boolean,
     referrerId?: string,
     opponentId?: string
-  ): Promise<{ cheddarActions: Action[]; ticTacToeActions: Action[] }> {
-    const cheddarActions: Action[] = [];
+  ): Promise<{ ticTacToeActions: Action[] }> {
     const ticTacToeActions: Action[] = [];
-
-    if (withCheddar) {
-      const storageDepositAction: Action | null =
-        await this.handleCheddarStorage();
-      const ftTransferCallAction: Action =
-        this.cheddarContract.getFtTransferCallAction(
-          this.ticTacToeContract.contractId,
-          amount,
-          referrerId ? `{"referrer_id":'${referrerId}'}` : ""
-        );
-      if (storageDepositAction) {
-        cheddarActions.push(storageDepositAction);
-      }
-      cheddarActions.push(ftTransferCallAction);
-      // console.log(cheddarActions);
-      // ticTacToeActions.push(this.ticTacToeContract.getMakeAvailableAction("1"));
-    } else {
-      ticTacToeActions.push(
-        this.ticTacToeContract.getMakeAvailableAction(
-          amount,
-          availableFor,
-          referrerId,
-          opponentId
-        )
-      );
-    }
-    return { cheddarActions, ticTacToeActions };
+    ticTacToeActions.push(
+      this.ticTacToeContract.getMakeAvailableAction(
+        amount,
+        availableFor,
+        referrerId,
+        opponentId
+      )
+    );
+    return { ticTacToeActions };
   }
 
   async bet(
     amount: number,
     availableFor: number,
-    withCheddar?: boolean,
     referrerId?: string,
     opponentId?: string
   ): Promise<any> {
     const wallet: Wallet = await this.actualWallet;
-    const { cheddarActions, ticTacToeActions } = await this.getBetActions(
+    const { ticTacToeActions } = await this.getBetActions(
       amount,
       availableFor,
-      withCheddar,
       referrerId,
       opponentId
     );
     const transactions: Transaction[] = [];
-    if (cheddarActions.length > 0)
-      transactions.push(
-        this.generateTransaction(
-          this.cheddarContract.contractId,
-          cheddarActions
-        )
-      );
     if (ticTacToeActions.length > 0) {
       transactions.push(
         this.generateTransaction(
@@ -135,6 +106,7 @@ export class TicTacToeLogic {
         )
       );
     }
+    console.log(transactions);
     wallet.signAndSendTransactions({ transactions });
   }
 
@@ -165,7 +137,6 @@ export class TicTacToeLogic {
     referrerId?: string
   ): Promise<void> {
     let ticTacToeActions1: Action[] = [];
-    let cheddarActions: Action[] = [];
     let ticTacToeActions2: Action[] = [];
     const wallet: Wallet = await this.actualWallet;
     const transactions: Transaction[] = [];
@@ -181,21 +152,15 @@ export class TicTacToeLogic {
     }
 
     // Here user shouldn't have any bet, so it creates a bet that matches the desired game.
-    const {
-      cheddarActions: cheddarBetActions,
-      ticTacToeActions: ticTacToeBetActions,
-    } = await this.getBetActions(
-      challenge[1].deposit,
-      undefined,
-      challenge[1].token_id !== "near",
+    const { ticTacToeActions: ticTacToeBetActions } = await this.getBetActions(
+      +challenge[1].deposit,
+      100,
       referrerId
     );
-    if (cheddarBetActions.length > 0)
-      cheddarActions = cheddarActions.concat(cheddarBetActions);
 
     if (ticTacToeBetActions.length > 0)
       ticTacToeActions2 = ticTacToeActions2.concat(ticTacToeBetActions);
-    console.log("Bet", cheddarBetActions, ticTacToeBetActions);
+    console.log("Bet", ticTacToeBetActions);
 
     // Accept challenge
     ticTacToeActions2.push(
@@ -211,14 +176,7 @@ export class TicTacToeLogic {
         )
       );
     }
-    if (cheddarBetActions.length > 0) {
-      transactions.push(
-        this.generateTransaction(
-          this.cheddarContract.contractId,
-          cheddarActions
-        )
-      );
-    }
+
     transactions.push(
       this.generateTransaction(
         this.ticTacToeContract.contractId,
@@ -246,6 +204,34 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.storage_deposit();
   }
 
+  async depositCheddar(amount: number): Promise<any> {
+    const wallet: Wallet = await this.actualWallet;
+    let cheddarActions: Action[] = [];
+    const transactions: Transaction[] = [];
+    const storageDepositAction: Action | null =
+      await this.handleCheddarStorage();
+    const ftTransferCallAction: Action =
+      this.cheddarContract.getFtTransferCallAction(
+        this.ticTacToeContract.contractId,
+        amount
+      );
+    if (storageDepositAction) {
+      cheddarActions.push(storageDepositAction);
+    }
+    cheddarActions.push(ftTransferCallAction);
+    if (cheddarActions.length > 0)
+      transactions.push(
+        this.generateTransaction(
+          this.cheddarContract.contractId,
+          cheddarActions
+        )
+      );
+    wallet.signAndSendTransactions({ transactions });
+  }
+
+  async withdrawCheddar(amount: number): Promise<any> {
+    return this.ticTacToeContract.withdraw_cheddar(amount);
+  }
   private generateTransaction(
     contractId: string,
     actions: Action[]
