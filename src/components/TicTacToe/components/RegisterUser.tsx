@@ -7,7 +7,7 @@ import {
   Flex,
   Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
@@ -22,10 +22,15 @@ export function RegisterUser({ isUserRegistered }: Props) {
   const [showForm, setShowFrom] = useState(false);
 
   function registerUser() {
-    walletSelector.ticTacToeLogic?.registerAccount().catch((error) => {
-      console.error(error);
-      setErrorMsg(getErrorMessage(error));
-    });
+    // account is not selected
+    if (!walletSelector.accountId) {
+      setErrorMsg("Please connect to wallet.");
+    } else {
+      walletSelector.ticTacToeLogic?.registerAccount().catch((error) => {
+        console.error(error);
+        setErrorMsg(getErrorMessage(error));
+      });
+    }
   }
 
   function unRegisterUser() {

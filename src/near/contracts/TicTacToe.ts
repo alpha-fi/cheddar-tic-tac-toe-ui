@@ -58,9 +58,7 @@ export class TicTacToeContract {
     return this.wallet.call(
       this.contractId,
       "make_unavailable",
-      {
-        config: {},
-      },
+      {},
       undefined,
       "0"
     );

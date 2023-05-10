@@ -150,6 +150,7 @@ export default function Board({
       data?.[2]
     ) {
       setLastMoveData(data);
+      setLoadingSquare({ row: null, column: null });
       // update the cheddar balance also (in case user lost or won)
       getCheddarBalance(walletSelector).then((resp) => {
         setCheddarBalance(resp);
