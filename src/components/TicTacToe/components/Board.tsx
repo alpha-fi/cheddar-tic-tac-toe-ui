@@ -1,7 +1,11 @@
 import { Flex, Grid } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import { Coords, Piece } from "../../../hooks/useContractParams";
+import {
+  Coords,
+  Piece,
+  getCheddarBalance,
+} from "../../../hooks/useContractParams";
 import { useLastMove } from "../../../hooks/useLastMove";
 import {
   getWinnerData,
@@ -26,6 +30,7 @@ type Props = {
   activeGameParams: GameParamsState;
   setActiveGameParams: (value: GameParamsState) => void;
   setConfetti: (value: boolean) => void;
+  setCheddarBalance: (value: number) => void;
 };
 
 const BoardBGColor = "#2D2727";
@@ -35,6 +40,7 @@ export default function Board({
   activeGameParams,
   setActiveGameParams,
   setConfetti,
+  setCheddarBalance,
 }: Props) {
   const [loadingSquare, setLoadingSquare] = useState<LoadingSquare>({
     row: null,
@@ -107,7 +113,7 @@ export default function Board({
           ...activeGameParams,
           tiles: updatedtiles,
           current_player: currentPlayer,
-          last_turn_timestamp_sec: data?.[3],
+          last_turn_timestamp: data?.[3],
         });
         // display it only if the result is not declared
         if (data?.[2]) return;
@@ -144,6 +150,11 @@ export default function Board({
       data?.[2]
     ) {
       setLastMoveData(data);
+      setLoadingSquare({ row: null, column: null });
+      // update the cheddar balance also (in case user lost or won)
+      getCheddarBalance(walletSelector).then((resp) => {
+        setCheddarBalance(resp);
+      });
       getWinnerDetails(data?.[2]);
     }
   }, [data, activeGameParams.game_id]);

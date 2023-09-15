@@ -62,8 +62,8 @@ interface GameView {
   current_player: AccountId;
   reward: GameDeposit;
   tiles: Tiles;
-  initiated_at_sec: number;
-  last_turn_timestamp_sec: number;
+  initiated_at: number;
+  last_turn_timestamp: number;
   current_duration_sec: number;
 }
 
@@ -93,8 +93,8 @@ const testData: [string, ActiveGameData] = [
     current_duration_sec: 0,
     current_player: { piece: "X", account_id: "cookie-monster.testnet" },
     game_status: "Active",
-    initiated_at_sec: 1661958737,
-    last_turn_timestamp_sec: 0,
+    initiated_at: 1661958737,
+    last_turn_timestamp: 0,
     player1: "cookie-monster.testnet",
     player2: "oreos.testnet",
     reward: { balance: "1000000000000000000000000", token_id: "near" },
@@ -127,4 +127,28 @@ export const getGameParams = async (
 ) => {
   const resp = await walletSelector.tictactoeContract?.get_game(gameID);
   return resp;
+};
+
+export const getUserRegisterStatus = async (
+  walletSelector: WalletSelectorContextValue
+): Promise<boolean> => {
+  if (walletSelector?.accountId) {
+    const resp = await walletSelector.tictactoeContract?.is_user_registered(
+      walletSelector.accountId
+    );
+    return resp ?? false;
+  }
+  return false;
+};
+
+export const getCheddarBalance = async (
+  walletSelector: WalletSelectorContextValue
+): Promise<number> => {
+  if (walletSelector?.accountId) {
+    const resp = await walletSelector.tictactoeContract?.get_cheddar_balance(
+      walletSelector.accountId
+    );
+    return resp ?? 0;
+  }
+  return 0;
 };

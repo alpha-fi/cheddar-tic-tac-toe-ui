@@ -8,7 +8,6 @@ import {
   Flex,
   Text,
 } from "@chakra-ui/react";
-import { utils } from "near-api-js";
 import { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { CircleIcon } from "../../../shared/components/CircleIcon";
@@ -79,14 +78,17 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
   useEffect(() => {
     let updateTimer = true;
     let secondsToEnd: number;
-    if (activeGameParams.last_turn_timestamp_sec === 0) {
+    if (
+      !activeGameParams.last_turn_timestamp ||
+      activeGameParams.last_turn_timestamp === 0
+    ) {
       secondsToEnd =
         Math.round(Date.now() / 1000) -
-        (activeGameParams.initiated_at_sec as number);
+        (activeGameParams.initiated_at ?? (0 as number));
     } else {
       secondsToEnd =
         Math.round(Date.now() / 1000) -
-        (activeGameParams.last_turn_timestamp_sec as number);
+        (activeGameParams.last_turn_timestamp as number);
     }
     const maxTurnDuration = DefaultValues.MAX_TURN_DURATION;
     const clearTimer = setInterval(() => {
@@ -105,10 +107,7 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
       updateTimer = false;
     }, 1000);
     return () => clearInterval(clearTimer);
-  }, [
-    activeGameParams.last_turn_timestamp_sec,
-    activeGameParams.initiated_at_sec,
-  ]);
+  }, [activeGameParams.last_turn_timestamp, activeGameParams.initiated_at]);
 
   return (
     <>
@@ -158,7 +157,7 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
                       )}`}
                     </Text>
                     <Text>
-                      Reward: {utils.format.formatNearAmount(refundAmt)}{" "}
+                      Reward: {refundAmt}{" "}
                       {
                         <TokenName
                           tokenId={activeGameParams.total_bet.token_id!}
@@ -171,7 +170,7 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
                 <>
                   <Text>Tied Game!</Text>
                   <Text>
-                    Refund: {utils.format.formatNearAmount(refundAmt)}{" "}
+                    Refund: {refundAmt}{" "}
                     {
                       <TokenName
                         tokenId={activeGameParams.total_bet.token_id!}
@@ -232,18 +231,13 @@ export function ActiveGame({ activeGameParams, setActiveGameParams }: Props) {
                 <Text>
                   Game Started at:{" "}
                   {
-                    new Date(
-                      (activeGameParams.initiated_at_sec as number) * 1000
-                    )
+                    new Date((activeGameParams.initiated_at as number) * 1000)
                       .toString()
                       .split(" ")[4]
                   }
                 </Text>
                 <Text>
-                  Total Bet:{" "}
-                  {utils.format.formatNearAmount(
-                    activeGameParams.total_bet.balance!
-                  )}{" "}
+                  Total Bet: {activeGameParams.total_bet.balance!}{" "}
                   {
                     <TokenName
                       tokenId={activeGameParams.total_bet.token_id as string}

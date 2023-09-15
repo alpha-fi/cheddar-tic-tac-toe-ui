@@ -5,7 +5,7 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
-import { utils } from "near-api-js";
+import { useEffect, useState } from "react";
 import { isValidAmountInput } from "./helpers";
 type Props = {
   bidInput: string;
@@ -24,21 +24,20 @@ export function PriceInput({
       setBidInput(e.target.value);
     }
   };
-  const borderColor =
-    bidInput.trim() === "" ||
-    parseFloat(bidInput) >=
-      parseFloat(utils.format.formatNearAmount(minDeposit))
-      ? "inherit"
-      : "red";
+
+  const [isBidValid, setBidValid] = useState(false);
+
+  useEffect(() => {
+    setBidValid(
+      bidInput.trim() === "" ||
+        parseFloat(bidInput) === 50 ||
+        parseFloat(bidInput) === 1000
+    );
+  }, [bidInput]);
+  const borderColor = isBidValid ? "inherit" : "red";
 
   return (
-    <FormControl
-      mb="10px"
-      isInvalid={
-        parseFloat(bidInput) <
-        parseFloat(utils.format.formatNearAmount(minDeposit))
-      }
-    >
+    <FormControl mb="10px" isInvalid={!isBidValid}>
       <Flex
         justifyContent="center"
         alignItems="center"
@@ -67,9 +66,11 @@ export function PriceInput({
           bg="white"
         />
       </Flex>
-      <FormErrorMessage justifyContent="center" mt="0">
-        Minimum Deposit: {utils.format.formatNearAmount(minDeposit)} {tokenName}
-      </FormErrorMessage>
+      {!isBidValid && (
+        <FormErrorMessage justifyContent="center" mt="0">
+          Only 50 and 1000 Cheddars deposit is allowed
+        </FormErrorMessage>
+      )}
     </FormControl>
   );
 }

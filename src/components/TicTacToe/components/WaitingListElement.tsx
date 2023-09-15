@@ -1,5 +1,4 @@
 import { Button, Flex, Grid, Text } from "@chakra-ui/react";
-import { utils } from "near-api-js";
 import { useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { GameConfigView } from "../../../hooks/useContractParams";
@@ -12,9 +11,16 @@ import TokenName from "./TokenName";
 type Props = {
   player: [string, GameConfigView];
   width: number;
+  isUserRegistered: boolean;
+  cheddarBalance: number | null;
 };
 
-export function WaiitingListElement({ player, width }: Props) {
+export function WaitingListElement({
+  player,
+  width,
+  isUserRegistered,
+  cheddarBalance,
+}: Props) {
   const [errorMsg, setErrorMsg] = useState("");
   const walletSelector = useWalletSelector();
 
@@ -25,6 +31,10 @@ export function WaiitingListElement({ player, width }: Props) {
     referrer_id?: string
   ) => {
     if (walletSelector.selector.isSignedIn()) {
+      if (!cheddarBalance || +deposit! > cheddarBalance) {
+        setErrorMsg("Insufficient deposited Cheddar balance.");
+        return;
+      }
       walletSelector.ticTacToeLogic
         ?.acceptChallenge([
           address,
@@ -67,7 +77,7 @@ export function WaiitingListElement({ player, width }: Props) {
           <Flex flexDirection="column" fontSize="0.9em">
             <Text textAlign="initial">{formatAccountId(player[0], width)}</Text>
             <Text textAlign="initial">
-              {utils.format.formatNearAmount(player[1].deposit)}&nbsp;
+              {player[1].deposit}&nbsp;
               {<TokenName tokenId={player[1].token_id} />}
             </Text>
           </Flex>
@@ -75,7 +85,7 @@ export function WaiitingListElement({ player, width }: Props) {
           <>
             <Text textAlign="initial">{formatAccountId(player[0], width)}</Text>
             <Text textAlign="initial">
-              {utils.format.formatNearAmount(player[1].deposit)}&nbsp;
+              {player[1].deposit}&nbsp;
               {<TokenName tokenId={player[1].token_id} />}
             </Text>
           </>
@@ -90,6 +100,7 @@ export function WaiitingListElement({ player, width }: Props) {
                 player[1].deposit
               )
             }
+            disabled={!isUserRegistered}
           >
             Play!
           </PurpleButton>

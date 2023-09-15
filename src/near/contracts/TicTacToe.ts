@@ -55,9 +55,23 @@ export class TicTacToeContract {
   }
 
   make_unavailable(): Promise<any> {
-    return this.wallet.call(this.contractId, "make_unavailable", {
-      config: {},
-    });
+    return this.wallet.call(
+      this.contractId,
+      "make_unavailable",
+      {},
+      undefined,
+      "0"
+    );
+  }
+
+  unregister_account(): Promise<any> {
+    return this.wallet.call(
+      this.contractId,
+      "unregister_account",
+      { config: {} },
+      undefined,
+      "0"
+    );
   }
 
   getMakeAvailableAction(
@@ -76,12 +90,10 @@ export class TicTacToeContract {
         args: {
           game_config: args,
           available_for: available_for,
+          bet: deposit,
         },
         gas: DEFAULT_GAS,
-        deposit:
-          typeof deposit === "string"
-            ? deposit
-            : utils.format.parseNearAmount(deposit.toString())!,
+        deposit: "0",
       },
     };
   }
@@ -108,6 +120,16 @@ export class TicTacToeContract {
         deposit: "0",
       },
     };
+  }
+
+  storage_deposit(): Promise<any> {
+    return this.wallet.call(
+      this.contractId,
+      "storage_deposit",
+      { config: {} },
+      undefined,
+      utils.format.parseNearAmount("0.2") ?? undefined // 0.2 NEAR
+    );
   }
 
   getDisplayableAccountId(screenWidth: number): string {
@@ -208,5 +230,27 @@ export class TicTacToeContract {
 
   get_game(game_id: number): Promise<GameLimitedView> {
     return this.wallet.view(this.contractId, "get_game", { game_id });
+  }
+
+  is_user_registered(account_id: string): Promise<boolean> {
+    return this.wallet.view(this.contractId, "is_user_registered", {
+      account_id,
+    });
+  }
+
+  get_cheddar_balance(account_id: string): Promise<number> {
+    return this.wallet.view(this.contractId, "get_cheddar_balance", {
+      account_id,
+    });
+  }
+
+  withdraw_cheddar(cheddar: number): Promise<number> {
+    return this.wallet.call(
+      this.contractId,
+      "withdraw_cheddar",
+      { amount: cheddar },
+      undefined,
+      "1"
+    );
   }
 }

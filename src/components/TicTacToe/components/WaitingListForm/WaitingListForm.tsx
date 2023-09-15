@@ -11,7 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { utils } from "near-api-js";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useWalletSelector } from "../../../../contexts/WalletSelectorContext";
 import { WhiteListedTokens } from "../../../../shared/helpers/getTokens";
 import { ErrorModal } from "../../../../shared/components/ErrorModal";
@@ -24,9 +24,15 @@ import { PriceInput } from "./PriceInput";
 
 type Props = {
   tokensData: WhiteListedTokens[];
+  isUserRegistered: boolean;
+  cheddarBalance: number | null;
 };
 
-export default function WaitingListForm({ tokensData }: Props) {
+export default function WaitingListForm({
+  tokensData,
+  isUserRegistered,
+  cheddarBalance,
+}: Props) {
   const [bidInput, setBidInput] = useState("");
   const [availableTimeInput, setTimeInput] = useState<number | string>(
     DefaultValues.MIN_AVAILABLE_PLAYER_TIME
@@ -55,11 +61,15 @@ export default function WaitingListForm({ tokensData }: Props) {
   }, [tokensData]);
 
   const handleOnClick = () => {
+    if (!cheddarBalance || +bidInput > cheddarBalance) {
+      console.log(bidInput, cheddarBalance);
+      setErrorMsg("Insufficient deposited Cheddar balance.");
+      return;
+    }
     walletSelector.ticTacToeLogic
       ?.bet(
         parseFloat(bidInput),
         +availableTimeInput * 60, // minutes to seconds
-        withCheddar,
         referral,
         opponentInput.id.trim() === "" ? undefined : opponentInput.id
       )
@@ -151,7 +161,9 @@ export default function WaitingListForm({ tokensData }: Props) {
                 parseFloat(bidInput) <
                   parseFloat(utils.format.formatNearAmount(minDeposit)) ||
                 bidInput.trim() === "" ||
-                availableTimeInput < DefaultValues.MIN_AVAILABLE_PLAYER_TIME
+                Number(availableTimeInput) <
+                  DefaultValues.MIN_AVAILABLE_PLAYER_TIME ||
+                !isUserRegistered
               }
             >
               Join Waiting List

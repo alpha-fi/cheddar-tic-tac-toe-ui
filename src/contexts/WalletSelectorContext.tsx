@@ -11,7 +11,6 @@ import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupNearWalletCustom } from "../near/wallet/selector-utils";
-import "./WalletSelectorContext.css";
 import { NEP141 } from "../near/contracts/NEP141";
 import { TicTacToeContract } from "../near/contracts/TicTacToe";
 import { SelectorWallet } from "../near/wallet/wallet-selector";
@@ -19,6 +18,7 @@ import { ENV, getEnv } from "../near/config";
 import { TicTacToeLogic } from "../near/logics/TicTacToeLogic";
 import nearIcon from "../assets/near-icon.png";
 import senderIcon from "../assets/sender-icon.png";
+import "@near-wallet-selector/modal-ui/styles.css"; // suggested styling (https://www.npmjs.com/package/@near-wallet-selector/modal-ui)
 
 declare global {
   interface Window {

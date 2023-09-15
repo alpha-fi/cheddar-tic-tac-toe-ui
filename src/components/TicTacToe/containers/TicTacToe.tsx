@@ -28,8 +28,8 @@ export type GameParamsState = {
   current_player: string | null;
   total_bet: Reward;
   tiles: Tiles | null;
-  initiated_at_sec: number | null;
-  last_turn_timestamp_sec: number | null;
+  initiated_at: number | null;
+  last_turn_timestamp: number | null;
   current_duration_sec: number | null;
 };
 
@@ -44,15 +44,24 @@ export const initialActiveGameParamsState = {
     balance: null,
   },
   tiles: null,
-  initiated_at_sec: null,
-  last_turn_timestamp_sec: null,
+  initiated_at: null,
+  last_turn_timestamp: null,
   current_duration_sec: null,
 };
 
 type Props = {
   setConfetti: (value: boolean) => void;
+  isUserRegistered: boolean;
+  cheddarBalance: number | null;
+  setCheddarBalance: (value: number) => void;
 };
-export function TicTacToe({ setConfetti }: Props) {
+
+export function TicTacToe({
+  setConfetti,
+  isUserRegistered,
+  cheddarBalance,
+  setCheddarBalance,
+}: Props) {
   const [activeGameParams, setActiveGameParams] = useState<GameParamsState>(
     initialActiveGameParamsState
   ); // stores active game data first from contarct and then updates according to UI
@@ -63,6 +72,7 @@ export function TicTacToe({ setConfetti }: Props) {
   const [tokensData, setTokensData] = useState<WhiteListedTokens[] | null>(
     null
   );
+
   const walletSelector = useWalletSelector();
 
   const { height, width } = useScreenSize();
@@ -99,6 +109,7 @@ export function TicTacToe({ setConfetti }: Props) {
 
   useEffect(() => {
     if (walletSelector.accountId && activeGameData && activeGameData !== data) {
+      console.log(activeGameData, data);
       setData(activeGameData);
     }
   }, [walletSelector.accountId, activeGameData, data, setData]);
@@ -147,8 +158,8 @@ export function TicTacToe({ setConfetti }: Props) {
         tiles: data[1].tiles,
         player1: data[1].player1,
         player2: data[1].player2,
-        initiated_at_sec: data[1].initiated_at_sec,
-        last_turn_timestamp_sec: data[1].last_turn_timestamp_sec,
+        initiated_at: data[1].initiated_at,
+        last_turn_timestamp: data[1].last_turn_timestamp,
         current_duration_sec: data[1].current_duration_sec,
         total_bet: data[1].total_bet,
       });
@@ -197,6 +208,7 @@ export function TicTacToe({ setConfetti }: Props) {
           ref={tictactoeContainer}
         >
           <Info
+            isUserRegistered={isUserRegistered}
             boardFirst={boardFirst}
             isLandScape={isLandscape}
             boardSize={boardSize}
@@ -204,12 +216,14 @@ export function TicTacToe({ setConfetti }: Props) {
             tokensData={tokensData}
             activeGameParams={activeGameParams}
             setActiveGameParams={updateActiveParamsFromChild}
+            cheddarBalance={cheddarBalance}
           />
           <Board
             boardSize={boardSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={updateActiveParamsFromChild}
             setConfetti={setConfetti}
+            setCheddarBalance={setCheddarBalance}
           />
         </Grid>
       )}

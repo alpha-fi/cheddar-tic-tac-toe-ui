@@ -1,3 +1,4 @@
+import React from "react";
 import { Button as ButtonChakra } from "@chakra-ui/react";
 
 type Props = React.ComponentProps<typeof ButtonChakra>;

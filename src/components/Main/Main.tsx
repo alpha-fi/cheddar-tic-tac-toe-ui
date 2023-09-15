@@ -1,6 +1,10 @@
 import { Box, Container, Link, useToast } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useWalletSelector } from "../../contexts/WalletSelectorContext";
+import {
+  getCheddarBalance,
+  getUserRegisterStatus,
+} from "../../hooks/useContractParams";
 import Confetti from "../../shared/components/Confetti";
 import { ErrorModal } from "../../shared/components/ErrorModal";
 import { checkUrlResponse } from "../../shared/helpers/checkUrlResponse";
@@ -14,6 +18,20 @@ export default function Main() {
   const walletSelector = useWalletSelector();
   const toast = useToast();
   const [isConfettiVisible, setShowConfetti] = useState(false);
+  const [isUserRegistered, setUserRegistered] = useState(false);
+  const [cheddarBalance, setCheddarBalance] = useState(0);
+
+  useEffect(() => {
+    getUserRegisterStatus(walletSelector).then((resp) => {
+      setUserRegistered(resp);
+      // fetch for cheddar balance only if the user is registered
+      if (resp) {
+        getCheddarBalance(walletSelector).then((resp) => {
+          setCheddarBalance(resp);
+        });
+      } else setCheddarBalance(0);
+    });
+  }, []);
 
   useEffect(() => {
     if (walletSelector.accountId) {
@@ -28,12 +46,6 @@ export default function Main() {
             if (walletSelector.accountId === winnerId) {
               winnerDetailsMsg = "You Won!";
               setShowConfetti(true);
-            } else {
-              if (result === "Tie") {
-                winnerDetailsMsg = "Tied Game!";
-              } else {
-                winnerDetailsMsg = "You Lost!";
-              }
             }
           }
           toast({
@@ -67,9 +79,19 @@ export default function Main() {
     <>
       <Confetti isVisible={isConfettiVisible} />
       <Box>
-        <Navbar />
+        <Navbar
+          isUserRegistered={isUserRegistered}
+          cheddarBalance={cheddarBalance}
+        />
         <Container maxW="container.xl" p="20px">
-          <TicTacToe setConfetti={handleConfetti} />
+          <TicTacToe
+            setConfetti={handleConfetti}
+            isUserRegistered={isUserRegistered}
+            cheddarBalance={cheddarBalance}
+            setCheddarBalance={(value: number) => {
+              setCheddarBalance(value);
+            }}
+          />
         </Container>
         <Footer />
         <ErrorModal msg={errorMsg} setMsg={setErrorMsg} />
