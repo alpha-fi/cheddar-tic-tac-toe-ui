@@ -72,10 +72,11 @@ export function TicTacToe({
   const [tokensData, setTokensData] = useState<WhiteListedTokens[] | null>(
     null
   );
+  const { height, width } = useScreenSize();
+  const [ isLandscape, setIsLandscape ] = useState(width > height * 1.5)
 
   const walletSelector = useWalletSelector();
 
-  const { height, width } = useScreenSize();
 
   // store active game data to LS
   useEffect(() => {
@@ -113,8 +114,6 @@ export function TicTacToe({
       setData(activeGameData);
     }
   }, [walletSelector.accountId, activeGameData, data, setData]);
-
-  const isLandscape = width > height * 1.5;
 
   useEffect(() => {
     // clear active games state on disconnecting account
@@ -167,14 +166,21 @@ export function TicTacToe({
   }, [activeGameParams.game_id, data?.[0], walletSelector.accountId]);
 
   useEffect(() => {
+    console.log(666, width, height)
+    setIsLandscape(width > height * 1.5)
+  }, [height, width])
+
+  useEffect(() => {
+    console.log(1, isLandscape)
     if (tictactoeContainer.current) {
       const maxHeight = height - 160 > 346 ? height - 160 : 346;
       const isFullWidthBoard = width < 480 || (width < 768 && !isLandscape);
       const maxWidth = isFullWidthBoard
-        ? tictactoeContainer.current.offsetWidth
-        : (tictactoeContainer.current.offsetWidth - 20) / 2;
+      ? tictactoeContainer.current.offsetWidth
+      : (tictactoeContainer.current.offsetWidth - 20) / 2;
       setBoardSize(maxHeight > maxWidth ? maxWidth : maxHeight);
     }
+    console.log(2, isLandscape)
   }, [tictactoeContainer.current?.offsetWidth, height, isLandscape, width]);
 
   const boardFirst =

@@ -3,7 +3,6 @@ import {
   WalletSelector,
   WalletSelectorState,
 } from "@near-wallet-selector/core";
-import { BrowserWalletSignAndSendTransactionParams } from "@near-wallet-selector/core/lib/wallet";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
 import { ENV, getEnv } from "../config";
 //import { TGas } from "../../util/conversions";
@@ -158,7 +157,7 @@ export class SelectorWallet implements WalletInterface {
       },
     ];
 
-    const params: BrowserWalletSignAndSendTransactionParams = {
+    const params: any = {
       signerId: accountId!,
       receiverId: contract,
       actions: action,

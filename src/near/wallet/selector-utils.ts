@@ -36,6 +36,6 @@ export const setupNearWalletCustom = () => {
 export async function setupSelector(): Promise<WalletSelector> {
   return setupWalletSelector({
     network: (getEnv(ENV).nearEnv.networkId as NetworkId) || "testnet",
-    modules: [setupNearWalletCustom(), setupSender(), setupMyNearWallet()],
+    modules: [setupSender(), setupMyNearWallet()],
   });
 }

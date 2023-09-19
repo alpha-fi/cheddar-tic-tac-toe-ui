@@ -8,7 +8,6 @@ import {
 import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupNearWalletCustom } from "../near/wallet/selector-utils";
 import { NEP141 } from "../near/contracts/NEP141";
@@ -19,6 +18,7 @@ import { TicTacToeLogic } from "../near/logics/TicTacToeLogic";
 import nearIcon from "../assets/near-icon.png";
 import senderIcon from "../assets/sender-icon.png";
 import "@near-wallet-selector/modal-ui/styles.css"; // suggested styling (https://www.npmjs.com/package/@near-wallet-selector/modal-ui)
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 
 declare global {
   interface Window {
@@ -62,9 +62,8 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
       network: getEnv(ENV).nearEnv.networkId as NetworkId,
       debug: true,
       modules: [
-        setupNearWallet({ iconUrl: nearIcon }),
         setupSender({ iconUrl: senderIcon }),
-        setupNearWalletCustom(),
+        setupMyNearWallet(),
       ],
     });
     const _modal = setupModal(_selector, {
