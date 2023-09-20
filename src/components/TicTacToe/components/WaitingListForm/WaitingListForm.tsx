@@ -105,6 +105,7 @@ export default function WaitingListForm({
             <AccordionIcon />
           </AccordionButton>
         </h2>
+        
         <AccordionPanel
           pb={4}
           bg="#eee"
@@ -113,6 +114,11 @@ export default function WaitingListForm({
           alignItems="center"
           m="12px 16px"
         >
+          {!cheddarBalance &&
+            <Flex justifyContent="center" fontWeight="700" marginBottom="1rem">
+              To join the waiting list you have to deposit Cheddar first.
+            </Flex>
+          }
           <FormControl mb="10px">
             <Flex
               justifyContent="center"

@@ -72,6 +72,11 @@ export function DepositCheddar({ isUserRegistered, cheddarBalance }: Props) {
       </h2>
       <AccordionPanel m="12px 16px" bg="#eee" borderRadius="8px" pb={4}>
         <FormControl mb="10px" isInvalid={borderColor === "red"}>
+          {!isUserRegistered &&
+            <Flex justifyContent="center" fontWeight="700">
+              To deposit Cheddar you have to register first.
+            </Flex>
+          }
           <Flex justifyContent="center">
             The deposited Cheddar can be used in bidding for playing a game.
           </Flex>

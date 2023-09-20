@@ -166,12 +166,10 @@ export function TicTacToe({
   }, [activeGameParams.game_id, data?.[0], walletSelector.accountId]);
 
   useEffect(() => {
-    console.log(666, width, height)
     setIsLandscape(width > height * 1.5)
   }, [height, width])
 
   useEffect(() => {
-    console.log(1, isLandscape)
     if (tictactoeContainer.current) {
       const maxHeight = height - 160 > 346 ? height - 160 : 346;
       const isFullWidthBoard = width < 480 || (width < 768 && !isLandscape);
@@ -180,7 +178,6 @@ export function TicTacToe({
       : (tictactoeContainer.current.offsetWidth - 20) / 2;
       setBoardSize(maxHeight > maxWidth ? maxWidth : maxHeight);
     }
-    console.log(2, isLandscape)
   }, [tictactoeContainer.current?.offsetWidth, height, isLandscape, width]);
 
   const boardFirst =
