@@ -15,8 +15,9 @@ import { getErrorMessage } from "../../../shared/helpers/getErrorMsg";
 
 type Props = {
   isUserRegistered: boolean;
+  setUserRegistered: (value: boolean) => void;
 };
-export function RegisterUser({ isUserRegistered }: Props) {
+export function RegisterUser({ isUserRegistered, setUserRegistered }: Props) {
   const walletSelector = useWalletSelector();
   const [errorMsg, setErrorMsg] = useState("");
   const [showForm, setShowFrom] = useState(false);
@@ -34,7 +35,9 @@ export function RegisterUser({ isUserRegistered }: Props) {
   }
 
   function unRegisterUser() {
-    walletSelector.ticTacToeLogic?.unregisterAccount().catch((error) => {
+    walletSelector.ticTacToeLogic?.unregisterAccount()
+    .then((_) => setUserRegistered(false))
+    .catch((error) => {
       console.error(error);
       setErrorMsg(getErrorMessage(error));
     });

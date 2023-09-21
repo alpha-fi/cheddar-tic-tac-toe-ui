@@ -22,6 +22,7 @@ type Props = {
   activeGameParams: GameParamsState;
   setActiveGameParams: (value: GameParamsState) => void;
   isUserRegistered: boolean;
+  setUserRegistered: (value: boolean) => void;
   cheddarBalance: number | null;
 };
 
@@ -34,6 +35,7 @@ export default function Info({
   activeGameParams,
   setActiveGameParams,
   isUserRegistered,
+  setUserRegistered,
   cheddarBalance,
 }: Props) {
   const [haveOwnChallenge, setHaveOwnChallenge] = useState(false);
@@ -78,7 +80,7 @@ export default function Info({
           />
         )}
         {!data && !activeGameParams.game_result.result && (
-          <RegisterUser isUserRegistered={isUserRegistered} />
+          <RegisterUser isUserRegistered={isUserRegistered} setUserRegistered={setUserRegistered}/>
         )}
         {!data && !activeGameParams.game_result.result && (
           <DepositCheddar

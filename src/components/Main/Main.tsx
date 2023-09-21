@@ -88,6 +88,7 @@ export default function Main() {
             setConfetti={handleConfetti}
             isUserRegistered={isUserRegistered}
             cheddarBalance={cheddarBalance}
+            setUserRegistered={setUserRegistered}
             setCheddarBalance={(value: number) => {
               setCheddarBalance(value);
             }}

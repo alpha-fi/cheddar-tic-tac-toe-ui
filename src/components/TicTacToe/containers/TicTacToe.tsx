@@ -52,6 +52,7 @@ export const initialActiveGameParamsState = {
 type Props = {
   setConfetti: (value: boolean) => void;
   isUserRegistered: boolean;
+  setUserRegistered: (value: boolean) => void
   cheddarBalance: number | null;
   setCheddarBalance: (value: number) => void;
 };
@@ -59,6 +60,7 @@ type Props = {
 export function TicTacToe({
   setConfetti,
   isUserRegistered,
+  setUserRegistered,
   cheddarBalance,
   setCheddarBalance,
 }: Props) {
@@ -212,6 +214,7 @@ export function TicTacToe({
         >
           <Info
             isUserRegistered={isUserRegistered}
+            setUserRegistered={setUserRegistered}
             boardFirst={boardFirst}
             isLandScape={isLandscape}
             boardSize={boardSize}
