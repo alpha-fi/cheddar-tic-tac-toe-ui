@@ -1,0 +1,34 @@
+{
+  "files": {
+    "main.css": "/cheddar-tic-tac-toe-ui/static/css/main.6244eaed.chunk.css",
+    "main.js": "/cheddar-tic-tac-toe-ui/static/js/main.b0ab10ce.chunk.js",
+    "main.js.map": "/cheddar-tic-tac-toe-ui/static/js/main.b0ab10ce.chunk.js.map",
+    "runtime-main.js": "/cheddar-tic-tac-toe-ui/static/js/runtime-main.f497e2d8.js",
+    "runtime-main.js.map": "/cheddar-tic-tac-toe-ui/static/js/runtime-main.f497e2d8.js.map",
+    "static/css/2.10fda77b.chunk.css": "/cheddar-tic-tac-toe-ui/static/css/2.10fda77b.chunk.css",
+    "static/js/2.48fee7c3.chunk.js": "/cheddar-tic-tac-toe-ui/static/js/2.48fee7c3.chunk.js",
+    "static/js/2.48fee7c3.chunk.js.map": "/cheddar-tic-tac-toe-ui/static/js/2.48fee7c3.chunk.js.map",
+    "static/js/3.da23c171.chunk.js": "/cheddar-tic-tac-toe-ui/static/js/3.da23c171.chunk.js",
+    "static/js/3.da23c171.chunk.js.map": "/cheddar-tic-tac-toe-ui/static/js/3.da23c171.chunk.js.map",
+    "index.html": "/cheddar-tic-tac-toe-ui/index.html",
+    "static/css/2.10fda77b.chunk.css.map": "/cheddar-tic-tac-toe-ui/static/css/2.10fda77b.chunk.css.map",
+    "static/css/main.6244eaed.chunk.css.map": "/cheddar-tic-tac-toe-ui/static/css/main.6244eaed.chunk.css.map",
+    "static/js/2.48fee7c3.chunk.js.LICENSE.txt": "/cheddar-tic-tac-toe-ui/static/js/2.48fee7c3.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/cheddar-tic-tac-toe-ui/static/media/titillium-web-latin-ext-400-normal.fc46e868.woff2",
+    "static/media/cheddar-icon.svg": "/cheddar-tic-tac-toe-ui/static/media/cheddar-icon.189c7a15.svg",
+    "static/media/discord.f72ed9ec.svg": "/cheddar-tic-tac-toe-ui/static/media/discord.f72ed9ec.svg",
+    "static/media/gamepad-icon.3b6fe6aa.svg": "/cheddar-tic-tac-toe-ui/static/media/gamepad-icon.3b6fe6aa.svg",
+    "static/media/gitbook.8bb558ad.svg": "/cheddar-tic-tac-toe-ui/static/media/gitbook.8bb558ad.svg",
+    "static/media/swap-icon.cf6d4bd8.svg": "/cheddar-tic-tac-toe-ui/static/media/swap-icon.cf6d4bd8.svg",
+    "static/media/telegram.80bd2be8.svg": "/cheddar-tic-tac-toe-ui/static/media/telegram.80bd2be8.svg",
+    "static/media/thunder-icon.18a16dc0.svg": "/cheddar-tic-tac-toe-ui/static/media/thunder-icon.18a16dc0.svg",
+    "static/media/twitter.a047c2b8.svg": "/cheddar-tic-tac-toe-ui/static/media/twitter.a047c2b8.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f497e2d8.js",
+    "static/css/2.10fda77b.chunk.css",
+    "static/js/2.48fee7c3.chunk.js",
+    "static/css/main.6244eaed.chunk.css",
+    "static/js/main.b0ab10ce.chunk.js"
+  ]
+}
