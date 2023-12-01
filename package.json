@@ -2,6 +2,7 @@
   "name": "tip-tap-toe",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://alpha-fi.github.io/cheddar-tic-tac-toe-ui/",
   "dependencies": {
     "@chakra-ui/icons": "^1.1.1",
     "@chakra-ui/react": "^1.7.2",
@@ -20,6 +21,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "framer-motion": "^4.1.17",
+    "gh-pages": "^6.1.0",
     "near-api-js": "^0.44.2",
     "react": "^17.0.2",
     "react-confetti": "^6.1.0",
@@ -31,8 +33,10 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
+    "precompile":"yarn build",
+    "compile":"gh-pages -d build",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "CI=false && react-scripts build",
     "start:legacy": "set NODE_OPTIONS=--openssl-legacy-provider && yarn run start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
