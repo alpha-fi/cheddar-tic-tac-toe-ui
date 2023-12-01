@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/cheddar-tic-tac-toe-ui/static/css/main.6244eaed.chunk.css",
-    "main.js": "/cheddar-tic-tac-toe-ui/static/js/main.b0ab10ce.chunk.js",
-    "main.js.map": "/cheddar-tic-tac-toe-ui/static/js/main.b0ab10ce.chunk.js.map",
-    "runtime-main.js": "/cheddar-tic-tac-toe-ui/static/js/runtime-main.f497e2d8.js",
-    "runtime-main.js.map": "/cheddar-tic-tac-toe-ui/static/js/runtime-main.f497e2d8.js.map",
-    "static/css/2.10fda77b.chunk.css": "/cheddar-tic-tac-toe-ui/static/css/2.10fda77b.chunk.css",
-    "static/js/2.48fee7c3.chunk.js": "/cheddar-tic-tac-toe-ui/static/js/2.48fee7c3.chunk.js",
-    "static/js/2.48fee7c3.chunk.js.map": "/cheddar-tic-tac-toe-ui/static/js/2.48fee7c3.chunk.js.map",
-    "static/js/3.da23c171.chunk.js": "/cheddar-tic-tac-toe-ui/static/js/3.da23c171.chunk.js",
-    "static/js/3.da23c171.chunk.js.map": "/cheddar-tic-tac-toe-ui/static/js/3.da23c171.chunk.js.map",
+    "main.css": "/cheddar-tic-tac-toe-ui/static/css/main.50cece65.chunk.css",
+    "main.js": "/cheddar-tic-tac-toe-ui/static/js/main.9d4f7854.chunk.js",
+    "main.js.map": "/cheddar-tic-tac-toe-ui/static/js/main.9d4f7854.chunk.js.map",
+    "runtime-main.js": "/cheddar-tic-tac-toe-ui/static/js/runtime-main.cdaab7b8.js",
+    "runtime-main.js.map": "/cheddar-tic-tac-toe-ui/static/js/runtime-main.cdaab7b8.js.map",
+    "static/css/2.bf1f2930.chunk.css": "/cheddar-tic-tac-toe-ui/static/css/2.bf1f2930.chunk.css",
+    "static/js/2.9a55e125.chunk.js": "/cheddar-tic-tac-toe-ui/static/js/2.9a55e125.chunk.js",
+    "static/js/2.9a55e125.chunk.js.map": "/cheddar-tic-tac-toe-ui/static/js/2.9a55e125.chunk.js.map",
+    "static/js/3.a63472b9.chunk.js": "/cheddar-tic-tac-toe-ui/static/js/3.a63472b9.chunk.js",
+    "static/js/3.a63472b9.chunk.js.map": "/cheddar-tic-tac-toe-ui/static/js/3.a63472b9.chunk.js.map",
     "index.html": "/cheddar-tic-tac-toe-ui/index.html",
-    "static/css/2.10fda77b.chunk.css.map": "/cheddar-tic-tac-toe-ui/static/css/2.10fda77b.chunk.css.map",
-    "static/css/main.6244eaed.chunk.css.map": "/cheddar-tic-tac-toe-ui/static/css/main.6244eaed.chunk.css.map",
-    "static/js/2.48fee7c3.chunk.js.LICENSE.txt": "/cheddar-tic-tac-toe-ui/static/js/2.48fee7c3.chunk.js.LICENSE.txt",
+    "static/css/2.bf1f2930.chunk.css.map": "/cheddar-tic-tac-toe-ui/static/css/2.bf1f2930.chunk.css.map",
+    "static/css/main.50cece65.chunk.css.map": "/cheddar-tic-tac-toe-ui/static/css/main.50cece65.chunk.css.map",
+    "static/js/2.9a55e125.chunk.js.LICENSE.txt": "/cheddar-tic-tac-toe-ui/static/js/2.9a55e125.chunk.js.LICENSE.txt",
     "static/media/index.css": "/cheddar-tic-tac-toe-ui/static/media/titillium-web-latin-ext-400-normal.fc46e868.woff2",
     "static/media/cheddar-icon.svg": "/cheddar-tic-tac-toe-ui/static/media/cheddar-icon.189c7a15.svg",
     "static/media/discord.f72ed9ec.svg": "/cheddar-tic-tac-toe-ui/static/media/discord.f72ed9ec.svg",
@@ -25,10 +25,10 @@
     "static/media/twitter.a047c2b8.svg": "/cheddar-tic-tac-toe-ui/static/media/twitter.a047c2b8.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.f497e2d8.js",
-    "static/css/2.10fda77b.chunk.css",
-    "static/js/2.48fee7c3.chunk.js",
-    "static/css/main.6244eaed.chunk.css",
-    "static/js/main.b0ab10ce.chunk.js"
+    "static/js/runtime-main.cdaab7b8.js",
+    "static/css/2.bf1f2930.chunk.css",
+    "static/js/2.9a55e125.chunk.js",
+    "static/css/main.50cece65.chunk.css",
+    "static/js/main.9d4f7854.chunk.js"
   ]
 }
