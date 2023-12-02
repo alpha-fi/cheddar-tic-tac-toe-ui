@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/cheddar-tic-tac-toe-ui/static/css/main.50cece65.chunk.css",
+    "main.css": "/cheddar-tic-tac-toe-ui/static/css/main.b62ea855.chunk.css",
     "main.js": "/cheddar-tic-tac-toe-ui/static/js/main.9d4f7854.chunk.js",
     "main.js.map": "/cheddar-tic-tac-toe-ui/static/js/main.9d4f7854.chunk.js.map",
     "runtime-main.js": "/cheddar-tic-tac-toe-ui/static/js/runtime-main.cdaab7b8.js",
@@ -12,7 +12,7 @@
     "static/js/3.a63472b9.chunk.js.map": "/cheddar-tic-tac-toe-ui/static/js/3.a63472b9.chunk.js.map",
     "index.html": "/cheddar-tic-tac-toe-ui/index.html",
     "static/css/2.bf1f2930.chunk.css.map": "/cheddar-tic-tac-toe-ui/static/css/2.bf1f2930.chunk.css.map",
-    "static/css/main.50cece65.chunk.css.map": "/cheddar-tic-tac-toe-ui/static/css/main.50cece65.chunk.css.map",
+    "static/css/main.b62ea855.chunk.css.map": "/cheddar-tic-tac-toe-ui/static/css/main.b62ea855.chunk.css.map",
     "static/js/2.9a55e125.chunk.js.LICENSE.txt": "/cheddar-tic-tac-toe-ui/static/js/2.9a55e125.chunk.js.LICENSE.txt",
     "static/media/index.css": "/cheddar-tic-tac-toe-ui/static/media/titillium-web-latin-ext-400-normal.fc46e868.woff2",
     "static/media/cheddar-icon.svg": "/cheddar-tic-tac-toe-ui/static/media/cheddar-icon.189c7a15.svg",
@@ -28,7 +28,7 @@
     "static/js/runtime-main.cdaab7b8.js",
     "static/css/2.bf1f2930.chunk.css",
     "static/js/2.9a55e125.chunk.js",
-    "static/css/main.50cece65.chunk.css",
+    "static/css/main.b62ea855.chunk.css",
     "static/js/main.9d4f7854.chunk.js"
   ]
 }
