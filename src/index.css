@@ -9,8 +9,13 @@
 
 html,
 body {
-  overflow: hidden;
   height: 100%;
+}
+
+
+html {
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 body {
