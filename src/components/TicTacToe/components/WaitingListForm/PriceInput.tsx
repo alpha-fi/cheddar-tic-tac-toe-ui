@@ -3,7 +3,8 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Input,
+  //Input,
+  Select,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { isValidAmountInput } from "./helpers";
@@ -13,13 +14,16 @@ type Props = {
   minDeposit: string;
   tokenName: string;
 };
+
+const validValues = ["50","1000"]
+
 export function PriceInput({
   bidInput,
   setBidInput,
   minDeposit,
   tokenName,
 }: Props) {
-  const handleBidInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBidInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (isValidAmountInput(e.target.value)) {
       setBidInput(e.target.value);
     }
@@ -34,7 +38,12 @@ export function PriceInput({
         parseFloat(bidInput) === 1000
     );
   }, [bidInput]);
-  const borderColor = isBidValid ? "inherit" : "red";
+  //const borderColor = isBidValid ? "inherit" : "red";
+
+  useEffect(() => {
+    setBidInput(validValues[0])
+  }, [setBidInput])
+  
 
   return (
     <FormControl mb="10px" isInvalid={!isBidValid}>
@@ -50,7 +59,18 @@ export function PriceInput({
         >
           My&nbsp;Bid:
         </FormLabel>
-        <Input
+        <Select
+          w="200px"
+          bg="#fffb"
+          mr="10px"
+          value={bidInput}
+          onChange={handleBidInputChange}
+        >
+          {validValues.map((item) => (
+            <option key={item}>{item} Cheddar</option>
+          ))}
+        </Select>
+        {/* <Input
           onChange={handleBidInputChange}
           value={bidInput}
           borderColor={borderColor}
@@ -64,7 +84,7 @@ export function PriceInput({
           w="200px"
           mr="10px"
           bg="white"
-        />
+        /> */}
       </Flex>
       {!isBidValid && (
         <FormErrorMessage justifyContent="center" mt="0">

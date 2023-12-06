@@ -119,7 +119,7 @@ export default function WaitingListForm({
               To join the waiting list you have to deposit Cheddar first.
             </Flex>
           }
-          <FormControl mb="10px">
+          <FormControl mb="10px" hidden>
             <Flex
               justifyContent="center"
               alignItems="center"
