@@ -21,9 +21,6 @@ type Props = {
   isLandScape: boolean;
   activeGameParams: GameParamsState;
   setActiveGameParams: (value: GameParamsState) => void;
-  isUserRegistered: boolean;
-  setUserRegistered: (value: boolean) => void;
-  cheddarBalance: number | null;
 };
 
 export default function Info({
@@ -34,13 +31,10 @@ export default function Info({
   isLandScape,
   activeGameParams,
   setActiveGameParams,
-  isUserRegistered,
-  setUserRegistered,
-  cheddarBalance,
 }: Props) {
   const [haveOwnChallenge, setHaveOwnChallenge] = useState(false);
   const walletSelector = useWalletSelector();
-
+  
   useEffect(() => {
     if (data) {
       setHaveOwnChallenge(
@@ -75,18 +69,13 @@ export default function Info({
             showingWaitingListForm={
               walletSelector.selector.isSignedIn() && !data && !haveOwnChallenge
             }
-            cheddarBalance={cheddarBalance}
-            isUserRegistered={isUserRegistered}
           />
         )}
         {!data && !activeGameParams.game_result.result && (
-          <RegisterUser isUserRegistered={isUserRegistered} setUserRegistered={setUserRegistered}/>
+          <RegisterUser />
         )}
         {!data && !activeGameParams.game_result.result && (
-          <DepositCheddar
-            isUserRegistered={isUserRegistered}
-            cheddarBalance={cheddarBalance}
-          />
+          <DepositCheddar />
         )}
 
         {showActiveGame && (
@@ -102,8 +91,6 @@ export default function Info({
           tokensData && (
             <WaitingListForm
               tokensData={tokensData}
-              isUserRegistered={isUserRegistered}
-              cheddarBalance={cheddarBalance}
             />
           )}
       </Accordion>

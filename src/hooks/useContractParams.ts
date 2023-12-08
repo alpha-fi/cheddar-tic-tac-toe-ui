@@ -141,14 +141,8 @@ export const getUserRegisterStatus = async (
   return false;
 };
 
-export const getCheddarBalance = async (
+export const getUserCheddarAppBalance = async (
   walletSelector: WalletSelectorContextValue
 ): Promise<number> => {
-  if (walletSelector?.accountId) {
-    const resp = await walletSelector.tictactoeContract?.get_cheddar_balance(
-      walletSelector.accountId
-    );
-    return resp ?? 0;
-  }
-  return 0;
+  return walletSelector.tictactoeContract?.get_cheddar_balance() || 0;
 };

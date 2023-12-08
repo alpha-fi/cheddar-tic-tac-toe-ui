@@ -74,7 +74,7 @@ export class NEP141 {
 
   getFtTransferCallAction(
     receiver_id: string,
-    amount: number | string,
+    amount: string,
     msg: string = ""
   ): Action {
     return {
@@ -83,10 +83,7 @@ export class NEP141 {
         methodName: "ft_transfer_call",
         args: {
           receiver_id,
-          amount:
-            typeof amount === "string"
-              ? amount
-              : utils.format.parseNearAmount(amount.toString()),
+          amount: amount,
           msg,
         },
         gas: DEFAULT_GAS,

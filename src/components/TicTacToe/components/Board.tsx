@@ -1,11 +1,8 @@
 import { Flex, Grid } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
-import {
-  Coords,
-  Piece,
-  getCheddarBalance,
-} from "../../../hooks/useContractParams";
+import { Coords, Piece } from "../../../hooks/useContractParams";
 import { useLastMove } from "../../../hooks/useLastMove";
 import {
   getWinnerData,
@@ -30,7 +27,6 @@ type Props = {
   activeGameParams: GameParamsState;
   setActiveGameParams: (value: GameParamsState) => void;
   setConfetti: (value: boolean) => void;
-  setCheddarBalance: (value: number) => void;
 };
 
 const BoardBGColor = "#2D2727";
@@ -40,7 +36,6 @@ export default function Board({
   activeGameParams,
   setActiveGameParams,
   setConfetti,
-  setCheddarBalance,
 }: Props) {
   const [loadingSquare, setLoadingSquare] = useState<LoadingSquare>({
     row: null,
@@ -51,9 +46,9 @@ export default function Board({
     [Coords | null, Piece, any, number | null] | undefined
   >(undefined);
   const { data } = useLastMove(activeGameParams.game_id);
+  const queryClient = useQueryClient()
   const walletSelector = useWalletSelector();
-  const [isLoading, setLoading] = useState(true);
-
+  
   function getWinnerDetails(winnerDetails: any) {
     const { result, winnerId } = getWinnerData(winnerDetails);
     if (result) {
@@ -149,13 +144,14 @@ export default function Board({
       isNumberValid(activeGameParams.game_id) &&
       data?.[2]
     ) {
-      setLastMoveData(data);
-      setLoadingSquare({ row: null, column: null });
-      // update the cheddar balance also (in case user lost or won)
-      getCheddarBalance(walletSelector).then((resp) => {
-        setCheddarBalance(resp);
-      });
-      getWinnerDetails(data?.[2]);
+      const finishGame = async () => {
+        setLastMoveData(data);
+        setLoadingSquare({ row: null, column: null });
+        // update the cheddar balance also (in case user lost or won)
+        await queryClient.refetchQueries()
+        getWinnerDetails(data?.[2]);
+      }
+      finishGame()
     }
   }, [data, activeGameParams.game_id]);
 

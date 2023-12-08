@@ -17,14 +17,8 @@ import twitterIcon from "../../../assets/twitter.svg";
 import gitbookIcon from "../../../assets/gitbook.svg";
 import GamesMenu from "../components/GamesMenu";
 import { DrawerMenu } from "../components/DrawerMenu";
-import { CheddarBalance } from "../components/CheddarBalance";
 
-type Props = {
-  isUserRegistered: boolean;
-  cheddarBalance: number | null;
-};
-
-export default function Navbar({ isUserRegistered, cheddarBalance }: Props) {
+export default function Navbar() {
   return (
     <Box
       position="relative"
@@ -147,12 +141,11 @@ export default function Navbar({ isUserRegistered, cheddarBalance }: Props) {
             </Link>
           </Stack>
         </Flex>
-        <Flex gap={5} flexDir="row" flexWrap="wrap" justifyContent="end">
-          <CheddarBalance cheddarBalance={cheddarBalance} />
+        <Flex gap={5} flexDir="row" justifyContent="end">
           <Box order={3} display={{ base: "inline-block", lg: "none" }}>
             <DrawerMenu />
           </Box>
-          <ButtonConnectWallet isUserRegistered={isUserRegistered} />
+          <ButtonConnectWallet />
         </Flex>
       </Container>
     </Box>

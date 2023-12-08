@@ -12,7 +12,7 @@ type Props = {
   accountId: string;
 };
 export function Referral({ accountId }: Props) {
-  const [value] = useState(`${window.location.origin}/?r=${accountId}`);
+  const [value] = useState(`${window.location.href}/?r=${accountId}`);
   const { hasCopied, onCopy } = useClipboard(value);
 
   return (

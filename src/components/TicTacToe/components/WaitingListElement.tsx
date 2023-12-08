@@ -2,6 +2,8 @@ import { Button, Flex, Grid, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { GameConfigView } from "../../../hooks/useContractParams";
+import { useGetIsUserRegistered } from "../../../hooks/useGetIsUserRegistered";
+import { useGetUserCheddarBalances } from "../../../hooks/useGetUserCheddarBalances";
 import { ErrorModal } from "../../../shared/components/ErrorModal";
 import { PurpleButton } from "../../../shared/components/PurpleButton";
 import { formatAccountId } from "../../../shared/helpers/formatAccountId";
@@ -11,18 +13,14 @@ import TokenName from "./TokenName";
 type Props = {
   player: [string, GameConfigView];
   width: number;
-  isUserRegistered: boolean;
-  cheddarBalance: number | null;
 };
 
-export function WaitingListElement({
-  player,
-  width,
-  isUserRegistered,
-  cheddarBalance,
-}: Props) {
+export function WaitingListElement({ player, width }: Props) {
   const [errorMsg, setErrorMsg] = useState("");
   const walletSelector = useWalletSelector();
+  const { data: isUserRegisteredData = false } = useGetIsUserRegistered()
+  const { data: userCheddarBalancesData } = useGetUserCheddarBalances()
+  
 
   const handleAcceptButton = (
     address: string,
@@ -31,8 +29,12 @@ export function WaitingListElement({
     referrer_id?: string
   ) => {
     if (walletSelector.selector.isSignedIn()) {
-      if (!cheddarBalance || +deposit! > cheddarBalance) {
-        setErrorMsg("Insufficient deposited Cheddar balance.");
+      if (!isUserRegisteredData){
+        setErrorMsg("You must register and deposit to play.");
+        return;
+      }
+      if (!userCheddarBalancesData?.gameBalance || parseFloat(deposit) > userCheddarBalancesData.gameBalance) {
+        setErrorMsg("Insufficient deposited Cheddar in the game.");
         return;
       }
       walletSelector.ticTacToeLogic
@@ -100,7 +102,7 @@ export function WaitingListElement({
                 player[1].deposit
               )
             }
-            disabled={!isUserRegistered}
+            //disabled={!isUserRegistered}
           >
             Play!
           </PurpleButton>
