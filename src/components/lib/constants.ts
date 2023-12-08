@@ -4,6 +4,7 @@ export const GridSize = {
 };
 
 export const RefreshIntervalMilliseconds = 2000;
+export const RefreshBalancesIntervalMilliseconds = 20000;
 
 export const DefaultValues = {
   MIN_AVAILABLE_PLAYER_TIME: 1, // in minutes

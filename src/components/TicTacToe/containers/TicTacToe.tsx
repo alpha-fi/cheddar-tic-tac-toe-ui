@@ -1,5 +1,5 @@
 import { AbsoluteCenter, Grid, Img } from "@chakra-ui/react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useWalletSelector } from "../../../contexts/WalletSelectorContext";
 import { GameId, Reward, Tiles } from "../../../hooks/useContractParams";
 import useScreenSize from "../../../hooks/useScreenSize";
@@ -51,19 +51,9 @@ export const initialActiveGameParamsState = {
 
 type Props = {
   setConfetti: (value: boolean) => void;
-  isUserRegistered: boolean;
-  setUserRegistered: (value: boolean) => void
-  cheddarBalance: number | null;
-  setCheddarBalance: (value: number) => void;
 };
 
-export function TicTacToe({
-  setConfetti,
-  isUserRegistered,
-  setUserRegistered,
-  cheddarBalance,
-  setCheddarBalance,
-}: Props) {
+export function TicTacToe({ setConfetti }: Props) {
   const [activeGameParams, setActiveGameParams] = useState<GameParamsState>(
     initialActiveGameParamsState
   ); // stores active game data first from contarct and then updates according to UI
@@ -213,8 +203,6 @@ export function TicTacToe({
           ref={tictactoeContainer}
         >
           <Info
-            isUserRegistered={isUserRegistered}
-            setUserRegistered={setUserRegistered}
             boardFirst={boardFirst}
             isLandScape={isLandscape}
             boardSize={boardSize}
@@ -222,14 +210,12 @@ export function TicTacToe({
             tokensData={tokensData}
             activeGameParams={activeGameParams}
             setActiveGameParams={updateActiveParamsFromChild}
-            cheddarBalance={cheddarBalance}
           />
           <Board
             boardSize={boardSize}
             activeGameParams={activeGameParams}
             setActiveGameParams={updateActiveParamsFromChild}
             setConfetti={setConfetti}
-            setCheddarBalance={setCheddarBalance}
           />
         </Grid>
       )}

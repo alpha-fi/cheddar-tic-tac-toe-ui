@@ -11,7 +11,7 @@ import {
   GameId,
   Piece,
 } from "../../hooks/useContractParams";
-import { NEP141, StorageBalance } from "../contracts/NEP141";
+import { NEP141 } from "../contracts/NEP141";
 import {
   FinalizedGame,
   Stats,
@@ -38,6 +38,10 @@ export class TicTacToeLogic {
 
   getAccountBalance(accountId: string): Promise<string> {
     return this.ticTacToeContract.get_account_balance(accountId);
+  }
+
+  getUserCheddarWalletBalance(accountId: string): Promise<string> { 
+    return this.cheddarContract.ft_balance_of()
   }
 
   getContractParams(): Promise<ContractParams> {
@@ -141,6 +145,30 @@ export class TicTacToeLogic {
     const wallet: Wallet = await this.actualWallet;
     const transactions: Transaction[] = [];
 
+    // This commented code is used to register, deposit and play, all in one
+
+    // const storageDepositAction: Action | null =
+    //   await this.handleTicTacToeStorage();
+
+    // const ftTransferCallAction: Action =
+    //   this.cheddarContract.getFtTransferCallAction(
+    //     this.ticTacToeContract.contractId,
+    //     challenge[1].deposit
+    //   );
+
+    // if (storageDepositAction) {
+    //   transactions.push(
+    //     this.generateTransaction(this.ticTacToeContract.contractId, [
+    //       storageDepositAction,
+    //     ])
+    //   );
+    // }
+    // transactions.push(
+    //   this.generateTransaction(this.cheddarContract.contractId, [
+    //     ftTransferCallAction,
+    //   ])
+    // );
+
     // If user has a pending bet, it removes it. Else keeps with flow.
     const availableGames = await this.getAvailableGames();
     const isUserWaiting = availableGames.some(
@@ -196,42 +224,74 @@ export class TicTacToeLogic {
     return this.ticTacToeContract.is_user_registered(accountId);
   }
 
-  unregisterAccount(): Promise<any> {
-    return this.ticTacToeContract.unregister_account();
+  async unregisterAccount(){
+    const wallet: Wallet = await this.actualWallet;
+    const actions: Action[] = [];
+
+    // If user has a pending bet, it removes it. Else keeps with flow.
+    const availableGames = await this.getAvailableGames();
+    let gameDeposit = 0
+    availableGames.forEach(
+      (game: [string, GameConfigView]) =>{
+        if(game[0] === this.cheddarContract.wallet.getAccountId()){
+          gameDeposit=parseFloat(game[1].deposit)
+        }
+      }
+    );
+    
+    const balance = await this.ticTacToeContract.get_cheddar_balance()
+    if (balance > 0 || gameDeposit > 0 ) {
+      if (gameDeposit > 0 ) {
+        actions.push(this.ticTacToeContract.getMakeUnavailableAction());
+      }
+      actions.push(this.ticTacToeContract.getWithdrawCallAction(gameDeposit+balance));
+      actions.push(this.ticTacToeContract.getUnregisterCallAction())
+    }
+    if(actions.length>0){
+      const transaction = this.generateTransaction(this.ticTacToeContract.contractId,actions)
+      await wallet.signAndSendTransaction(transaction);
+    }else{
+      this.ticTacToeContract.unregister_account();
+    }
   }
 
   registerAccount(): Promise<any> {
     return this.ticTacToeContract.storage_deposit();
   }
 
-  async depositCheddar(amount: number): Promise<any> {
+  async depositCheddar(amount: string): Promise<any> {
     const wallet: Wallet = await this.actualWallet;
-    let cheddarActions: Action[] = [];
     const transactions: Transaction[] = [];
+
     const storageDepositAction: Action | null =
-      await this.handleCheddarStorage();
+      await this.handleTicTacToeStorage();
+
     const ftTransferCallAction: Action =
       this.cheddarContract.getFtTransferCallAction(
         this.ticTacToeContract.contractId,
         amount
       );
+
     if (storageDepositAction) {
-      cheddarActions.push(storageDepositAction);
-    }
-    cheddarActions.push(ftTransferCallAction);
-    if (cheddarActions.length > 0)
       transactions.push(
-        this.generateTransaction(
-          this.cheddarContract.contractId,
-          cheddarActions
-        )
+        this.generateTransaction(this.ticTacToeContract.contractId, [
+          storageDepositAction,
+        ])
       );
+    }
+    transactions.push(
+      this.generateTransaction(this.cheddarContract.contractId, [
+        ftTransferCallAction,
+      ])
+    );
+
     wallet.signAndSendTransactions({ transactions });
   }
 
   async withdrawCheddar(amount: number): Promise<any> {
     return this.ticTacToeContract.withdraw_cheddar(amount);
   }
+
   private generateTransaction(
     contractId: string,
     actions: Action[]
@@ -243,11 +303,13 @@ export class TicTacToeLogic {
     };
   }
 
-  private async handleCheddarStorage(): Promise<Action | null> {
-    const storage: StorageBalance | null =
-      await this.cheddarContract.storage_balance_of();
-    if (!storage) {
-      return this.cheddarContract.getStorageDepositAction(0.5);
+  private async handleTicTacToeStorage(): Promise<Action | null> {
+    const isUserRegistered: boolean =
+      await this.ticTacToeContract.is_user_registered(
+        this.ticTacToeContract.wallet.getAccountId()
+      );
+    if (!isUserRegistered) {
+      return this.ticTacToeContract.getStorageDepositAction(0.2);
     }
     return null;
   }

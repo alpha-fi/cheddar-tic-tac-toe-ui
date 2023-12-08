@@ -105,7 +105,7 @@ export class TicTacToeContract {
         methodName: "make_unavailable",
         args: {},
         gas: DEFAULT_GAS,
-        deposit: "1",
+        deposit: "0",
       },
     };
   }
@@ -118,6 +118,42 @@ export class TicTacToeContract {
         args: { player_2_id: opponent_id },
         gas: DEFAULT_GAS,
         deposit: "0",
+      },
+    };
+  }
+
+  getStorageDepositAction(deposit: number): Action {
+    return {
+      type: "FunctionCall",
+      params: {
+        methodName: "storage_deposit",
+        args: {},
+        gas: DEFAULT_GAS,
+        deposit: utils.format.parseNearAmount(deposit.toString())!,
+      },
+    };
+  }
+
+  getUnregisterCallAction(): Action {
+    return {
+      type: "FunctionCall",
+      params: {
+        methodName: "unregister_account",
+        args: { config: {} },
+        gas: DEFAULT_GAS,
+        deposit: "0",
+      },
+    };
+  }
+
+  getWithdrawCallAction(amount: number): Action {
+    return {
+      type: "FunctionCall",
+      params: {
+        methodName: "withdraw_cheddar",
+        args: { amount },
+        gas: DEFAULT_GAS,
+        deposit: "1",
       },
     };
   }
@@ -238,9 +274,9 @@ export class TicTacToeContract {
     });
   }
 
-  get_cheddar_balance(account_id: string): Promise<number> {
+  get_cheddar_balance(): Promise<number> {
     return this.wallet.view(this.contractId, "get_cheddar_balance", {
-      account_id,
+      account_id: this.wallet.getAccountId(),
     });
   }
 
