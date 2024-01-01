@@ -61,7 +61,7 @@ async function checkRedirectSearchParamsMultiple(accountId: string): Promise<
       utils.serialize.base_decode(hash)
     );
 
-    const provider = new JsonRpcProvider(getEnv(ENV).nearEnv.nodeUrl);
+    const provider = new JsonRpcProvider(getEnv(ENV).nearEnv.nodeUrl as any);
 
     const finalExecOutcomeArray = await Promise.all(
       decodedTxHashArray.map(async (decodedTxHash) => {
