@@ -9,6 +9,9 @@ import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupNightly } from "@near-wallet-selector/nightly";
+import { setupHereWallet } from "@near-wallet-selector/here-wallet";
+import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupNearWalletCustom } from "../near/wallet/selector-utils";
 import { NEP141 } from "../near/contracts/NEP141";
 import { TicTacToeContract } from "../near/contracts/TicTacToe";
@@ -64,6 +67,9 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
       modules: [
         setupSender({ iconUrl: senderIcon }),
         setupMyNearWallet(),
+        setupHereWallet(),
+        setupMeteorWallet(),
+        setupNightly()
       ],
     });
     const _modal = setupModal(_selector, {

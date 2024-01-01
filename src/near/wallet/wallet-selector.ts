@@ -112,7 +112,7 @@ export class SelectorWallet implements WalletInterface {
     try {
       const argsAsString = JSON.stringify(args);
       let argsBase64 = Buffer.from(argsAsString).toString("base64");
-      const provider = new JsonRpcProvider(getEnv(ENV).nearEnv.nodeUrl);
+      const provider = new JsonRpcProvider(getEnv(ENV).nearEnv.nodeUrl as any);
       const rawResult = await provider.query({
         request_type: "call_function",
         account_id: contract,
@@ -173,7 +173,7 @@ export class SelectorWallet implements WalletInterface {
   }
 */
   async queryChain(method: string, args: object): Promise<any> {
-    const provider = new JsonRpcProvider(getEnv(ENV).nearEnv.nodeUrl);
+    const provider = new JsonRpcProvider(getEnv(ENV).nearEnv.nodeUrl as any);
     return provider.sendJsonRpc(method, args);
   }
 }
