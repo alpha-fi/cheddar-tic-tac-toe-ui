@@ -22,6 +22,7 @@ import nearIcon from "../assets/near-icon.png";
 import senderIcon from "../assets/sender-icon.png";
 import "@near-wallet-selector/modal-ui/styles.css"; // suggested styling (https://www.npmjs.com/package/@near-wallet-selector/modal-ui)
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 
 declare global {
   interface Window {
@@ -69,7 +70,8 @@ export const WalletSelectorContextProvider = ({ children }: Props) => {
         setupMyNearWallet(),
         setupHereWallet(),
         setupMeteorWallet(),
-        setupNightly()
+        setupNightly(),
+        setupMintbaseWallet()
       ],
     });
     const _modal = setupModal(_selector, {
